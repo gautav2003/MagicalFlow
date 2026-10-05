@@ -6,8 +6,14 @@
     <div class="auth-card-inner">
       <div class="auth-header">
         <div class="auth-logo"> </div>
-        
+        <div>
+          <strong>Magical Flow</strong>
+          <small>Musical Studio App</small>
+        </div>
       </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for cat, msg in messages %}
+        
     </div>
   </div>
 
