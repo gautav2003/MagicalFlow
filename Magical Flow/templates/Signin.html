@@ -52,8 +52,18 @@
     </div>
     <img class="aith-image" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80" alt="library">
   </div>
-
-
-
-
+ </div>
 </div>
+</div>
+</div>
+<script>
+function togglePw() {
+    const pw = document.getElementById('pw');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+}
+function toggleLibCode() {
+    const g = document.getElementById('lib-code-group');
+    g.style.display = document.getElementById('lib-check').checked ? 'block' : 'none';
+}
+</script>
+{% endblock %}
