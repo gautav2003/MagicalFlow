@@ -42,10 +42,15 @@
             <div style="text-align:right;margin-bottom:12px">
                <small style="color:var(--text-muted)">Forgot password?</small>
             </div>
-            
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <div class="auth-footer">
+               <hr style="margin:12px 0;border-color:var(--border)">
+            Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
         </div>
+        </form>
       </div>
     </div>
+    <img class="aith-image" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80" alt="library">
   </div>
 
 
