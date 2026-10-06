@@ -15,7 +15,14 @@
           {% endfor %}
         {% endwith %}
 
-        
+        <div class="auth-title">Create Account</div>
+        <form method="POST" action="{{ url_for('register') }}">
+          <div class="form-group">
+             <label>Username</label>
+             <input class="form-control" type="text" name="username" required placeholder="e.g. JohnSmith12">
+          </div>
+          <div
+        </form>
       </div>
    </div>
 </div>
