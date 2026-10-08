@@ -5,12 +5,13 @@
   <div class="auth-card">
     <div class="auth-card-inner">
       <div class="auth-header">
-        <div class="auth-logo"> </div>
+        <div class="auth-logo"></div>
         <div>
           <strong>Magical Flow</strong>
           <small>Musical Studio App</small>
         </div>
       </div>
+
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% for cat, msg in messages %}
           <div class="flash flash-{{ cat }}" style="margin-bottom:12px">{{ msg }}</div>
@@ -22,59 +23,87 @@
           <div class="auth-title">Sign In</div>
           <form method="POST" action="{{ url_for('auth.signin') }}">
             <div class="form-group">
-               <label>Username</label>
-               <input class="form-control" type="text" name="username" value="{{ username|default('') }}" placeholder="Enter your username or email" required> 
+              <label for="username">Username</label>
+              <input class="form-control" type="text" id="username" name="username" value="{{ username|default('') }}" placeholder="Enter your username or email" autocomplete="username" required>
             </div>
             <div class="form-group">
-               <label>Password</label>
-               <div class="pw-row">
-                 <input class="form-control" type="password" name="password" id="pw" placeholder="***************" required data-password-strength>
-                 <button type="button" class="pw-toggle" onclick="togglePw()">👁</button>
-                 
-               </div>
-               <div class="password-strength" aria-live="polite">
-                 <div class="password-strength-track"><div class="password-strength-fill"></div></div>
-                 <small class="password-strength-label">Enter a password</small>
-               </div>
+              <label for="password">Password</label>
+              <div class="pw-row">
+                <input class="form-control" type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" data-password-strength required>
+                <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Show password">&#128065;</button>
+              </div>
+              <div class="password-strength" aria-live="polite">
+                <div class="password-strength-track"><div class="password-strength-fill"></div></div>
+                <small class="password-strength-label">Enter a password</small>
+              </div>
             </div>
             <div class="checkbox-row">
-               <input type="checkbox" name="i agree to terms of service" id="lib-check" onchange="toggleLibCode()">
-               <label for="lib-check" style="font-weight:normal;cursor:pointer">I agree to the terms of service</label>
-            </div>
-            <div class="form-group" if="lib-code-group" style="display:none">
-              <input class="form-control" type="text" name="lib-code" placeholder="Enter your library code"> 
+              <input type="checkbox" name="i agree to terms of service" id="terms-check">
+              <label for="terms-check" style="font-weight:normal;cursor:pointer">I agree to the terms of service</label>
             </div>
             <div style="text-align:right;margin-bottom:12px">
-               <small style="color:var(--text-muted)">Forgot password?</small>
+              <small style="color:var(--text-muted)">Forgot password?</small>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
             <div class="auth-footer">
-               <hr style="margin:12px 0;border-color:var(--border)">
-            Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+              <hr style="margin:12px 0;border-color:var(--border)">
+              Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
+            </div>
+          </form>
         </div>
-        </form>
       </div>
     </div>
-    <img class="aith-image" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80" alt="library">
+    <img class="aith-image" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80" alt="Library">
   </div>
- </div>
-</div>
-</div>
 </div>
 <style>
-  .password-strength {margin-top: 8px; }
-  .password-strength-track {height: 6px; overflow: hidden; background: #efe7eb; border-radius: 3px; }
-  .password-strength-fill {width: 0; height: 100%; transition: width 180ms ease, background-color 180ms ease; }
-  .password-strength-label {display: block; margin-top: 5px; color: #6b7280; }
-  .password-strength-weak .password-strength-fill {background: #dc2626; }
-  .password-strength-medium .password-strength-fill {background: #f97316; }
-  .password-strength-strong .password-strength-fill {background: #eab308; }
-  .password-strength-excellent .password-strength-fill {background: #16a34a; }
+  .password-strength { margin-top: 8px; }
+  .password-strength-track { height: 6px; overflow: hidden; background: #e5e7eb; border-radius: 3px; }
+  .password-strength-fill { width: 0; height: 100%; transition: width 180ms ease, background-color 180ms ease; }
+  .password-strength-label { display: block; margin-top: 5px; color: #6b7280; }
+  .password-strength.weak .password-strength-fill { background: #dc2626; }
+  .password-strength.medium .password-strength-fill { background: #f97316; }
+  .password-strength.strong .password-strength-fill { background: #eab308; }
+  .password-strength.excellent .password-strength-fill { background: #16a34a; }
 </style>
 <script>
   function togglePw() {
-    const pw = document.getElementById('pw');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
+    const passwordInput = document.getElementById('password');
+    const isPasswordHidden = passwordInput.type === 'password';
+    passwordInput.type = isPasswordHidden ? 'text' : 'password';
+    document.querySelector('.pw-toggle').setAttribute('aria-label', isPasswordHidden ? 'Hide password' : 'Show password');
   }
-  function
+
+  const passwordInput = document.querySelector('[data-password-strength]');
+  const strengthIndicator = passwordInput.parentElement.querySelector('.password-strength');
+  const strengthFill = strengthIndicator.querySelector('.password-strength-fill');
+  const strengthLabel = strengthIndicator.querySelector('.password-strength-label');
+
+  passwordInput.addEventListener('input', () => {
+    const password = passwordInput.value;
+    strengthIndicator.classList.remove('weak', 'medium', 'strong', 'excellent');
+
+    if (!password) {
+      strengthFill.style.width = '0';
+      strengthLabel.textContent = 'Enter a password';
+      return;
+    }
+
+    const checks = [
+      password.length >= 8,
+      /[a-z]/.test(password),
+      /[A-Z]/.test(password),
+      /\d/.test(password),
+      /[^A-Za-z0-9]/.test(password)
+    ];
+    const score = checks.filter(Boolean).length;
+    const strength = score <= 2 ? 'weak' : score === 3 ? 'medium' : score === 4 ? 'strong' : 'excellent';
+    const widths = { weak: '25%', medium: '50%', strong: '75%', excellent: '100%' };
+    const labels = { weak: 'Weak password', medium: 'Medium password', strong: 'Strong password', excellent: 'Excellent password' };
+
+    strengthIndicator.classList.add(strength);
+    strengthFill.style.width = widths[strength];
+    strengthLabel.textContent = labels[strength];
+  });
 </script>
+{% endblock %}
