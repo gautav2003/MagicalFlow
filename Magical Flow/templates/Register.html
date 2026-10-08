@@ -63,6 +63,24 @@
       const fill = indicator.querySelector('.password-strength-fill');
       const label = indicator.querySelector('.password-strength-label');
 
-      
+      input.addEventListener('input', () => {
+         const password = input.value;
+         indicator.classList.remove('weak', 'medium', 'strong', 'excellent');
+
+         if (!password) {
+            fill.style.width = '0';
+            label.textContent = 'Enter a password';
+            return;
+         }
+
+         const checks = [
+            password.length >= 8,
+            /[a-z]/.test(password),
+            /[A-Z]/.test(password),
+            /\d/.test(password),
+            /[^A-Za-z0-9]/.test(password)
+         ];
+         
+      })
    }
 </script>
