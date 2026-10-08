@@ -28,8 +28,13 @@
             <div class="form-group">
                <label>Password</label>
                <div class="pw-row">
-                 <input class="form-control" type="password" name="password" placeholder="***************" required>
+                 <input class="form-control" type="password" name="password" id="pw" placeholder="***************" required data-password-strength>
                  <button type="button" class="pw-toggle" onclick="togglePw()">👁</button>
+                 
+               </div>
+               <div class="password-strength" aria-live="polite">
+                 <div class="password-strength-track"><div class="password-strength-fill"></div></div>
+                 <small class="password-strength-label">Enter a password</small>
                </div>
             </div>
             <div class="checkbox-row">
@@ -56,14 +61,10 @@
 </div>
 </div>
 </div>
-<script>
-function togglePw() {
-    const pw = document.getElementById('pw');
-    pw.type = pw.type === 'password' ? 'text' : 'password';
-}
-function toggleLibCode() {
-    const g = document.getElementById('lib-code-group');
-    g.style.display = document.getElementById('lib-check').checked ? 'block' : 'none';
-}
-</script>
-{% endblock %}
+<style>
+  .password-strength {margin-top: 8px; }
+  .password-strength-track {height: 6px; overflow: hidden; background: #efe7eb; border-radius: 3px; }
+  .password-strength-fill {width: 0; height: 100%; transition: width 180ms ease, background-color 180ms ease; }
+  .password-strength-label {display: block; margin-top: 5px; color: #6b7280; }
+  
+</style>
