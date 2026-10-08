@@ -58,8 +58,8 @@
    .password-strength.excellent .password-strength-fill { background: #16a34a; }
 </style>
 <script>
-   document.querySelectorAll('[data-password-strength]').forEach(input)=> {
-      const indicator = ninput.parentElement.querySelector('.password-strength');
+   document.querySelectorAll('[data-password-strength]').forEach(input => {
+      const indicator = input.parentElement.querySelector('.password-strength');
       const fill = indicator.querySelector('.password-strength-fill');
       const label = indicator.querySelector('.password-strength-label');
 
@@ -81,10 +81,14 @@
             /[^A-Za-z0-9]/.test(password)
          ];
          const score = checks.filter(Boolean).length;
-         const strength = score <= 2 ? 'weak' : score === 3 ? 'meduim' : score === 4 ? 'strong' : 'excellent';
+         const strength = score <= 2 ? 'weak' : score === 3 ? 'medium' : score === 4 ? 'strong' : 'excellent';
          const widths = { weak: '25%', medium: '50%', strong: '75%', excellent: '100%' };
-         const labels = [ weak: 'Weak password', medium: 'Medium password', strong: 'Strong password', excellent: 'Excellent password' ];
-         
-      })
-   }
+         const labels = { weak: 'Weak password', medium: 'Medium password', strong: 'Strong password', excellent: 'Excellent password' };
+
+         indicator.classList.add(strength);
+         fill.style.width = widths[strength];
+         label.textContent = labels[strength];
+      });
+   });
 </script>
+{% endblock %}
