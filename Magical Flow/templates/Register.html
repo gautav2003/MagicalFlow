@@ -80,6 +80,10 @@
             /\d/.test(password),
             /[^A-Za-z0-9]/.test(password)
          ];
+         const score = checks.filter(Boolean).length;
+         const strength = score <= 2 ? 'weak' : score === 3 ? 'meduim' : score === 4 ? 'strong' : 'excellent';
+         const widths = { weak: '25%', medium: '50%', strong: '75%', excellent: '100%' };
+         const labels = [ weak: 'Weak password', medium: 'Medium password', strong: 'Strong password', excellent: 'Excellent password' ];
          
       })
    }
