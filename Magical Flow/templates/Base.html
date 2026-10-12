@@ -34,7 +34,7 @@
             <span class="font-bold tracking-wide text-white">Magical Flow</span>
         </div>
         
-        <nav class="hidden md:flex items-center space-x-5 text-xs text-zinc-300">
+        <nav class="hidden md:flex items-center space-x-4 text-xs text-zinc-300">
             <a href="{{ url_for('signin') }}" class="hover:text-purple-400 transition">Sign in</a>
             <a href="{{ url_for('register') }}" class="hover:text-purple-400 transition">Register</a>
             <a href="{{ url_for('home') }}" class="hover:text-purple-400 transition">Home</a>
@@ -53,13 +53,10 @@
         </div>
     </header>
 
-    <!-- Main Dynamic Content Block -->
+    <!-- Main Content Block -->
     <main class="flex-1 flex flex-col items-center justify-center p-6 w-full max-w-7xl mx-auto">
         {% block content %}{% endblock %}
     </main>
-
-    <!-- Optional Bottom Features Section -->
-    {% block bottom_features %}{% endblock %}
 
     <!-- Support Headset Floating Icon -->
     <div class="fixed bottom-6 right-6 z-50">
@@ -69,3 +66,4 @@
     </div>
 
 </body>
+</html>
