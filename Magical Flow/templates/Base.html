@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Magical Flow Music Studio{% endblock %}</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -26,7 +23,7 @@
         }
     </style>
 </head>
-<body class="flex flex-col min-h-screen justify-between pb-12">
+<body class="flex flex-col min-h-screen justify-between">
 
     <!-- Top Navigation Bar -->
     <header class="w-full bg-[#0c0419]/90 border-b border-purple-900/40 px-6 py-3 flex items-center justify-between text-sm sticky top-0 z-50 backdrop-blur">
@@ -41,8 +38,19 @@
             <a href="{{ url_for('signin') }}" class="hover:text-purple-400 transition">Sign in</a>
             <a href="{{ url_for('register') }}" class="hover:text-purple-400 transition">Register</a>
             <a href="{{ url_for('home') }}" class="hover:text-purple-400 transition">Home</a>
+            <a href="{{ url_for('select_mode') }}" class="hover:text-purple-400 transition">Mode</a>
+            <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-400 transition">Beginner</a>
+            <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-400 transition">Pro Studio</a>
+            <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-400 transition">Beginner output</a>
+            <a href="{{ url_for('studio_output') }}" class="hover:text-purple-400 transition">Studio output</a>
+            <a href="{{ url_for('my_music') }}" class="hover:text-purple-400 transition">My Music</a>
         </nav>
 
+        <div>
+            <a href="{{ url_for('account') }}" class="w-8 h-8 rounded-full bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition">
+                <i class="fa-solid fa-user text-xs"></i>
+            </a>
+        </div>
     </header>
 
     <!-- Main Dynamic Content Block -->
@@ -50,7 +58,10 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer / Support Floating Headset -->
+    <!-- Optional Bottom Features Section -->
+    {% block bottom_features %}{% endblock %}
+
+    <!-- Support Headset Floating Icon -->
     <div class="fixed bottom-6 right-6 z-50">
         <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-600/50 cursor-pointer hover:scale-105 transition">
             <i class="fa-solid fa-headset text-white text-lg"></i>
@@ -58,4 +69,3 @@
     </div>
 
 </body>
-</html>
