@@ -1,4 +1,4 @@
-from flask import Flask, render_template, rendern_template, request, redirect, url_for, session 
+from flask import Flask, render_template, render_template, request, redirect, url_for, session 
 import sqlite3
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ init_db()
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('Home.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
@@ -40,7 +40,7 @@ def signin():
             return redirect(url_for('home'))
         else:
             error = 'Invalid username or password'
-    return render_template('signin.html', error=error)
+    return render_template('Signin.html', error=error)
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
