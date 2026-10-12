@@ -1,0 +1,44 @@
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Flow - AI Audio Workstation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #121214; color: #e1e1e6; font-family: system-ui, sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+    <header class="bg-[#18181b] border-b border-[#27272a] px-6 py-4 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-indigo-400 font-bold tracking-wide text-xl">Magical Flow</a>
+        <div class="space-x-4 text-sm">
+            <a href="{{ url_for('signin') }}" class="text-zinc-300 hover:text-indigo-400">Sign In</a>
+            <a href="{{ url_for('register') }}" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded text-white font-medium transition">Get Started</a>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-3xl mx-auto">
+        <span class="bg-indigo-950/60 border border-indigo-500/30 text-indigo-300 text-xs px-3 py-1 rounded-full mb-4">✨ AI-Assisted Music Production Workstation</span>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+            Compose, Arrange, and Generate Stems Instantly
+        </h1>
+        <p class="text-zinc-400 text-sm md:text-base mb-8 leading-relaxed">
+            Magical Flow combines professional multi-track DAW timeline tools with generative AI models to help you craft immersive musical arrangements, beats, and soundscapes.
+        </p>
+        <div class="flex space-x-4">
+            <a href="{{ url_for('register') }}" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg transition shadow-lg shadow-indigo-900/30">
+                Launch Your Studio
+            </a>
+            <a href="{{ url_for('signin') }}" class="bg-[#1c1c20] hover:bg-zinc-800 border border-[#27272a] text-zinc-300 font-semibold px-6 py-3 rounded-lg transition">
+                Sign In
+            </a>
+        </div>
+    </main>
+
+    <footer class="bg-[#18181b] border-t border-[#27272a] text-center py-4 text-xs text-zinc-500">
+        &copy; 2026 Magical Flow AI Audio Workstation. All rights reserved.
+    </footer>
+</body>
+</html>

@@ -5,50 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magical Flow - Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #121214; color: #e1e1e6; font-family: system-ui, sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #070311; color: #ffffff; min-height: 100vh; overflow-x: hidden; }
+        .studio-card { background: linear-gradient(135deg, rgba(26, 11, 51, 0.9) 0%, rgba(12, 4, 25, 0.95) 100%); border: 1px solid rgba(147, 51, 234, 0.4); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.15); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
-    <header class="bg-[#18181b] border-b border-[#27272a] px-6 py-4 flex justify-between items-center">
-        <a href="{{ url_for('home') }}" class="text-indigo-400 font-bold tracking-wide text-xl">Magical Flow</a>
-        <a href="{{ url_for('signin') }}" class="text-sm text-zinc-400 hover:text-indigo-400">Already have an account? Sign In</a>
+<body class="flex flex-col min-h-screen justify-between">
+    <header class="w-full bg-[#0c0419]/90 border-b border-purple-900/40 px-6 py-3 flex items-center justify-between text-sm sticky top-0 z-50 backdrop-blur">
+        <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg"><i class="fa-solid fa-music text-xs text-white"></i></div>
+            <span class="font-bold tracking-wide text-white">Magical Flow</span>
+        </div>
+        <nav class="hidden md:flex items-center space-x-5 text-xs text-zinc-300">
+            <a href="{{ url_for('signin') }}" class="hover:text-purple-400">Sign in</a>
+            <a href="{{ url_for('register') }}" class="text-purple-400 font-semibold">Register</a>
+            <a href="{{ url_for('home') }}" class="hover:text-purple-400">Home</a>
+        </nav>
+        <a href="{{ url_for('signin') }}" class="w-8 h-8 rounded-full bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-zinc-300"><i class="fa-solid fa-user text-xs"></i></a>
     </header>
 
-    <main class="flex-1 flex items-center justify-center p-6">
-        <div class="bg-[#18181b] border border-[#27272a] p-8 rounded-xl w-full max-w-md shadow-2xl">
-            <h1 class="text-xl font-bold text-white mb-2">Create Account</h1>
-            <p class="text-xs text-zinc-400 mb-6">Start generating AI-assisted tracks and stems with Magical Flow.</p>
+    <main class="flex-1 flex items-center justify-center p-6 relative">
+        <div class="studio-card w-full max-w-lg rounded-2xl p-8 relative">
+            <div class="flex items-center space-x-2 mb-4">
+                <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center"><i class="fa-solid fa-music text-[10px]"></i></div>
+                <span class="text-xs text-purple-300 font-medium">Magical Flow</span>
+            </div>
+            
+            <h1 class="text-2xl font-bold text-white mb-1">Create Account</h1>
+            <p class="text-xs text-zinc-400 mb-6">Join the Studio</p>
 
             {% if error %}
-            <div class="bg-red-950/50 border border-red-500/50 text-red-300 text-xs p-3 rounded mb-4">
-                {{ error }}
-            </div>
+            <div class="bg-red-950/60 border border-red-500/50 text-red-300 text-xs p-3 rounded-lg mb-4">{{ error }}</div>
             {% endif %}
 
             <form action="{{ url_for('register') }}" method="POST" class="space-y-4 text-xs">
                 <div>
-                    <label class="text-zinc-400 block mb-1">Username</label>
-                    <input type="text" name="username" required class="w-full bg-[#121214] border border-[#27272a] rounded p-2.5 text-zinc-200 focus:outline-none focus:border-indigo-500" placeholder="PandaIsLive">
+                    <label class="text-zinc-400 block mb-1.5 font-medium">Username / Artist Name</label>
+                    <input type="text" name="username" required class="w-full bg-[#080312]/80 border border-purple-500/40 rounded-xl p-3 text-zinc-200 focus:outline-none focus:border-purple-400" placeholder="Gautav Sharma">
                 </div>
                 <div>
-                    <label class="text-zinc-400 block mb-1">Email Address</label>
-                    <input type="email" name="email" required class="w-full bg-[#121214] border border-[#27272a] rounded p-2.5 text-zinc-200 focus:outline-none focus:border-indigo-500" placeholder="panda@example.com">
+                    <label class="text-zinc-400 block mb-1.5 font-medium">Email Address</label>
+                    <input type="email" name="email" required class="w-full bg-[#080312]/80 border border-purple-500/40 rounded-xl p-3 text-zinc-200 focus:outline-none focus:border-purple-400" placeholder="iamDaBest23@gmail.com">
                 </div>
                 <div>
-                    <label class="text-zinc-400 block mb-1">Password</label>
-                    <input type="password" name="password" required class="w-full bg-[#121214] border border-[#27272a] rounded p-2.5 text-zinc-200 focus:outline-none focus:border-indigo-500" placeholder="••••••••">
+                    <label class="text-zinc-400 block mb-1.5 font-medium">Password</label>
+                    <input type="password" name="password" required class="w-full bg-[#080312]/80 border border-purple-500/40 rounded-xl p-3 text-zinc-200 focus:outline-none focus:border-purple-400" placeholder="••••••••">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded transition shadow-lg shadow-indigo-900/20 cursor-pointer">
-                    Register Studio Account
+
+                <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-purple-900/30 cursor-pointer mt-4">
+                    Create Secure Account
                 </button>
             </form>
+
+            <div class="text-center mt-6 text-xs text-zinc-400">
+                Already have an account? <a href="{{ url_for('signin') }}" class="text-purple-400 font-semibold hover:underline">Sign in</a>
+            </div>
         </div>
     </main>
-
-    <footer class="bg-[#18181b] border-t border-[#27272a] text-center py-4 text-xs text-zinc-500">
-        &copy; 2026 Magical Flow AI Audio Workstation.
-    </footer>
 </body>
 </html>
-
