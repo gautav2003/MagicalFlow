@@ -1,105 +1,50 @@
-{% extends "base.html" %}
-{% block title %}Sign In{% endblock %}
-{% block content %}
-<div class="auth-page">
-  <div class="auth-card">
-    <div class="auth-card-inner">
-      <div class="auth-header">
-        <div class="auth-logo"></div>
-        <div>
-          <strong>Magical Flow</strong>
-          <small>Musical Studio App</small>
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Flow - Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #121214; color: #e1e1e6; font-family: system-ui, sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+    <header class="bg-[#18181b] border-b border-[#27272a] px-6 py-4 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-indigo-400 font-bold tracking-wide text-xl">Magical Flow</a>
+        <a href="{{ url_for('register') }}" class="text-sm text-zinc-400 hover:text-indigo-400">Need an account? Register</a>
+    </header>
+
+    <main class="flex-1 flex items-center justify-center p-6">
+        <div class="bg-[#18181b] border border-[#27272a] p-8 rounded-xl w-full max-w-md shadow-2xl">
+            <h1 class="text-xl font-bold text-white mb-2">Welcome Back</h1>
+            <p class="text-xs text-zinc-400 mb-6">Sign in to access your projects and AI music workstations.</p>
+
+            {% if error %}
+            <div class="bg-red-950/50 border border-red-500/50 text-red-300 text-xs p-3 rounded mb-4">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form action="{{ url_for('signin') }}" method="POST" class="space-y-4 text-xs">
+                <div>
+                    <label class="text-zinc-400 block mb-1">Username</label>
+                    <input type="text" name="username" required class="w-full bg-[#121214] border border-[#27272a] rounded p-2.5 text-zinc-200 focus:outline-none focus:border-indigo-500" placeholder="PandaIsLive">
+                </div>
+                <div>
+                    <label class="text-zinc-400 block mb-1">Password</label>
+                    <input type="password" name="password" required class="w-full bg-[#121214] border border-[#27272a] rounded p-2.5 text-zinc-200 focus:outline-none focus:border-indigo-500" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded transition shadow-lg shadow-indigo-900/20 cursor-pointer">
+                    Sign In
+                </button>
+            </form>
         </div>
-      </div>
+    </main>
 
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% for cat, msg in messages %}
-          <div class="flash flash-{{ cat }}" style="margin-bottom:12px">{{ msg }}</div>
-        {% endfor %}
-      {% endwith %}
-
-      <div class="auth-split">
-        <div class="auth-form">
-          <div class="auth-title">Sign In</div>
-          <form method="POST" action="{{ url_for('auth.signin') }}">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input class="form-control" type="text" id="username" name="username" value="{{ username|default('') }}" placeholder="Enter your username or email" autocomplete="username" required>
-            </div>
-            <div class="form-group">
-              <label for="password">Password</label>
-              <div class="pw-row">
-                <input class="form-control" type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" data-password-strength required>
-                <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Show password">&#128065;</button>
-              </div>
-              <div class="password-strength" aria-live="polite">
-                <div class="password-strength-track"><div class="password-strength-fill"></div></div>
-                <small class="password-strength-label">Enter a password</small>
-              </div>
-            </div>
-            <div style="text-align:right;margin-bottom:12px">
-              <small style="color:var(--text-muted)">Forgot password?</small>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Sign In Securely</button>
-            <div class="auth-footer">
-              <hr style="margin:12px 0;border-color:var(--border)">
-              Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <img class="aith-image" src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&q=80" alt="Library">
-  </div>
-</div>
-<style>
-  .password-strength { margin-top: 8px; }
-  .password-strength-track { height: 6px; overflow: hidden; background: #e5e7eb; border-radius: 3px; }
-  .password-strength-fill { width: 0; height: 100%; transition: width 180ms ease, background-color 180ms ease; }
-  .password-strength-label { display: block; margin-top: 5px; color: #6b7280; }
-  .password-strength.weak .password-strength-fill { background: #dc2626; }
-  .password-strength.medium .password-strength-fill { background: #f97316; }
-  .password-strength.strong .password-strength-fill { background: #eab308; }
-  .password-strength.excellent .password-strength-fill { background: #16a34a; }
-</style>
-<script>
-  function togglePw() {
-    const passwordInput = document.getElementById('password');
-    const isPasswordHidden = passwordInput.type === 'password';
-    passwordInput.type = isPasswordHidden ? 'text' : 'password';
-    document.querySelector('.pw-toggle').setAttribute('aria-label', isPasswordHidden ? 'Hide password' : 'Show password');
-  }
-
-  const passwordInput = document.querySelector('[data-password-strength]');
-  const strengthIndicator = passwordInput.parentElement.querySelector('.password-strength');
-  const strengthFill = strengthIndicator.querySelector('.password-strength-fill');
-  const strengthLabel = strengthIndicator.querySelector('.password-strength-label');
-
-  passwordInput.addEventListener('input', () => {
-    const password = passwordInput.value;
-    strengthIndicator.classList.remove('weak', 'medium', 'strong', 'excellent');
-
-    if (!password) {
-      strengthFill.style.width = '0';
-      strengthLabel.textContent = 'Enter a password';
-      return;
-    }
-
-    const checks = [
-      password.length >= 8,
-      /[a-z]/.test(password),
-      /[A-Z]/.test(password),
-      /\d/.test(password),
-      /[^A-Za-z0-9]/.test(password)
-    ];
-    const score = checks.filter(Boolean).length;
-    const strength = score <= 2 ? 'weak' : score === 3 ? 'medium' : score === 4 ? 'strong' : 'excellent';
-    const widths = { weak: '25%', medium: '50%', strong: '75%', excellent: '100%' };
-    const labels = { weak: 'Weak password', medium: 'Medium password', strong: 'Strong password', excellent: 'Excellent password' };
-
-    strengthIndicator.classList.add(strength);
-    strengthFill.style.width = widths[strength];
-    strengthLabel.textContent = labels[strength];
-  });
-</script>
-{% endblock %}
+    <footer class="bg-[#18181b] border-t border-[#27272a] text-center py-4 text-xs text-zinc-500">
+        &copy; 2026 Magical Flow AI Audio Workstation.
+    </footer>
+</body>
+</html>
