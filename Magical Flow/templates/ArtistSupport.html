@@ -1,0 +1,117 @@
+{% extends "Base.html" %}
+{% block title %}Magical Flow - Artist Support Desk{% endblock %}
+{% block content %}
+<div class="w-full max-w-4xl mx-auto space-y-8 py-6">
+
+    <!-- Header Section -->
+    <div class="text-center space-y-3">
+        <div class="inline-flex items-center space-x-2 bg-[#120822] border border-purple-500/40 text-purple-300 text-[11px] px-4 py-1.5 rounded-full shadow-sm">
+            <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+            <span class="uppercase tracking-widest font-semibold">Maya • Artist Support Hub</span>
+        </div>
+        <h1 class="text-4xl font-extrabold text-white tracking-tight">AI Assistant & Studio Support</h1>
+        <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">
+            Get instant AI guidance on music composition prompts, audio mixing, track exports, and 2FA account security.
+        </p>
+    </div>
+
+    <!-- Main Interactive Support Dashboard Card -->
+    <div class="studio-card rounded-2xl p-6 md:p-8 space-y-6 border border-purple-500/40 shadow-2xl">
+        
+        <div class="flex items-center space-x-3 border-b border-purple-900/40 pb-4">
+            <div class="w-10 h-10 rounded-xl bg-purple-900/40 border border-purple-500/40 flex items-center justify-center text-purple-300">
+                <i class="fa-solid fa-robot text-sm"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-white text-sm">Maya • AI Studio Guide</h3>
+                <p class="text-[10px] text-emerald-400 flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>Online & Ready to Assist</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Chat Output Box -->
+        <div id="supportMessages" class="p-4 space-y-3 max-h-80 overflow-y-auto text-xs text-zinc-300 bg-[#090314]/90 rounded-xl border border-purple-900/50">
+            <div class="bg-[#180a31] border border-purple-500/30 rounded-xl p-3.5 space-y-1 shadow-inner">
+                <p class="leading-relaxed">Hello! I'm Maya, your dedicated AI studio assistant. Ask me anything about Magical Flow—from mixing tips and songwriting prompts to account security and audio exports!</p>
+            </div>
+        </div>
+
+        <!-- Quick Help Pills -->
+        <div class="flex flex-wrap gap-2 pt-1">
+            <button onclick="sendSupportPreset('Help me mix')" class="text-[11px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3.5 py-1.5 rounded-full transition">Help me mix</button>
+            <button onclick="sendSupportPreset('Write a song')" class="text-[11px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3.5 py-1.5 rounded-full transition">Write a song</button>
+            <button onclick="sendSupportPreset('Account help')" class="text-[11px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3.5 py-1.5 rounded-full transition">Account help</button>
+            <button onclick="sendSupportPreset('How to export WAV?')" class="text-[11px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3.5 py-1.5 rounded-full transition">How to export WAV?</button>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="flex items-center space-x-2 pt-2">
+            <input type="text" id="supportInput" onkeypress="handleSupportKey(event)" placeholder="Ask Maya anything about Magical Flow..." 
+                class="flex-1 bg-[#120822] border border-purple-500/40 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-purple-400">
+            <button onclick="sendSupportMessage()" class="bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg transition flex items-center space-x-2">
+                <span>Ask Maya</span>
+                <i class="fa-solid fa-paper-plane text-[10px]"></i>
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function handleSupportKey(e) {
+    if (e.key === 'Enter') sendSupportMessage();
+}
+
+function sendSupportPreset(text) {
+    document.getElementById('supportInput').value = text;
+    sendSupportMessage();
+}
+
+async function sendSupportMessage() {
+    const input = document.getElementById('supportInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    const messagesBox = document.getElementById('supportMessages');
+    
+    // User message bubble
+    messagesBox.innerHTML += `
+        <div class="flex justify-end">
+            <div class="bg-purple-700 text-white rounded-xl p-3 max-w-[80%] text-xs shadow">
+                ${escapeHtml(query)}
+            </div>
+        </div>
+    `;
+    input.value = '';
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+
+    try {
+        const response = await fetch('/api/support-chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: query })
+        });
+        const data = await response.json();
+        
+        // Maya response bubble
+        messagesBox.innerHTML += `
+            <div class="flex justify-start">
+                <div class="bg-[#180a31] border border-purple-500/30 text-zinc-200 rounded-xl p-3.5 max-w-[85%] text-xs space-y-1 shadow-inner">
+                    <p class="leading-relaxed">${escapeHtml(data.reply)}</p>
+                </div>
+            </div>
+        `;
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+</script>
+{% endblock %}
