@@ -9,7 +9,6 @@ app = Flask(__name__)
 app.secret_key = 'magical_flow_super_secret_key'
 DB_NAME = 'MagicalFlow.db'
 
-# --- Email Configuration (SMTP with Terminal fallback) ---
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "your_email@gmail.com"
@@ -62,16 +61,21 @@ def register():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        try:
-            conn = sqlite3.connect(DB_NAME)
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
-            conn.commit()
-            conn.close()
-            session['new_user_name'] = username
-            return redirect(url_for('account_created'))
-        except sqlite3.IntegrityError:
-            error = "Username or Email already exists."
+        confirm_password = request.form.get('confirm_password')
+        
+        if password != confirm_password:
+            error = "Passwords do not match."
+        else:
+            try:
+                conn = sqlite3.connect(DB_NAME)
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
+                conn.commit()
+                conn.close()
+                session['new_user_name'] = username
+                return redirect(url_for('account_created'))
+            except sqlite3.IntegrityError:
+                error = "Username or Email already exists."
     return render_template('Register.html', error=error)
 
 @app.route('/account-created')
@@ -162,42 +166,39 @@ def account_recovery():
 
 @app.route('/google-auth')
 def google_auth():
-    session['user'] = "Google User"
-    return redirect(url_for('home'))
+    session['user'] = "Gautav Sharma (Google)"
+    session['new_user_name'] = "Gautav Sharma (Google)"
+    return redirect(url_for('account_created'))
+
+@app.route('/google-login')
+def google_login():
+    session['pending_email'] = "gautavsharma11@gmail.com"
+    session['pending_username'] = "Gautav Sharma (Google)"
+    code = str(random.randint(100000, 999999))
+    session['auth_code'] = code
+    send_email("gautavsharma11@gmail.com", "Magical Flow - Google Sign In Verification", f"Your verification code is: {code}")
+    return redirect(url_for('identity_check'))
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('home'))
 
-# Placeholder routes for navigation links
+# Placeholder routes
 @app.route('/select-mode')
-def select_mode(): 
-    return render_template('Home.html')
-
+def select_mode(): return render_template('Home.html')
 @app.route('/beginner-mode')
-def beginner_mode(): 
-    return render_template('Home.html')
-
+def beginner_mode(): return render_template('Home.html')
 @app.route('/beginner-output')
-def beginner_output(): 
-    return render_template('Home.html')
-
+def beginner_output(): return render_template('Home.html')
 @app.route('/pro-studio-mode')
-def pro_studio_mode(): 
-    return render_template('Home.html')
-
+def pro_studio_mode(): return render_template('Home.html')
 @app.route('/studio-output')
-def studio_output(): 
-    return render_template('Home.html')
-
+def studio_output(): return render_template('Home.html')
 @app.route('/my-music')
-def my_music(): 
-    return render_template('Home.html')
-
+def my_music(): return render_template('Home.html')
 @app.route('/account')
-def account(): 
-    return render_template('Home.html')
+def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
