@@ -60,130 +60,132 @@
     </main>
 
     <!-- ==================== MAYA • ARTIST SUPPORT FLOATING WIDGET ==================== -->
-<div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-    
-    <!-- Maya Chat Window Popup -->
-    <div id="mayaChatWindow" class="studio-card w-80 md:w-96 rounded-2xl border border-purple-500/50 shadow-2xl mb-4 overflow-hidden hidden flex flex-col transition-all duration-300">
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
         
-        <!-- Header -->
-        <div class="flex items-center justify-between px-4 py-3 bg-[#130627] border-b border-purple-900/50">
-            <div class="flex items-center space-x-2">
-                <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-[10px] shadow-sm">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <!-- Maya Chat Window Popup -->
+        <div id="mayaChatWindow" class="studio-card w-80 md:w-96 rounded-2xl border border-purple-500/50 shadow-2xl mb-4 overflow-hidden hidden flex flex-col transition-all duration-300">
+            
+            <!-- Header -->
+            <div class="flex items-center justify-between px-4 py-3 bg-[#130627] border-b border-purple-900/50">
+                <div class="flex items-center space-x-2">
+                    <div class="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-[10px] shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white flex items-center space-x-1">
+                            <span>Maya • Artist Support</span>
+                        </div>
+                        <div class="text-[9px] text-emerald-400 flex items-center space-x-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>AI guide online</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-xs font-bold text-white flex items-center space-x-1">
-                        <span>Maya • Artist Support</span>
-                    </div>
-                    <div class="text-[9px] text-emerald-400 flex items-center space-x-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>AI guide online</span>
-                    </div>
+                <button onclick="toggleMayaChat()" class="text-zinc-400 hover:text-white text-xs px-1.5 py-0.5 rounded transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Chat Body -->
+            <div id="mayaMessages" class="p-4 space-y-3 max-h-72 overflow-y-auto text-xs text-zinc-300 bg-[#090314]/80">
+                <div class="bg-[#180a31] border border-purple-500/30 rounded-xl p-3 space-y-1 shadow-inner">
+                    <p class="leading-relaxed">Hi, I'm Maya, your AI artist guide. I can help with songwriting, production, exports, and your Magical Flow account.</p>
                 </div>
             </div>
-            <button onclick="toggleMayaChat()" class="text-zinc-400 hover:text-white text-xs px-1.5 py-0.5 rounded transition">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
 
-        <!-- Chat Body -->
-        <div id="mayaMessages" class="p-4 space-y-3 max-h-72 overflow-y-auto text-xs text-zinc-300 bg-[#090314]/80">
-            <div class="bg-[#180a31] border border-purple-500/30 rounded-xl p-3 space-y-1 shadow-inner">
-                <p class="leading-relaxed">Hi, I'm Maya, your AI artist guide. I can help with songwriting, production, exports, and your Magical Flow account.</p>
+            <!-- Quick Action Pills -->
+            <div class="px-4 py-2 bg-[#0c0419] border-t border-purple-900/40 flex flex-wrap gap-1.5">
+                <button onclick="sendMayaPreset('Help me mix')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Help me mix</button>
+                <button onclick="sendMayaPreset('Write a song')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Write a song</button>
+                <button onclick="sendMayaPreset('Account help')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Account help</button>
             </div>
+
+            <!-- Input Box -->
+            <div class="p-3 bg-[#130627] border-t border-purple-900/50 flex items-center space-x-2">
+                <input type="text" id="mayaInput" onkeypress="handleMayaKey(event)" placeholder="Ask Maya anything..." 
+                    class="flex-1 bg-[#090314] border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+                <button onclick="sendMayaMessage()" class="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white flex items-center justify-center shadow-md transition">
+                    <i class="fa-solid fa-arrow-up text-xs"></i>
+                </button>
+            </div>
+
         </div>
 
-        <!-- Quick Action Pills -->
-        <div class="px-4 py-2 bg-[#0c0419] border-t border-purple-900/40 flex flex-wrap gap-1.5">
-            <button onclick="sendMayaPreset('Help me mix')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Help me mix</button>
-            <button onclick="sendMayaPreset('Write a song')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Write a song</button>
-            <button onclick="sendMayaPreset('Account help')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Account help</button>
-        </div>
-
-        <!-- Input Box -->
-        <div class="p-3 bg-[#130627] border-t border-purple-900/50 flex items-center space-x-2">
-            <input type="text" id="mayaInput" onkeypress="handleMayaKey(event)" placeholder="Ask Maya anything..." 
-                class="flex-1 bg-[#090314] border border-purple-500/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
-            <button onclick="sendMayaMessage()" class="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white flex items-center justify-center shadow-md transition">
-                <i class="fa-solid fa-arrow-up text-xs"></i>
-            </button>
-        </div>
+        <!-- Clean Floating Button (Headset Icon Only) -->
+        <button onclick="toggleMayaChat()" class="w-16 h-16 rounded-full bg-gradient-to-br from-[#6b21a8] to-[#3b0764] border-2 border-purple-400/60 flex items-center justify-center shadow-[0_0_20px_rgba(147,51,234,0.5)] hover:scale-105 transition-transform duration-200 cursor-pointer focus:outline-none">
+            <i id="mayaMainIcon" class="fa-solid fa-headset text-amber-300 text-2xl"></i>
+        </button>
 
     </div>
 
-    <!-- Clean Floating Button (Headset Icon Only) -->
-    <button onclick="toggleMayaChat()" class="w-16 h-16 rounded-full bg-gradient-to-br from-[#6b21a8] to-[#3b0764] border-2 border-purple-400/60 flex items-center justify-center shadow-[0_0_20px_rgba(147,51,234,0.5)] hover:scale-105 transition-transform duration-200 cursor-pointer focus:outline-none">
-        <i id="mayaMainIcon" class="fa-solid fa-headset text-amber-300 text-2xl"></i>
-    </button>
+    <script>
+    function toggleMayaChat() {
+        const win = document.getElementById('mayaChatWindow');
+        const mainIcon = document.getElementById('mayaMainIcon');
 
-</div>
-
-<!-- JavaScript for Toggle Functionality -->
-<script>
-function toggleMayaChat() {
-    const win = document.getElementById('mayaChatWindow');
-    const mainIcon = document.getElementById('mayaMainIcon');
-
-    if (win.classList.contains('hidden')) {
-        win.classList.remove('hidden');
-        mainIcon.classList.remove('fa-headset', 'text-amber-300');
-        mainIcon.classList.add('fa-xmark', 'text-white');
-        document.getElementById('mayaInput').focus();
-    } else {
-        win.classList.add('hidden');
-        mainIcon.classList.remove('fa-xmark', 'text-white');
-        mainIcon.classList.add('fa-headset', 'text-amber-300');
+        if (win.classList.contains('hidden')) {
+            win.classList.remove('hidden');
+            mainIcon.classList.remove('fa-headset', 'text-amber-300');
+            mainIcon.classList.add('fa-xmark', 'text-white');
+            document.getElementById('mayaInput').focus();
+        } else {
+            win.classList.add('hidden');
+            mainIcon.classList.remove('fa-xmark', 'text-white');
+            mainIcon.classList.add('fa-headset', 'text-amber-300');
+        }
     }
-}
 
-function handleMayaKey(e) {
-    if (e.key === 'Enter') sendMayaMessage();
-}
+    function handleMayaKey(e) {
+        if (e.key === 'Enter') sendMayaMessage();
+    }
 
-function sendMayaPreset(text) {
-    document.getElementById('mayaInput').value = text;
-    sendMayaMessage();
-}
+    function sendMayaPreset(text) {
+        document.getElementById('mayaInput').value = text;
+        sendMayaMessage();
+    }
 
-async function sendMayaMessage() {
-    const input = document.getElementById('mayaInput');
-    const query = input.value.trim();
-    if (!query) return;
+    async function sendMayaMessage() {
+        const input = document.getElementById('mayaInput');
+        const query = input.value.trim();
+        if (!query) return;
 
-    const messagesBox = document.getElementById('mayaMessages');
-    
-    messagesBox.innerHTML += `
-        <div class="flex justify-end">
-            <div class="bg-purple-700 text-white rounded-xl p-2.5 max-w-[80%] text-xs shadow">
-                ${escapeHtml(query)}
-            </div>
-        </div>
-    `;
-    input.value = '';
-    messagesBox.scrollTop = messagesBox.scrollHeight;
-
-    try {
-        const response = await fetch('/api/support-chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: query })
-        });
-        const data = await response.json();
+        const messagesBox = document.getElementById('mayaMessages');
         
         messagesBox.innerHTML += `
-            <div class="flex justify-start">
-                <div class="bg-[#180a31] border border-purple-500/30 text-zinc-200 rounded-xl p-3 max-w-[85%] text-xs space-y-1 shadow-inner">
-                    <p class="leading-relaxed">${escapeHtml(data.reply)}</p>
+            <div class="flex justify-end">
+                <div class="bg-purple-700 text-white rounded-xl p-2.5 max-w-[80%] text-xs shadow">
+                    ${escapeHtml(query)}
                 </div>
             </div>
         `;
+        input.value = '';
         messagesBox.scrollTop = messagesBox.scrollHeight;
-    } catch (err) {
-        console.error(err);
-    }
-}
 
-function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-</script>
+        try {
+            const response = await fetch('/api/support-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+            const data = await response.json();
+            
+            messagesBox.innerHTML += `
+                <div class="flex justify-start">
+                    <div class="bg-[#180a31] border border-purple-500/30 text-zinc-200 rounded-xl p-3 max-w-[85%] text-xs space-y-1 shadow-inner">
+                        <p class="leading-relaxed">${escapeHtml(data.reply)}</p>
+                    </div>
+                </div>
+            `;
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function escapeHtml(text) {
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    </script>
+
+</body>
+</html>
