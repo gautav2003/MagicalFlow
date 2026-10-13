@@ -184,12 +184,10 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-# Dedicated Artist Support Page Route
 @app.route('/artist-support')
 def artist_support():
     return render_template('ArtistSupport.html')
 
-# Comprehensive AI Support Chat API Endpoint for Maya
 @app.route('/api/support-chat', methods=['POST'])
 def support_chat():
     data = request.get_json() or {}
@@ -214,7 +212,7 @@ def support_chat():
         
     return jsonify({'reply': reply})
 
-# Placeholder Navigation Routes
+# Navigation Placeholders
 @app.route('/select-mode')
 def select_mode(): return render_template('Home.html')
 @app.route('/beginner-mode')
@@ -232,4 +230,4 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-      
+    
