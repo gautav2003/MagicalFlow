@@ -26,19 +26,14 @@
 <body class="flex flex-col min-h-screen justify-between relative">
 
    <!-- Top Navigation Bar -->
+<!-- Top Navigation Bar -->
 <header class="w-full bg-[#0c0419]/90 border-b border-purple-900/40 px-6 py-3 flex items-center justify-between text-sm sticky top-0 z-40 backdrop-blur">
     <div class="flex items-center space-x-3">
-        <!-- Rounded Glowing Music Note Icon -->
-        <div class="w-9 h-9 rounded-full p-0.5 bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 flex items-center justify-center shadow-lg shadow-purple-600/40">
-            <div class="w-full h-full rounded-full bg-[#0c0419] flex items-center justify-center">
-                <i class="fa-solid fa-music text-xs text-amber-300"></i>
-            </div>
-        </div>
-        
-        <!-- Multi-color Gradient Brand Name -->
-        <span class="font-bold tracking-wide text-base bg-gradient-to-r from-purple-300 via-amber-200 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
-            Magical Flow
-        </span>
+        <!-- Logo Image and Brand Name -->
+        <a href="{{ url_for('home') }}" class="flex items-center space-x-2.5 group">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Magical Flow Logo" class="w-8 h-8 rounded-full object-cover border border-purple-500/50 shadow-md">
+            <span class="font-semibold tracking-wide text-white text-sm">Magical Flow</span>
+        </a>
     </div>
     
     <nav class="hidden md:flex items-center space-x-4 text-xs text-zinc-300">
