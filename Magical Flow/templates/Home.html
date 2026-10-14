@@ -2,25 +2,30 @@
 {% block title %}Magical Flow - Home{% endblock %}
 
 {% block content %}
-<!-- Load Pacifico Cursive Font for Exact Title Match -->
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<!-- Load correct fonts for title from Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:wght@700&display=swap" rel="stylesheet">
 
 <div class="w-full max-w-7xl mx-auto space-y-10 py-8">
 
-    <!-- Header Section with Pacifico Cursive Title -->
+    <!-- Exact Replica Title and Subtitle Section -->
     <div class="text-center space-y-3">
-        <h1 class="text-6xl font-normal tracking-wide py-2" style="font-family: 'Pacifico', cursive; background: linear-gradient(180deg, #ffffff 0%, #f5d0fe 40%, #e879f9 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+        <!-- Main Title: Small Caps Serif with Horizontal Color Shift (image_22.png) -->
+        <h1 class="text-6xl font-bold tracking-tight py-1" style="font-family: 'Playfair Display SC', serif; background: linear-gradient(to right, #ffffff 0%, #e0cffc 30%, #f1d3fe 60%, #ffe0f5 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
             Magical Flow
         </h1>
-        <div class="text-xs font-semibold tracking-widest text-purple-300 uppercase">
-            Your Music . Your Way .
+        <!-- Subtitle: Fixed Blue with Exact Text (image_22.png) -->
+        <div class="text-[10px] font-bold tracking-[0.2em] text-[#5e69e2] uppercase">
+            YOUR MUSIC. YOUR WAY.
         </div>
+        <!-- Description Text: Correct font size and color (image_19.png) -->
         <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed pt-1">
             A next-generation music creation platform that blends AI composition with professional studio tools. Whether you are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.
         </p>
     </div>
 
-    <!-- Mode Pills Section -->
+    <!-- Mode Pills Section (image_19.png) -->
     <div class="flex flex-wrap items-center justify-center gap-3 py-1">
         <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-blue-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
             <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm"></span>
@@ -36,7 +41,7 @@
         </div>
     </div>
 
-    <!-- Choose Your Experience Card -->
+    <!-- Choose Your Experience Card (image_19.png) -->
     <div class="studio-card rounded-2xl w-full max-w-xl mx-auto p-8 space-y-6 text-center shadow-xl border border-purple-500/40">
         <div class="text-[10px] text-purple-300 font-semibold uppercase tracking-widest">Get Started</div>
         <h2 class="text-3xl font-extrabold text-white tracking-tight">Choose Your Experience</h2>
@@ -46,7 +51,7 @@
         </a>
     </div>
 
-    <!-- Feature Cards: Moonlight Blue, Ancient Music Green, Dragon Fire Orange -->
+    <!-- Feature Cards: Icons and correct Accents (image_19.png) -->
     <div class="grid grid-cols-1 md:grid-cols-3 w-full border-t border-purple-900/40">
         
         <!-- AI Composition (Moonlight Blue Accent) -->
