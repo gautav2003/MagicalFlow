@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from authlib.integrations.flask_client import OAuth
 import sqlite3
 import random
 import smtplib
@@ -6,33 +7,43 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
-app.secret_key = 'magical_flow_super_secret_key'
+app.secret_key = 'magical_flow_super_secret_production_key'
 DB_NAME = 'MagicalFlow.db'
 
+# ==================== OFFICIAL GMAIL SMTP CONFIGURATION ====================
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "your_email@gmail.com"
-SENDER_PASSWORD = "your_app_password"
+SENDER_EMAIL = "your_actual_email@gmail.com"        # Replace with your official Gmail address
+SENDER_PASSWORD = "your_16_char_app_password"         # Replace with your Google App Password
 
-def send_email(recipient_email, subject_text, body_text):
+def send_official_email(recipient_email, subject_text, html_body):
+    """Sends a professional, officially styled HTML email via Gmail SMTP."""
     try:
-        msg = MIMEMultipart()
-        msg['From'] = SENDER_EMAIL
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f"Magical Flow <{SENDER_EMAIL}>"
         msg['To'] = recipient_email
         msg['Subject'] = subject_text
-        msg.attach(MIMEText(body_text, 'plain'))
+        
+        msg.attach(MIMEText(html_body, 'html'))
         
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, recipient_email, msg.as_string())
         server.quit()
-        print(f"[*] Email sent successfully to {recipient_email}")
+        print(f"[*] Official email successfully dispatched to {recipient_email}")
     except Exception as e:
-        print(f"[!] SMTP Notice: {e}")
-        print(f"==========================================")
-        print(f" [{subject_text.upper()} FOR {recipient_email}]: Check console for prototype code")
-        print(f"==========================================")
+        print(f"[!] SMTP Dispatch Error: {e}")
+
+# ==================== OFFICIAL GOOGLE OAUTH CONFIGURATION ====================
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',      # Replace with your Google Cloud Client ID
+    client_secret='YOUR_GOOGLE_CLIENT_SECRET',                          # Replace with your Google Cloud Client Secret
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email profile'}
+)
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
@@ -50,10 +61,12 @@ def init_db():
 
 init_db()
 
+# ==================== MAIN ROUTES ====================
 @app.route('/')
 def home():
     return render_template('Home.html')
 
+# ==================== REGISTRATION ROUTE WITH WELCOME EMAIL ====================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
@@ -72,6 +85,25 @@ def register():
                 cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", (username, email, password))
                 conn.commit()
                 conn.close()
+                
+                # Dispatch Official Welcome Email to User's Gmail Inbox
+                welcome_html = f"""
+                <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="background: linear-gradient(135deg, #ffffff, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">Magical Flow</h2>
+                        <p style="color: #c084fc; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;">Your Music . Your Way .</p>
+                    </div>
+                    <h3 style="color: #ffffff;">Welcome to the flow, {username}!</h3>
+                    <p style="color: #a1a1aa; font-size: 13px; line-height: 1.6;">
+                        Your Magical Flow account has been officially created and verified. You are now ready to compose, mix, and collaborate using our next-generation AI studio tools.
+                    </p>
+                    <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(147, 51, 234, 0.3); text-align: center;">
+                        <p style="color: #71717a; font-size: 10px;">© 2026 Magical Flow Studio. All rights reserved.</p>
+                    </div>
+                </div>
+                """
+                send_official_email(email, "Welcome to Magical Flow - Your Studio Access is Ready", welcome_html)
+                
                 session['new_user_name'] = username
                 return redirect(url_for('account_created'))
             except sqlite3.IntegrityError:
@@ -83,6 +115,7 @@ def account_created():
     username = session.get('new_user_name', 'Artist')
     return render_template('AccountCreated.html', username=username)
 
+# ==================== SIGN IN & 2FA AUTHENTICATION ====================
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     error = None
@@ -100,7 +133,17 @@ def signin():
             session['pending_username'] = user[1]
             code = str(random.randint(100000, 999999))
             session['auth_code'] = code
-            send_email(user[2], "Magical Flow - Identity Check Code", f"Your verification code is: {code}")
+            
+            # Send 2FA Code to Gmail Inbox
+            code_html = f"""
+            <div style="background-color: #070311; color: #ffffff; padding: 25px; font-family: sans-serif; border-radius: 10px;">
+                <h3 style="color: #e879f9;">Magical Flow Security Verification</h3>
+                <p style="color: #a1a1aa; font-size: 13px;">Your official 2FA sign-in verification code is:</p>
+                <h1 style="color: #38bdf8; letter-spacing: 5px;">{code}</h1>
+            </div>
+            """
+            send_official_email(user[2], "Magical Flow - Secure 2FA Login Code", code_html)
+            
             return redirect(url_for('identity_check'))
         else:
             error = "Invalid username/email or password."
@@ -110,80 +153,65 @@ def signin():
 def identity_check():
     error = None
     email = session.get('pending_email', 'user@gmail.com')
-    prototype_code = session.get('auth_code', '482731')
     
     if request.method == 'POST':
         user_code = request.form.get('code')
-        if user_code == prototype_code:
+        if user_code == session.get('auth_code'):
             session['user'] = session.get('pending_username')
             return redirect(url_for('home'))
         else:
             error = "Invalid verification code."
             
-    return render_template('IdentityCheck.html', email=email, prototype_code=prototype_code, error=error)
+    return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox]", error=error)
 
-@app.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password():
-    error = None
-    if request.method == 'POST':
-        email = request.form.get('email')
-        conn = sqlite3.connect(DB_NAME)
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-        user = cursor.fetchone()
-        conn.close()
-        if user:
-            recovery_code = str(random.randint(100000, 999999))
-            session['recovery_email'] = email
-            session['recovery_code'] = recovery_code
-            send_email(email, "Magical Flow - Password Recovery Code", f"Your recovery code is: {recovery_code}")
-            return redirect(url_for('account_recovery'))
-        else:
-            error = "No account found with that email address."
-    return render_template('ForgotPassword.html', error=error)
-
-@app.route('/account-recovery', methods=['GET', 'POST'])
-def account_recovery():
-    error = None
-    email = session.get('recovery_email', 'Gautavsharma11@gmail.com')
-    prototype_code = session.get('recovery_code', '409809')
-    
-    if request.method == 'POST':
-        input_code = request.form.get('recovery_code')
-        new_password = request.form.get('new_password')
-        
-        if input_code == prototype_code:
-            conn = sqlite3.connect(DB_NAME)
-            cursor = conn.cursor()
-            cursor.execute("UPDATE users SET password = ? WHERE email = ?", (new_password, email))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('signin', msg='Password updated. Sign in with your new password.'))
-        else:
-            error = "Invalid recovery code."
-            
-    return render_template('AccountRecovery.html', email=email, prototype_code=prototype_code, error=error)
-
-@app.route('/google-auth')
-def google_auth():
-    session['user'] = "Gautav Sharma (Google)"
-    session['new_user_name'] = "Gautav Sharma (Google)"
-    return redirect(url_for('account_created'))
-
+# ==================== OFFICIAL GOOGLE OAUTH ROUTES ====================
 @app.route('/google-login')
 def google_login():
-    session['pending_email'] = "gautavsharma11@gmail.com"
-    session['pending_username'] = "Gautav Sharma (Google)"
-    code = str(random.randint(100000, 999999))
-    session['auth_code'] = code
-    send_email("gautavsharma11@gmail.com", "Magical Flow - Google Sign In Verification", f"Your verification code is: {code}")
-    return redirect(url_for('identity_check'))
+    redirect_uri = url_for('google_callback', _external=True)
+    return google.authorize_redirect(redirect_uri)
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('home'))
+@app.route('/google/callback')
+def google_callback():
+    try:
+        token = google.authorize_access_token()
+        user_info = token.get('userinfo')
+        
+        if user_info:
+            email = user_info['email']
+            username = user_info.get('name', email.split('@')[0])
+            
+            conn = sqlite3.connect(DB_NAME)
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+            user = cursor.fetchone()
+            
+            if not user:
+                cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
+                               (username, email, 'GOOGLE_OAUTH_AUTHENTICATED'))
+                conn.commit()
+                
+                # Send Welcome Email for Google sign-ups
+                welcome_html = f"""
+                <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
+                    <h2 style="color: #e879f9;">Welcome to Magical Flow, {username}!</h2>
+                    <p style="color: #a1a1aa; font-size: 13px;">Your Google account has been successfully linked to Magical Flow.</p>
+                </div>
+                """
+                send_official_email(email, "Welcome to Magical Flow via Google Sign-In", welcome_html)
+                
+            conn.close()
 
+            session['user'] = username
+            session['new_user_name'] = username
+            return redirect(url_for('account_created'))
+            
+    except Exception as e:
+        print(f"[!] Google OAuth Callback Error: {e}")
+        return redirect(url_for('signin', msg="Google authentication failed."))
+
+    return redirect(url_for('signin'))
+
+# ==================== ARTIST SUPPORT & AI CHAT API ====================
 @app.route('/artist-support')
 def artist_support():
     return render_template('ArtistSupport.html')
@@ -198,7 +226,7 @@ def support_chat():
     elif any(k in query for k in ['song', 'write', 'lyrics', 'melody', 'chord', 'compose', 'prompt']):
         reply = "Songwriting & AI Prompts: Craft rich prompts by combining style, key, tempo, and mood. For example: 'Cinematic electronic synthwave in D minor, 128 BPM, featuring driving basslines and atmospheric pads'."
     elif any(k in query for k in ['2fa', 'code', 'verification', 'email', 'login', 'signin', 'sign in']):
-        reply = "Sign In & 2FA Security: When you sign in, a 6-digit verification code is sent to your email. If testing locally without an active SMTP server, check your VS Code terminal console for the prototype code to complete your login."
+        reply = "Sign In & 2FA Security: When you sign in, a 6-digit verification code is sent to your email inbox. Check your inbox to complete your login."
     elif any(k in query for k in ['password', 'reset', 'forgot', 'strength', 'weak', 'secure']):
         reply = "Account & Passwords: Use the 'Forgot Password' link on the Sign In page to receive a recovery code. When creating a password, aim for the green 'Excellent' level by using uppercase letters, numbers, and symbols."
     elif any(k in query for k in ['export', 'download', 'wav', 'mp3', 'stems', 'output']):
@@ -212,7 +240,16 @@ def support_chat():
         
     return jsonify({'reply': reply})
 
-# Navigation Placeholders
+# ==================== NAVIGATION PLACEHOLDERS ====================
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password(): return render_template('ForgotPassword.html', error=None)
+@app.route('/account-recovery', methods=['GET', 'POST'])
+def account_recovery(): return render_template('AccountRecovery.html', error=None)
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
 @app.route('/select-mode')
 def select_mode(): return render_template('Home.html')
 @app.route('/beginner-mode')
