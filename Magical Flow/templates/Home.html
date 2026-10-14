@@ -2,32 +2,39 @@
 {% block title %}Magical Flow - Home{% endblock %}
 
 {% block content %}
-<div class="w-full max-w-7xl mx-auto space-y-12 py-8">
+<div class="w-full max-w-7xl mx-auto space-y-10 py-8">
 
-    <!-- Header Section -->
+    <!-- Header Section with Cursive Gradient Title -->
     <div class="text-center space-y-3">
-        <h1 class="text-4xl font-extrabold text-white tracking-tight">Magical Flow gracefully chooses you to be Defined.</h1>
-        <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">Whether you are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.</p>
+        <h1 class="text-5xl font-bold tracking-tight italic" style="font-family: 'Brush Script MT', 'Lucida Handwriting', cursive; background: linear-gradient(135deg, #ffffff 0%, #e879f9 50%, #c084fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Magical Flow
+        </h1>
+        <div class="text-xs font-semibold tracking-widest text-purple-300 uppercase">
+            Your Music . Your Way .
+        </div>
+        <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed pt-1">
+            A next-generation music creation platform that blends AI composition with professional studio tools. Whether you are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.
+        </p>
     </div>
 
     <!-- Mode Pills Section -->
-    <div class="flex flex-wrap items-center justify-center gap-3 py-2">
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-purple-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium">
+    <div class="flex flex-wrap items-center justify-center gap-3 py-1">
+        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-purple-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
             <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm"></span>
             <span>MOONLIGHT <span class="text-zinc-500">Create with clarity</span></span>
         </div>
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-purple-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium">
+        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-emerald-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
             <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span>
             <span>ANCIENT MUSIC <span class="text-zinc-500">Shape with wisdom</span></span>
         </div>
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-purple-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium">
+        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-orange-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
             <span class="w-2 h-2 rounded-full bg-orange-500 shadow-sm"></span>
             <span>DRAGON FIRE <span class="text-zinc-500">Finish with power</span></span>
         </div>
     </div>
 
     <!-- Choose Your Experience Card -->
-    <div class="studio-card rounded-2xl w-full max-w-xl mx-auto p-8 space-y-6 text-center shadow-xl">
+    <div class="studio-card rounded-2xl w-full max-w-xl mx-auto p-8 space-y-6 text-center shadow-xl border border-purple-500/40">
         <div class="text-[10px] text-purple-300 font-semibold uppercase tracking-widest">Get Started</div>
         <h2 class="text-3xl font-extrabold text-white tracking-tight">Choose Your Experience</h2>
         <p class="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">Beginner for instant results, or Pro Studio for full control.</p>
@@ -36,30 +43,30 @@
         </a>
     </div>
 
-    <!-- Feature Cards with Exact Mode Colors -->
+    <!-- Feature Cards: Moonlight Blue, Ancient Music Green, Dragon Fire Orange -->
     <div class="grid grid-cols-1 md:grid-cols-3 w-full border-t border-purple-900/40">
         
-        <!-- AI Composition (Moonlight Blue) -->
+        <!-- AI Composition (Moonlight Blue Accent) -->
         <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-blue-500 bg-[#070311]/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-blue-500 text-blue-500 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.3)]">
+            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-blue-500 text-blue-400 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.3)]">
                 <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
             </div>
             <h4 class="font-semibold text-white text-sm">AI Composition</h4>
             <p class="text-[11px] text-zinc-400 leading-relaxed max-w-xs">Generate full tracks from a text prompt in seconds</p>
         </div>
 
-        <!-- Pro DAW (Ancient Music Green) -->
+        <!-- Pro DAW (Ancient Music Green Accent) -->
         <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-emerald-500 bg-[#070311]/40 md:border-l border-purple-900/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-emerald-500 text-emerald-500 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-                <i class="fa-solid fa-square-poll-vertical text-lg"></i>
+            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-emerald-500 text-emerald-400 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                <i class="fa-solid fa-table-cells text-lg"></i>
             </div>
             <h4 class="font-semibold text-white text-sm">Pro DAW</h4>
             <p class="text-[11px] text-zinc-400 leading-relaxed max-w-xs">Full 8-track studio with MIDI, audio, and effects</p>
         </div>
 
-        <!-- My Music (Dragon Fire Orange) -->
+        <!-- My Music (Dragon Fire Orange Accent) -->
         <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-orange-500 bg-[#070311]/40 md:border-l border-purple-900/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-orange-500 text-orange-500 flex items-center justify-center shadow-[0_0_12px_rgba(249,115,22,0.3)]">
+            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-orange-500 text-orange-400 flex items-center justify-center shadow-[0_0_12px_rgba(249,115,22,0.3)]">
                 <i class="fa-solid fa-music text-lg"></i>
             </div>
             <h4 class="font-semibold text-white text-sm">My Music</h4>
