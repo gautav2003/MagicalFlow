@@ -25,14 +25,15 @@
 </head>
 <body class="flex flex-col min-h-screen justify-between relative">
 
-   <!-- Top Navigation Bar -->
-<!-- Top Navigation Bar -->
+  <!-- Top Navigation Bar -->
 <header class="w-full bg-[#0c0419]/90 border-b border-purple-900/40 px-6 py-3 flex items-center justify-between text-sm sticky top-0 z-40 backdrop-blur">
     <div class="flex items-center space-x-3">
-        <!-- Logo Image and Brand Name -->
+        <!-- Logo Image and Styled Brand Name -->
         <a href="{{ url_for('home') }}" class="flex items-center space-x-2.5 group">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Magical Flow Logo" class="w-8 h-8 rounded-full object-cover border border-purple-500/50 shadow-md">
-            <span class="font-semibold tracking-wide text-white text-sm">Magical Flow</span>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Magical Flow Logo" class="w-8 h-8 rounded-full object-cover border border-purple-500/40 shadow-md">
+            <span class="font-semibold tracking-wide text-base bg-gradient-to-r from-purple-100 via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                Magical Flow
+            </span>
         </a>
     </div>
     
