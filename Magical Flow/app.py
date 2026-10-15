@@ -39,8 +39,8 @@ def send_official_email(recipient_email, subject_text, html_body):
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
-    client_id='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',      # Replace with your Google Cloud Client ID
-    client_secret='YOUR_GOOGLE_CLIENT_SECRET',                          # Replace with your Google Cloud Client Secret
+    client_id='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',      # Paste your real Google Client ID here
+    client_secret='YOUR_GOOGLE_CLIENT_SECRET',                          # Paste your real Google Client Secret here
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}
 )
@@ -170,7 +170,7 @@ def google_login():
     redirect_uri = url_for('google_callback', _external=True)
     return google.authorize_redirect(redirect_uri)
 
-# Fallback alias endpoint if any template calls google_auth
+# Fallback alias endpoint to support templates referencing google_auth
 app.add_url_rule('/google-login', endpoint='google_auth', view_func=google_login)
 
 @app.route('/google/callback')
