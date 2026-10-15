@@ -66,7 +66,7 @@ def init_db():
 
 init_db()
 
-# ==================== MAIN ROUTES ====================
+# ==================== MAIN HOME ROUTE ====================
 @app.route('/')
 def home():
     return render_template('Home.html')
@@ -162,6 +162,7 @@ def identity_check():
     if request.method == 'POST':
         user_code = request.form.get('code')
         if user_code == session.get('auth_code'):
+            # Successfully verified via 2FA -> Logs user in and redirects straight to Home page
             session['user'] = session.get('pending_username')
             return redirect(url_for('home'))
         else:
@@ -193,10 +194,12 @@ def google_callback():
             user = cursor.fetchone()
             
             if not user:
+                # Automatically register new Google user
                 cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
                                (username, email, 'GOOGLE_OAUTH_AUTHENTICATED'))
                 conn.commit()
                 
+                # Send Welcome Email for Google sign-ups[cite: 9]
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <h2 style="color: #e879f9;">Welcome to Magical Flow, {username}!</h2>
@@ -207,9 +210,10 @@ def google_callback():
                 
             conn.close()
 
+            # Set session and send user directly into the Home page
             session['user'] = username
             session['new_user_name'] = username
-            return redirect(url_for('account_created'))
+            return redirect(url_for('home'))
             
     except Exception as e:
         print(f"[!] Google OAuth Callback Error: {e}")
@@ -273,3 +277,4 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    
