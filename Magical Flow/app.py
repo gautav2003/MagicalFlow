@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
+from functools import wraps
 import os
 import sqlite3
 import random
@@ -22,8 +23,18 @@ SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 def send_official_email(recipient_email, subject_text, html_body):
-    """Sends a professional, officially styled HTML email via Gmail SMTP."""
+    """Sends via Gmail SMTP and provides a terminal fallback if email fails."""
+    print(f"\n========================================")
+    print(f"[*] EMAIL DISPATCH BACKUP")
+    print(f"To: {recipient_email}")
+    print(f"Subject: {subject_text}")
+    print(f"========================================\n")
+    
     try:
+        if not SENDER_EMAIL or not SENDER_PASSWORD or "your_actual_email" in SENDER_EMAIL:
+            print("[!] SMTP credentials not configured in .env. Check terminal backup above for codes.")
+            return
+
         msg = MIMEMultipart('alternative')
         msg['From'] = f"Magical Flow <{SENDER_EMAIL}>"
         msg['To'] = recipient_email
@@ -36,7 +47,7 @@ def send_official_email(recipient_email, subject_text, html_body):
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.sendmail(SENDER_EMAIL, recipient_email, msg.as_string())
         server.quit()
-        print(f"[*] Official email successfully dispatched to {recipient_email}")
+        print(f"[*] Official email successfully dispatched via Gmail SMTP to {recipient_email}")
     except Exception as e:
         print(f"[!] SMTP Dispatch Error: {e}")
 
@@ -66,8 +77,24 @@ def init_db():
 
 init_db()
 
-# ==================== MAIN HOME ROUTE ====================
+# ==================== AUTHENTICATION GUARD DECORATOR ====================
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('signin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# ==================== ROOT ROUTE (FORCES SIGN IN AS FIRST PAGE) ====================
 @app.route('/')
+def index():
+    if 'user' not in session:
+        return redirect(url_for('signin'))  # <--- Forces Sign In page to show first!
+    return redirect(url_for('home'))
+
+@app.route('/home')
+@login_required
 def home():
     return render_template('Home.html')
 
@@ -91,7 +118,6 @@ def register():
                 conn.commit()
                 conn.close()
                 
-                # Dispatch Official Welcome Email to User's Gmail Inbox
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -102,9 +128,6 @@ def register():
                     <p style="color: #a1a1aa; font-size: 13px; line-height: 1.6;">
                         Your Magical Flow account has been officially created and verified. You are now ready to compose, mix, and collaborate using our next-generation AI studio tools.
                     </p>
-                    <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(147, 51, 234, 0.3); text-align: center;">
-                        <p style="color: #71717a; font-size: 10px;">© 2026 Magical Flow Studio. All rights reserved.</p>
-                    </div>
                 </div>
                 """
                 send_official_email(email, "Welcome to Magical Flow - Your Studio Access is Ready", welcome_html)
@@ -139,7 +162,6 @@ def signin():
             code = str(random.randint(100000, 999999))
             session['auth_code'] = code
             
-            # Send 2FA Code to Gmail Inbox
             code_html = f"""
             <div style="background-color: #070311; color: #ffffff; padding: 25px; font-family: sans-serif; border-radius: 10px;">
                 <h3 style="color: #e879f9;">Magical Flow Security Verification</h3>
@@ -167,7 +189,7 @@ def identity_check():
         else:
             error = "Invalid verification code."
             
-    return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox]", error=error)
+    return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox or Terminal]", error=error)
 
 # ==================== FORGOT & RESET PASSWORD WORKFLOW ====================
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -192,7 +214,6 @@ def forgot_password():
                 <h3 style="color: #e879f9;">Magical Flow Password Recovery</h3>
                 <p style="color: #a1a1aa; font-size: 13px;">Your official password reset code is:</p>
                 <h1 style="color: #38bdf8; letter-spacing: 5px;">{reset_code}</h1>
-                <p style="color: #a1a1aa; font-size: 11px;">If you didn't request this, you can safely ignore this email.</p>
             </div>
             """
             send_official_email(email, "Magical Flow - Password Reset Request", reset_html)
@@ -277,8 +298,9 @@ def google_callback():
 
     return redirect(url_for('signin'))
 
-# ==================== ARTIST SUPPORT & AI CHAT API ====================
+# ==================== ARTIST SUPPORT & AI CHAT API (LOCKED) ====================
 @app.route('/artist-support')
+@login_required
 def artist_support():
     return render_template('ArtistSupport.html')
 
@@ -306,25 +328,38 @@ def support_chat():
         
     return jsonify({'reply': reply})
 
-# ==================== NAVIGATION PLACEHOLDERS ====================
+# ==================== NAVIGATION PLACEHOLDERS (LOCKED) ====================
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('home'))
+    return redirect(url_for('signin'))
 
 @app.route('/select-mode')
+@login_required
 def select_mode(): return render_template('Home.html')
+
 @app.route('/beginner-mode')
+@login_required
 def beginner_mode(): return render_template('Home.html')
+
 @app.route('/beginner-output')
+@login_required
 def beginner_output(): return render_template('Home.html')
+
 @app.route('/pro-studio-mode')
+@login_required
 def pro_studio_mode(): return render_template('Home.html')
+
 @app.route('/studio-output')
+@login_required
 def studio_output(): return render_template('Home.html')
+
 @app.route('/my-music')
+@login_required
 def my_music(): return render_template('Home.html')
+
 @app.route('/account')
+@login_required
 def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
