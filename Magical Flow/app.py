@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from authlib.integrations.flask_client import OAuth
+from dotenv import load_dotenv
+import os
 import sqlite3
 import random
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+# Load environment variables from the hidden .env file
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'magical_flow_super_secret_production_key'
@@ -13,8 +18,8 @@ DB_NAME = 'MagicalFlow.db'
 # ==================== OFFICIAL GMAIL SMTP CONFIGURATION ====================
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "your_actual_email@gmail.com"        # Replace with your official Gmail address
-SENDER_PASSWORD = "your_16_char_app_password"         # Replace with your Google App Password
+SENDER_EMAIL = os.getenv("SENDER_EMAIL")
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 def send_official_email(recipient_email, subject_text, html_body):
     """Sends a professional, officially styled HTML email via Gmail SMTP."""
@@ -39,8 +44,8 @@ def send_official_email(recipient_email, subject_text, html_body):
 oauth = OAuth(app)
 google = oauth.register(
     name='google',
-    client_id='YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',      # Paste your real Google Client ID here
-    client_secret='YOUR_GOOGLE_CLIENT_SECRET',                          # Paste your real Google Client Secret here
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}
 )
@@ -170,7 +175,6 @@ def google_login():
     redirect_uri = url_for('google_callback', _external=True)
     return google.authorize_redirect(redirect_uri)
 
-# Fallback alias endpoint to support templates referencing google_auth
 app.add_url_rule('/google-login', endpoint='google_auth', view_func=google_login)
 
 @app.route('/google/callback')
@@ -193,7 +197,6 @@ def google_callback():
                                (username, email, 'GOOGLE_OAUTH_AUTHENTICATED'))
                 conn.commit()
                 
-                # Send Welcome Email for Google sign-ups
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <h2 style="color: #e879f9;">Welcome to Magical Flow, {username}!</h2>
@@ -270,4 +273,3 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-    
