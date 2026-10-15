@@ -86,15 +86,15 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# ==================== ROOT ROUTE (FORCES SIGN IN AS FIRST PAGE) ====================
+# ==================== ROOT & HOME ROUTES (LOCKED & SECURED) ====================
 @app.route('/')
 def index():
     if 'user' not in session:
-        return redirect(url_for('signin'))  # <--- Forces Sign In page to show first!
+        return redirect(url_for('signin'))  # <--- Forces Sign In page to show first
     return redirect(url_for('home'))
 
 @app.route('/home')
-@login_required
+@login_required  # <--- Home page is now strictly locked until successful sign in or register!
 def home():
     return render_template('Home.html')
 
