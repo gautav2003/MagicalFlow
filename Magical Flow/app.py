@@ -162,13 +162,72 @@ def identity_check():
     if request.method == 'POST':
         user_code = request.form.get('code')
         if user_code == session.get('auth_code'):
-            # Successfully verified via 2FA -> Logs user in and redirects straight to Home page
             session['user'] = session.get('pending_username')
             return redirect(url_for('home'))
         else:
             error = "Invalid verification code."
             
     return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox]", error=error)
+
+# ==================== FORGOT & RESET PASSWORD WORKFLOW ====================
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    error = None
+    message = None
+    if request.method == 'POST':
+        email = request.form.get('email')
+        conn = sqlite3.connect(DB_NAME)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+        conn.close()
+        
+        if user:
+            reset_code = str(random.randint(100000, 999999))
+            session['reset_email'] = email
+            session['reset_code'] = reset_code
+            
+            reset_html = f"""
+            <div style="background-color: #070311; color: #ffffff; padding: 25px; font-family: sans-serif; border-radius: 10px;">
+                <h3 style="color: #e879f9;">Magical Flow Password Recovery</h3>
+                <p style="color: #a1a1aa; font-size: 13px;">Your official password reset code is:</p>
+                <h1 style="color: #38bdf8; letter-spacing: 5px;">{reset_code}</h1>
+                <p style="color: #a1a1aa; font-size: 11px;">If you didn't request this, you can safely ignore this email.</p>
+            </div>
+            """
+            send_official_email(email, "Magical Flow - Password Reset Request", reset_html)
+            return redirect(url_for('reset_password'))
+        else:
+            error = "Email address not found in our studio records."
+            
+    return render_template('ForgotPassword.html', error=error, message=message)
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    error = None
+    email = session.get('reset_email', '')
+    if request.method == 'POST':
+        entered_code = request.form.get('code')
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        if entered_code != session.get('reset_code'):
+            error = "Invalid recovery code."
+        elif new_password != confirm_password:
+            error = "Passwords do not match."
+        else:
+            conn = sqlite3.connect(DB_NAME)
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET password = ? WHERE email = ?", (new_password, email))
+            conn.commit()
+            conn.close()
+            
+            session.pop('reset_code', None)
+            session.pop('reset_email', None)
+            session['user'] = email.split('@')[0]
+            return redirect(url_for('home'))
+            
+    return render_template('ResetPassword.html', email=email, error=error)
 
 # ==================== OFFICIAL GOOGLE OAUTH ROUTES ====================
 @app.route('/google-login', endpoint='google_login')
@@ -194,12 +253,10 @@ def google_callback():
             user = cursor.fetchone()
             
             if not user:
-                # Automatically register new Google user
                 cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
                                (username, email, 'GOOGLE_OAUTH_AUTHENTICATED'))
                 conn.commit()
                 
-                # Send Welcome Email for Google sign-ups[cite: 9]
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <h2 style="color: #e879f9;">Welcome to Magical Flow, {username}!</h2>
@@ -210,7 +267,6 @@ def google_callback():
                 
             conn.close()
 
-            # Set session and send user directly into the Home page
             session['user'] = username
             session['new_user_name'] = username
             return redirect(url_for('home'))
@@ -251,10 +307,6 @@ def support_chat():
     return jsonify({'reply': reply})
 
 # ==================== NAVIGATION PLACEHOLDERS ====================
-@app.route('/forgot-password', methods=['GET', 'POST'])
-def forgot_password(): return render_template('ForgotPassword.html', error=None)
-@app.route('/account-recovery', methods=['GET', 'POST'])
-def account_recovery(): return render_template('AccountRecovery.html', error=None)
 @app.route('/logout')
 def logout():
     session.clear()
@@ -277,4 +329,3 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-    
