@@ -165,7 +165,7 @@ def identity_check():
     return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox]", error=error)
 
 # ==================== OFFICIAL GOOGLE OAUTH ROUTES ====================
-@app.route('/google-login')
+@app.route('/google-login', endpoint='google_auth')
 def google_login():
     redirect_uri = url_for('google_callback', _external=True)
     return google.authorize_redirect(redirect_uri)
