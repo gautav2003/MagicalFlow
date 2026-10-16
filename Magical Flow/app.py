@@ -314,11 +314,61 @@ def support_chat():
     query = data.get('query', '').strip()
     query_lower = query.lower()
     
-    # 1. WRITE A SONG INTENT
-    if any(k in query_lower for k in ['write a song', 'lyrics', 'compose a track', 'write lyrics', 'make a song about']):
+    # 1. DYNAMIC ANY-GENRE VOCAL & SINGER SELECTION
+    if any(k in query_lower for k in ['vocal', 'singing', 'singer', 'signing', 'voice', 'acapella', 'vocals for']):
+        
+        if any(g in query_lower for g in ['hip hop', 'hip-hop', 'rap', 'trap']):
+            genre_name = "Hip-Hop & Trap"
+            profiles = (
+                "• **Auto-Tuned Melodic Trap Lead:** High-pitch correction, wide stereo delay, polished crisp highs.<br>"
+                "• **Raw Boombap Lyricist:** Dry mic presence, compressed low-mids, upfront and punchy."
+            )
+        elif any(g in query_lower for g in ['rock', 'metal', 'punk']):
+            genre_name = "Rock & Heavy Metal"
+            profiles = (
+                "• **Gritty Power Vocalist:** Distorted tape saturation, aggressive rasp, heavy mid-range drive.<br>"
+                "• **Symphonic Metal Vocalist:** Operatic range with hall reverb and wide double-track layering."
+            )
+        elif any(g in query_lower for g in ['r&b', 'soul', 'gospel', 'funk']):
+            genre_name = "R&B, Soul & Gospel"
+            profiles = (
+                "• **Warm Velvet Soul Singer:** Deep chest resonance, silky smooth runs, rich plate reverb.<br>"
+                "• **Gospel Power Belt:** Soaring chest-voice projection with multi-part choir harmonies."
+            )
+        elif any(g in query_lower for g in ['country', 'folk', 'acoustic']):
+            genre_name = "Country & Folk Acoustic"
+            profiles = (
+                "• **Southern Twang Soloist:** Intimate close-miking, natural vibrato, warm acoustic room decay.<br>"
+                "• **Folk Harmony Duo:** Dual panned acoustic voices with subtle compression."
+            )
+        elif any(g in query_lower for g in ['edm', 'house', 'dance', 'techno']):
+            genre_name = "EDM & Dance Anthem"
+            profiles = (
+                "• **High-Energy Anthem Lead:** Heavy sidechain compression, pitch-shifted vocal chops, delay sync.<br>"
+                "• **Deep House Whispering Vocal:** Filtered, breathy, dark reverb space."
+            )
+        else:
+            genre_name = "All Music Genres"
+            profiles = (
+                "1. **Pop / Modern Radio:** Clear, breathy, bright presence with tuned perfection.<br>"
+                "2. **Soul / R&B:** Warm, emotional, expressive chest-register dynamics.<br>"
+                "3. **Indie / Acoustic:** Raw, intimate, subtle grit with natural reverb.<br>"
+                "4. **EDM / Cyberpunk:** Powerful projection, sidechained to the beat with vocal chop FX.<br>"
+                "5. **Opera / Classical:** Full resonance, wide dynamic range, large cathedral hall decay."
+            )
+            
+        reply = (
+            f"🎤 **Maya's AI Singer Studio ({genre_name})** 🎤<br><br>"
+            f"I can generate and engineer vocals for **any genre** you request! Here are the vocal setups tailored for your music:<br><br>"
+            f"{profiles}<br><br>"
+            "💡 *Tell me the specific vibe or genre you want (e.g., 'I want a Punjabi folk vocalist', 'Give me a K-Pop female lead', or 'I need a jazz singer'), and I'll generate the exact vocal profile for your track!*"
+        )
+        
+    # 2. WRITE A SONG INTENT
+    elif any(k in query_lower for k in ['write a song', 'lyrics', 'compose a track', 'write lyrics', 'make a song about']):
         reply = (
             "🎵 **Maya's Custom AI Songwriting Studio** 🎵<br><br>"
-            "Here is a custom cinematic electronic/synthwave track concept crafted just for you:<br><br>"
+            "Here is a custom song concept crafted just for your request:<br><br>"
             "🔹 **Title:** Neon Horizons<br>"
             "🔹 **Key & Tempo:** D Minor | 128 BPM<br>"
             "🔹 **Vibe:** Melancholic yet driving, futuristic, energetic.<br><br>"
@@ -335,59 +385,59 @@ def support_chat():
             "💡 *Tip: Head over to Pro Studio Mode to lay down a pulsing synth bassline matching this 128 BPM groove!*"
         )
         
-    # 2. SONG SUGGESTIONS & IDEAS INTENT
+    # 3. SONG SUGGESTIONS & IDEAS INTENT
     elif any(k in query_lower for k in ['suggest', 'what song', 'idea', 'inspiration', 'what should i create', 'recommend']):
         reply = (
             "✨ **Maya's Top Song Recommendations for Today** ✨<br><br>"
             "Choose one of these unique directions to start your next session in Magical Flow:<br><br>"
-            "1. **Cyberpunk Synthwave (125 BPM - A Minor):** Heavy distorted bass, punchy 808 drums, and soaring arpeggiated lead synths. Great for high-energy futuristic vibes.<br><br>"
-            "2. **Lo-Fi Chill Hop (85 BPM - C Major):** Dusty vinyl crackle, warm rhodes piano chords, relaxed acoustic drum loop, and a smooth jazz saxophone or vocal chop.<br><br>"
-            "3. **Cinematic Ambient Pop (110 BPM - E Minor):** Sweeping atmospheric string pads, echoing ambient guitars, and emotional soaring vocals with heavy reverb.<br><br>"
+            "1. **Cyberpunk Synthwave (125 BPM - A Minor):** Heavy distorted bass, punchy 808 drums, and soaring arpeggiated lead synths.<br><br>"
+            "2. **Lo-Fi Chill Hop (85 BPM - C Major):** Dusty vinyl crackle, warm rhodes piano chords, relaxed acoustic drum loop, and a smooth jazz saxophone.<br><br>"
+            "3. **Cinematic Ambient Pop (110 BPM - E Minor):** Sweeping atmospheric string pads, echoing guitars, and emotional soaring vocals.<br><br>"
             "Which of these vibes would you like to build first?"
         )
         
-    # 3. MIXING & MASTERING HELP INTENT
+    # 4. MIXING & MASTERING HELP INTENT
     elif any(k in query_lower for k in ['mix', 'master', 'eq', 'frequencies', 'volume', 'compression', 'balance']):
         reply = (
             "🎛️ **Maya's Pro Mixing & Mastering Guide** 🎛️<br><br>"
             "Follow these 4 professional steps to make your tracks sound radio-ready:<br><br>"
-            "1. **Gain Staging:** Ensure your individual track faders sit around -12dB to -18dB so you leave plenty of headroom on the master bus.<br><br>"
-            "2. **EQ & Filtering:** Use high-pass filters on your vocals and synths (around 80Hz–100Hz) to remove muddy low-end frequencies that clash with your kick and bass.<br><br>"
-            "3. **Compression:** Apply gentle compression on your vocals and drums to even out dynamics and glue the elements together.<br><br>"
-            "4. **The Master Limiter:** Engage our **'Dragon Fire' master limiter** on the output channel to boost overall loudness without introducing digital clipping!"
+            "1. **Gain Staging:** Ensure individual track faders sit around -12dB to -18dB for headroom.<br><br>"
+            "2. **EQ & Filtering:** High-pass filter vocals/synths (80Hz–100Hz) to keep kick/bass clean.<br><br>"
+            "3. **Compression:** Apply gentle compression on vocals and drums to glue dynamics.<br><br>"
+            "4. **The Master Limiter:** Engage our **'Dragon Fire' master limiter** on output for maximum loudness without clipping!"
         )
         
-    # 4. HOW TO MAKE MUSIC / WORKFLOW INTENT
+    # 5. HOW TO MAKE MUSIC / WORKFLOW INTENT
     elif any(k in query_lower for k in ['how to make music', 'how do i start', 'start making music', 'workflow', 'beginner guide']):
         reply = (
             "🎹 **Step-by-Step Music Production Guide in Magical Flow** 🎹<br><br>"
             "Here is how you can go from zero to a finished track in minutes:<br><br>"
-            "• **Step 1:** Select your mode from the Home screen. Use **Beginner Mode** for instant AI-generated beat ideas, or **Pro Studio Mode** for full 8-track DAW control.<br><br>"
-            "• **Step 2:** Choose your Key and Tempo (e.g., 120 BPM in G Major is a fantastic starting point for melodic electronic music).<br><br>"
-            "• **Step 3:** Lay down your core stems—start with a solid drum groove, add a bassline, and layer your chords.<br><br>"
-            "• **Step 4:** Mix your audio levels, add effects, and export your finished masterpiece in high-fidelity WAV format!"
+            "• **Step 1:** Select your mode from Home screen (Beginner Mode or Pro Studio Mode).<br><br>"
+            "• **Step 2:** Choose your Key and Tempo (e.g., 120 BPM in G Major).<br><br>"
+            "• **Step 3:** Lay down your core stems—drums, bassline, and chords.<br><br>"
+            "• **Step 4:** Mix your levels, add effects, and export your track in high-fidelity WAV format!"
         )
         
-    # 5. ACCOUNT / 2FA / PASSWORD HELP
+    # 6. ACCOUNT / 2FA / PASSWORD HELP
     elif any(k in query_lower for k in ['2fa', 'code', 'verification', 'email', 'login', 'signin', 'password', 'reset', 'forgot']):
         reply = (
             "🔒 **Security & Account Support** 🔒<br><br>"
-            "• **Sign In & 2FA:** When you sign in, an official 6-digit verification code is sent to your Gmail inbox (or displayed in your VS Code terminal as a backup).<br><br>"
-            "• **Password Recovery:** Click 'Forgot Password' on the Sign In page to receive a recovery code and securely update your password."
+            "• **Sign In & 2FA:** A 6-digit verification code is sent to your Gmail inbox (or displayed in your VS Code terminal as a backup).<br><br>"
+            "• **Password Recovery:** Click 'Forgot Password' on the Sign In page to receive a recovery code."
         )
         
-    # 6. GREETINGS
+    # 7. GREETINGS
     elif any(k in query_lower for k in ['hello', 'hi', 'hey', 'maya', 'help']):
         reply = (
             "👋 Hello! I'm **Maya**, your personal AI studio assistant in Magical Flow.<br><br>"
-            "I'm here to help you with *everything* you need: writing custom song lyrics, brainstorming hit song ideas, teaching you how to make music, or mixing your tracks. What would you like to work on today?"
+            "I can generate vocals for **any music genre**, write custom lyrics, recommend song concepts, teach music production, and help you mix your tracks. What are we creating today?"
         )
         
-    # 7. DEFAULT CATCH-ALL (Dynamic custom response)
+    # 8. DEFAULT CATCH-ALL
     else:
         reply = (
             f"🎵 I hear you loud and clear regarding '{query}'.<br><br>"
-            "Whether you need me to write custom lyrics, suggest chord progressions, guide you through mixing stems, or help you navigate the studio, I've got your back. Tell me a bit more about what sound or genre you're aiming for, and let's make some magic!"
+            "Whether you need AI vocals for any genre, custom song lyrics, chord suggestions, or mixing advice, I'm here to help. Tell me what genre or vibe you're aiming for, and let's create it!"
         )
         
     return jsonify({'reply': reply})
@@ -428,4 +478,4 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-    
+      
