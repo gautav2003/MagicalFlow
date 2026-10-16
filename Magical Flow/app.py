@@ -92,14 +92,12 @@ def login_required(f):
 # ==================== ROOT & HOME ROUTES (STRICTLY LOCKED) ====================
 @app.route('/')
 def index():
-    # Forces the Sign In page to show first if the user is not logged in
     if 'user' not in session:
         return redirect(url_for('signin'))
     return redirect(url_for('home'))
 
 @app.route('/home')
 def home():
-    # Strict lockout: Cannot access home page unless successfully logged in/registered
     if 'user' not in session:
         return redirect(url_for('signin'))
     return render_template('Home.html')
@@ -124,7 +122,6 @@ def register():
                 conn.commit()
                 conn.close()
                 
-                # Dispatch Official Welcome Email to User's Gmail Inbox
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -169,7 +166,6 @@ def signin():
             code = str(random.randint(100000, 999999))
             session['auth_code'] = code
             
-            # Send 2FA Verification Code to Gmail Inbox
             code_html = f"""
             <div style="background-color: #070311; color: #ffffff; padding: 25px; font-family: sans-serif; border-radius: 10px;">
                 <h3 style="color: #e879f9;">Magical Flow Security Verification</h3>
@@ -192,7 +188,6 @@ def identity_check():
     if request.method == 'POST':
         user_code = request.form.get('code')
         if user_code == session.get('auth_code'):
-            # Successfully authenticated via 2FA -> Grants entry to Home page
             session['user'] = session.get('pending_username')
             return redirect(url_for('home'))
         else:
@@ -307,7 +302,7 @@ def google_callback():
 
     return redirect(url_for('signin'))
 
-# ==================== ARTIST SUPPORT & AI CHAT API (LOCKED) ====================
+# ==================== ARTIST SUPPORT & AI MAYA CHAT API (LOCKED) ====================
 @app.route('/artist-support')
 @login_required
 def artist_support():
@@ -316,24 +311,84 @@ def artist_support():
 @app.route('/api/support-chat', methods=['POST'])
 def support_chat():
     data = request.get_json() or {}
-    query = data.get('query', '').strip().lower()
+    query = data.get('query', '').strip()
+    query_lower = query.lower()
     
-    if any(k in query for k in ['mix', 'master', 'eq', 'frequencies', 'volume', 'audio', 'sound']):
-        reply = "Mixing & Mastering: Balance your multi-track stems in Pro Studio. Use high-pass filters on vocals/synths to clear mud, apply compression for dynamic control, and engage our 'Dragon Fire' master limiter for loudness."
-    elif any(k in query for k in ['song', 'write', 'lyrics', 'melody', 'chord', 'compose', 'prompt']):
-        reply = "Songwriting & AI Prompts: Craft rich prompts by combining style, key, tempo, and mood. For example: 'Cinematic electronic synthwave in D minor, 128 BPM, featuring driving basslines and atmospheric pads'."
-    elif any(k in query for k in ['2fa', 'code', 'verification', 'email', 'login', 'signin', 'sign in']):
-        reply = "Sign In & 2FA Security: When you sign in, a 6-digit verification code is sent to your email inbox. Check your inbox to complete your login."
-    elif any(k in query for k in ['password', 'reset', 'forgot', 'strength', 'weak', 'secure']):
-        reply = "Account & Passwords: Use the 'Forgot Password' link on the Sign In page to receive a recovery code. When creating a password, aim for the green 'Excellent' level by using uppercase letters, numbers, and symbols."
-    elif any(k in query for k in ['export', 'download', 'wav', 'mp3', 'stems', 'output']):
-        reply = "Exporting Tracks: You can export your completed compositions in high-fidelity 24-bit WAV or compressed MP3 format directly from the Studio Output or Pro Output pages."
-    elif any(k in query for k in ['mode', 'moonlight', 'ancient', 'dragon', 'beginner', 'pro']):
-        reply = "Studio Modes: Moonlight (clarity), Ancient Music (wisdom), and Dragon Fire (power) modes. Switch between Beginner for instant AI results and Pro Studio for full 8-track DAW control."
-    elif any(k in query for k in ['hello', 'hi', 'hey', 'maya', 'help']):
-        reply = "Hello! I'm Maya, your AI studio assistant. I'm ready to help you with anything in Magical Flow—from generating AI beats and mixing tracks to troubleshooting login issues. What are we working on today?"
+    # 1. WRITE A SONG INTENT
+    if any(k in query_lower for k in ['write a song', 'lyrics', 'compose a track', 'write lyrics', 'make a song about']):
+        reply = (
+            "🎵 **Maya's Custom AI Songwriting Studio** 🎵<br><br>"
+            "Here is a custom cinematic electronic/synthwave track concept crafted just for you:<br><br>"
+            "🔹 **Title:** Neon Horizons<br>"
+            "🔹 **Key & Tempo:** D Minor | 128 BPM<br>"
+            "🔹 **Vibe:** Melancholic yet driving, futuristic, energetic.<br><br>"
+            "**[Verse 1]**<br>"
+            "Digital shadows stretching on the wall,<br>"
+            "We're chasing echoes as the city lights fall.<br>"
+            "Static in the air, a pulse in the dark,<br>"
+            "Looking for a sign, a sudden spark.<br><br>"
+            "**[Chorus]**<br>"
+            "Ride the magical flow through the neon rain,<br>"
+            "Wash away the noise, leave behind the pain.<br>"
+            "In the synth and the bass, we come alive,<br>"
+            "This is the rhythm where our souls survive!<br><br>"
+            "💡 *Tip: Head over to Pro Studio Mode to lay down a pulsing synth bassline matching this 128 BPM groove!*"
+        )
+        
+    # 2. SONG SUGGESTIONS & IDEAS INTENT
+    elif any(k in query_lower for k in ['suggest', 'what song', 'idea', 'inspiration', 'what should i create', 'recommend']):
+        reply = (
+            "✨ **Maya's Top Song Recommendations for Today** ✨<br><br>"
+            "Choose one of these unique directions to start your next session in Magical Flow:<br><br>"
+            "1. **Cyberpunk Synthwave (125 BPM - A Minor):** Heavy distorted bass, punchy 808 drums, and soaring arpeggiated lead synths. Great for high-energy futuristic vibes.<br><br>"
+            "2. **Lo-Fi Chill Hop (85 BPM - C Major):** Dusty vinyl crackle, warm rhodes piano chords, relaxed acoustic drum loop, and a smooth jazz saxophone or vocal chop.<br><br>"
+            "3. **Cinematic Ambient Pop (110 BPM - E Minor):** Sweeping atmospheric string pads, echoing ambient guitars, and emotional soaring vocals with heavy reverb.<br><br>"
+            "Which of these vibes would you like to build first?"
+        )
+        
+    # 3. MIXING & MASTERING HELP INTENT
+    elif any(k in query_lower for k in ['mix', 'master', 'eq', 'frequencies', 'volume', 'compression', 'balance']):
+        reply = (
+            "🎛️ **Maya's Pro Mixing & Mastering Guide** 🎛️<br><br>"
+            "Follow these 4 professional steps to make your tracks sound radio-ready:<br><br>"
+            "1. **Gain Staging:** Ensure your individual track faders sit around -12dB to -18dB so you leave plenty of headroom on the master bus.<br><br>"
+            "2. **EQ & Filtering:** Use high-pass filters on your vocals and synths (around 80Hz–100Hz) to remove muddy low-end frequencies that clash with your kick and bass.<br><br>"
+            "3. **Compression:** Apply gentle compression on your vocals and drums to even out dynamics and glue the elements together.<br><br>"
+            "4. **The Master Limiter:** Engage our **'Dragon Fire' master limiter** on the output channel to boost overall loudness without introducing digital clipping!"
+        )
+        
+    # 4. HOW TO MAKE MUSIC / WORKFLOW INTENT
+    elif any(k in query_lower for k in ['how to make music', 'how do i start', 'start making music', 'workflow', 'beginner guide']):
+        reply = (
+            "🎹 **Step-by-Step Music Production Guide in Magical Flow** 🎹<br><br>"
+            "Here is how you can go from zero to a finished track in minutes:<br><br>"
+            "• **Step 1:** Select your mode from the Home screen. Use **Beginner Mode** for instant AI-generated beat ideas, or **Pro Studio Mode** for full 8-track DAW control.<br><br>"
+            "• **Step 2:** Choose your Key and Tempo (e.g., 120 BPM in G Major is a fantastic starting point for melodic electronic music).<br><br>"
+            "• **Step 3:** Lay down your core stems—start with a solid drum groove, add a bassline, and layer your chords.<br><br>"
+            "• **Step 4:** Mix your audio levels, add effects, and export your finished masterpiece in high-fidelity WAV format!"
+        )
+        
+    # 5. ACCOUNT / 2FA / PASSWORD HELP
+    elif any(k in query_lower for k in ['2fa', 'code', 'verification', 'email', 'login', 'signin', 'password', 'reset', 'forgot']):
+        reply = (
+            "🔒 **Security & Account Support** 🔒<br><br>"
+            "• **Sign In & 2FA:** When you sign in, an official 6-digit verification code is sent to your Gmail inbox (or displayed in your VS Code terminal as a backup).<br><br>"
+            "• **Password Recovery:** Click 'Forgot Password' on the Sign In page to receive a recovery code and securely update your password."
+        )
+        
+    # 6. GREETINGS
+    elif any(k in query_lower for k in ['hello', 'hi', 'hey', 'maya', 'help']):
+        reply = (
+            "👋 Hello! I'm **Maya**, your personal AI studio assistant in Magical Flow.<br><br>"
+            "I'm here to help you with *everything* you need: writing custom song lyrics, brainstorming hit song ideas, teaching you how to make music, or mixing your tracks. What would you like to work on today?"
+        )
+        
+    # 7. DEFAULT CATCH-ALL (Dynamic custom response)
     else:
-        reply = f"I've got you covered regarding '{query}'. Whether you need help adjusting audio effects, structuring chord progressions, or managing your account settings, I'm here to ensure your session flows smoothly!"
+        reply = (
+            f"🎵 I hear you loud and clear regarding '{query}'.<br><br>"
+            "Whether you need me to write custom lyrics, suggest chord progressions, guide you through mixing stems, or help you navigate the studio, I've got your back. Tell me a bit more about what sound or genre you're aiming for, and let's make some magic!"
+        )
         
     return jsonify({'reply': reply})
 
@@ -373,3 +428,4 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    
