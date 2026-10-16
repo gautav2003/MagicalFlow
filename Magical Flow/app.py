@@ -86,7 +86,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# ==================== ROOT & HOME ROUTES (LOCKED & SECURED) ====================
+# ==================== ROOT & HOME ROUTES (STRICTLY LOCKED) ====================
 @app.route('/')
 def index():
     if 'user' not in session:
@@ -94,7 +94,7 @@ def index():
     return redirect(url_for('home'))
 
 @app.route('/home')
-@login_required  # <--- Home page is now strictly locked until successful sign in or register!
+@login_required  # <--- Locked! Only accessible after successful login/register
 def home():
     return render_template('Home.html')
 
@@ -364,3 +364,4 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    
