@@ -90,6 +90,7 @@ def login_required(f):
 @app.route('/')
 def index():
     # If user is not logged in, force them straight to the Sign In page
+    print("DEBUG SESSION USER:", session.get('user'))
     if 'user' not in session:
         return redirect(url_for('signin'))
     return redirect(url_for('home'))
@@ -367,4 +368,3 @@ def account(): return render_template('Home.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-    
