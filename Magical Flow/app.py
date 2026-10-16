@@ -89,13 +89,16 @@ def login_required(f):
 # ==================== ROOT & HOME ROUTES (STRICTLY LOCKED) ====================
 @app.route('/')
 def index():
+    # If user is not logged in, force them straight to the Sign In page
     if 'user' not in session:
-        return redirect(url_for('signin'))  # <--- Forces Sign In page to show first
+        return redirect(url_for('signin'))
     return redirect(url_for('home'))
 
 @app.route('/home')
-@login_required  # <--- Locked! Only accessible after successful login/register
 def home():
+    # Explicit safeguard: If not logged in, bounce to signin immediately
+    if 'user' not in session:
+        return redirect(url_for('signin'))
     return render_template('Home.html')
 
 # ==================== REGISTRATION ROUTE WITH WELCOME EMAIL ====================
@@ -320,7 +323,7 @@ def support_chat():
     elif any(k in query for k in ['export', 'download', 'wav', 'mp3', 'stems', 'output']):
         reply = "Exporting Tracks: You can export your completed compositions in high-fidelity 24-bit WAV or compressed MP3 format directly from the Studio Output or Pro Output pages."
     elif any(k in query for k in ['mode', 'moonlight', 'ancient', 'dragon', 'beginner', 'pro']):
-        reply = "Studio Modes: Magical Flow offers Moonlight (clarity), Ancient Music (wisdom), and Dragon Fire (power) modes. Switch between Beginner for instant AI results and Pro Studio for full 8-track DAW control."
+        reply = "Studio Modes: Moonlight (clarity), Ancient Music (wisdom), and Dragon Fire (power) modes. Switch between Beginner for instant AI results and Pro Studio for full 8-track DAW control."
     elif any(k in query for k in ['hello', 'hi', 'hey', 'maya', 'help']):
         reply = "Hello! I'm Maya, your AI studio assistant. I'm ready to help you with anything in Magical Flow—from generating AI beats and mixing tracks to troubleshooting login issues. What are we working on today?"
     else:
