@@ -6,6 +6,7 @@ import os
 import sqlite3
 import random
 import smtplib
+import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -16,23 +17,23 @@ app = Flask(__name__)
 app.secret_key = 'magical_flow_super_secret_production_key'
 DB_NAME = 'MagicalFlow.db'
 
-# ==================== OFFICIAL GMAIL SMTP CONFIGURATION ====================
+# ==================== OFFICIAL GMAIL SMTP CONFIGURATION (SSL PORT 465) ====================
 SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
+SMTP_PORT = 465
 SENDER_EMAIL = os.getenv("SENDER_EMAIL")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
 
 def send_official_email(recipient_email, subject_text, html_body):
-    """Sends via Gmail SMTP and provides a terminal fallback if email fails."""
+    """Sends a professional HTML email via Gmail SMTP using SSL with a terminal backup log."""
     print(f"\n========================================")
-    print(f"[*] EMAIL DISPATCH BACKUP")
+    print(f"[*] EMAIL DISPATCH & CODE BACKUP")
     print(f"To: {recipient_email}")
     print(f"Subject: {subject_text}")
     print(f"========================================\n")
     
     try:
         if not SENDER_EMAIL or not SENDER_PASSWORD or "your_actual_email" in SENDER_EMAIL:
-            print("[!] SMTP credentials not configured in .env. Check terminal backup above for codes.")
+            print("[!] SMTP credentials not configured properly in .env.")
             return
 
         msg = MIMEMultipart('alternative')
@@ -42,14 +43,16 @@ def send_official_email(recipient_email, subject_text, html_body):
         
         msg.attach(MIMEText(html_body, 'html'))
         
-        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.sendmail(SENDER_EMAIL, recipient_email, msg.as_string())
-        server.quit()
+        # Secure SSL connection on port 465 to prevent drop errors
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT, context=context) as server:
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.sendmail(SENDER_EMAIL, recipient_email, msg.as_string())
+            
         print(f"[*] Official email successfully dispatched via Gmail SMTP to {recipient_email}")
     except Exception as e:
         print(f"[!] SMTP Dispatch Error: {e}")
+        print(f"[!] Note: Check your terminal backup above to grab your verification/recovery code for testing!")
 
 # ==================== OFFICIAL GOOGLE OAUTH CONFIGURATION ====================
 oauth = OAuth(app)
@@ -89,15 +92,14 @@ def login_required(f):
 # ==================== ROOT & HOME ROUTES (STRICTLY LOCKED) ====================
 @app.route('/')
 def index():
-    # If user is not logged in, force them straight to the Sign In page
-    print("DEBUG SESSION USER:", session.get('user'))
+    # Forces the Sign In page to show first if the user is not logged in
     if 'user' not in session:
         return redirect(url_for('signin'))
     return redirect(url_for('home'))
 
 @app.route('/home')
 def home():
-    # Explicit safeguard: If not logged in, bounce to signin immediately
+    # Strict lockout: Cannot access home page unless successfully logged in/registered
     if 'user' not in session:
         return redirect(url_for('signin'))
     return render_template('Home.html')
@@ -122,6 +124,7 @@ def register():
                 conn.commit()
                 conn.close()
                 
+                # Dispatch Official Welcome Email to User's Gmail Inbox
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -166,6 +169,7 @@ def signin():
             code = str(random.randint(100000, 999999))
             session['auth_code'] = code
             
+            # Send 2FA Verification Code to Gmail Inbox
             code_html = f"""
             <div style="background-color: #070311; color: #ffffff; padding: 25px; font-family: sans-serif; border-radius: 10px;">
                 <h3 style="color: #e879f9;">Magical Flow Security Verification</h3>
@@ -188,6 +192,7 @@ def identity_check():
     if request.method == 'POST':
         user_code = request.form.get('code')
         if user_code == session.get('auth_code'):
+            # Successfully authenticated via 2FA -> Grants entry to Home page
             session['user'] = session.get('pending_username')
             return redirect(url_for('home'))
         else:
