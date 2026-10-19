@@ -141,4 +141,45 @@
                         Pro Studio
                     </h2>
 
-                    
+                    <!-- Description -->
+                    <p class="text-xs text-zinc-400 leading-relaxed mb-8">
+                        Full DAW with 8 tracks, MIDI, audio, effects, and more
+                    </p>
+
+                    <!-- Checklist -->
+                    <ul class="text-xs text-zinc-300 space-y-3 mb-10">
+                        <li class="flex items-center gap-3">
+                            <span class="text-orange-400 font-bold">✓</span> 8-track timeline
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-orange-400 font-bold">✓</span> MIDI and audio recording
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-orange-400 font-bold">✓</span> Channel strip effects
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-orange-400 font-bold">✓</span> Hardware MIDI support
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Select Button -->
+                <a href="{{ url_for('pro_studio_mode') }}" class="text-xs font-semibold tracking-wider uppercase w-full py-3.5 px-4 rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-950/40 to-zinc-950 hover:border-purple-400 text-purple-200 text-center transition-all shadow-lg">
+                    Select Pro Studio
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Floating Artist Support Headset Widget (Bottom Right, as circled in your image) -->
+    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center p-3 bg-zinc-950/90 border border-purple-500/40 rounded-full shadow-2xl hover:scale-110 hover:border-purple-400 transition-all">
+        <svg class="w-7 h-7 text-purple-400 group-hover:text-pink-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+        </svg>
+    </a>
+
+</body>
+</html>
+    
