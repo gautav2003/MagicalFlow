@@ -51,4 +51,23 @@
             <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
         </nav> 
 
+        <!-- User Profile Icon -->
+        <a href="{{ url_for('account') }}" class="w-8 h-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-300 hover:text-white hover:border-purple-500/50 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </a>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="w-full max-w-5xl mx-auto px-6 py-10 flex-grow flex flex-col items-center justify-center z-10">
+        
+        <!-- Subtitle Label -->
+        <span class="text-[11px] font-semibold tracking-[0.2em] text-purple-400/90 uppercase mb-3">
+            Select Mode
+        </span>
+
+        <!-- Main Title -->
+        <h1 class="serif-heading text-3xl md:text-5xl font-normal text-white text-center mb-12 tracking-wide italic">
+            How do you want to create ?
+        </h1>
+
         
