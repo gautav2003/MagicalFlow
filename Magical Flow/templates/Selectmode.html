@@ -87,4 +87,37 @@
                     <span class="text-[10px] font-bold tracking-[0.2em] text-purple-400/90 uppercase block mb-2">
                         FOR BEGINNERS
                     </span>
-                    
+
+                    <!-- Card Title -->
+                    <h2 class="serif-heading text-2xl md:text-3xl font-medium text-white mb-3">
+                        Beginner
+                    </h2>
+
+                    <!-- Description -->
+                    <p class="text-xs text-zinc-400 leading-relaxed mb-8">
+                        Describe your music and let AI create it for you instantly
+                    </p>
+
+                    <!-- Checklist -->
+                    <ul class="text-xs text-zinc-300 space-y-3 mb-10">
+                        <li class="flex items-center gap-3">
+                            <span class="text-blue-400 font-bold">✓</span> Text-to-music generation
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-blue-400 font-bold">✓</span> Genre and mood selection
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-blue-400 font-bold">✓</span> One-click export
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="text-blue-400 font-bold">✓</span> Smart suggestions
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Select Button -->
+                <a href="{{ url_for('beginner_mode') }}" class="text-xs font-semibold tracking-wider uppercase w-full py-3.5 px-4 rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-950/40 to-zinc-950 hover:border-purple-400 text-purple-200 text-center transition-all shadow-lg">
+                    Select Beginner
+                </a>
+            </div>
+            
