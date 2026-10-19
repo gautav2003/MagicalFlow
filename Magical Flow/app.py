@@ -443,7 +443,9 @@ def logout():
 
 @app.route('/select-mode')
 @login_required
-def select_mode(): return render_template('Home.html')
+def select_mode():
+    username = session.get('user', 'Artist')
+    return render_template('SelectMode.html', username=username)
 
 @app.route('/beginner-mode')
 @login_required
