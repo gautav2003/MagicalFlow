@@ -28,4 +28,14 @@
         }
     </style>
 </head>
-  
+<body class="min-h-screen flex flex-col justify-between bg-[#070311] text-white relative overflow-x-hidden selection:bg-purple-500 selection:text-white">
+
+    <!-- Top Navigation Bar (Highlighted in your red circle) -->
+    <header class="w-full px-6 py-4 flex items-center justify-between border-b border-purple-950/40 bg-[#070311]/90 backdrop-blur-md z-20">
+        <!-- Logo & Brand -->
+        <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-8 h-8 object-contain" onerror="this.src='https://via.placeholder.com/32/9333ea/ffffff?text=MF'">
+            <span class="font-bold text-sm tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-400">Magical Flow</span>
+        </a> 
+
+        
