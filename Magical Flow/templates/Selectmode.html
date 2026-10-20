@@ -6,7 +6,7 @@
     <title>Magical Flow - Select Mode</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -16,10 +16,13 @@
         .mono-text {
             font-family: 'Fira Code', monospace;
         }
-        .display-script {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
+        
+        /* Exact cursive script typography from reference image */
+        .calligraphy-title {
+            font-family: 'Pacifico', cursive;
+            letter-spacing: 0.02em;
         }
+
         .card-bg {
             background: linear-gradient(145deg, rgba(15, 8, 30, 0.85) 0%, rgba(3, 0, 8, 0.95) 100%);
         }
@@ -28,14 +31,14 @@
             transition: all 0.35s ease-in-out;
         }
 
-        /* 1. MOONLIGHT HOVER GLOW (Beginner Side) */
+        /* 1. MOONLIGHT HOVER GLOW (Beginner Card) */
         .moonlight-card:hover {
             border-color: #60a5fa !important;
             box-shadow: 0 0 30px rgba(96, 165, 250, 0.4), inset 0 0 15px rgba(96, 165, 250, 0.15) !important;
             transform: translateY(-2px);
         }
 
-        /* 2. DRAGON-FIRE HOVER GLOW (Pro Studio Side) */
+        /* 2. DRAGON-FIRE HOVER GLOW (Pro Studio Card) */
         .dragonfire-card:hover {
             border-color: #f97316 !important;
             box-shadow: 0 0 30px rgba(249, 115, 22, 0.4), inset 0 0 15px rgba(249, 115, 22, 0.15) !important;
@@ -83,8 +86,8 @@
             Select Mode
         </span>
 
-        <!-- Main Heading -->
-        <h1 class="display-script text-4xl md:text-5xl text-purple-100 text-center mb-12 tracking-wide font-medium">
+        <!-- Main Heading (Pacifico Cursive Style) -->
+        <h1 class="calligraphy-title text-3xl md:text-5xl text-purple-100 text-center mb-12 font-normal">
             How do you want to create ?
         </h1>
 
@@ -190,11 +193,10 @@
         </div>
     </main>
 
-    <!-- Floating Support Headset Widget (Yellow Headset with Mic on Glowing Purple Circle) -->
+    <!-- Floating Artist Support Widget (Purple Circle with Yellow Headset & Microphone) -->
     <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-14 h-14 bg-[#5b1494] border border-purple-400/50 rounded-full shadow-[0_0_25px_rgba(139,92,246,0.6)] hover:scale-110 hover:border-purple-300 transition-all">
-        <!-- Solid Yellow Headset with Mic Icon -->
         <svg class="w-7 h-7 text-[#facc15]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 1a9 9 0 0 0-9 9v7a3 3 0 0 0 3 3h3a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H5v-2a7 7 0 1 1 14 0v2h-4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.5a.5.5 0 0 1 .5.5v.5a2.5 2.5 0 0 1-2.5 2.5H13a1 1 0 1 0 0 2h1.5A4.5 4.5 0 0 0 19 20.5v-.5a2.5 2.5 0 0 0 2.5-2.5V10a9 9 0 0 0-9-9z"/>
+            <path d="M12 1a9 9 0 0 0-9 9v7a3 3 0 0 0 3 3h3a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H5v-2a7 7 0 1 1 14 0v2h-4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.5a.5.5 0 0 1 .5.5v.5a2.5 2.5 0 0 0-2.5 2.5H13a1 1 0 1 0 0 2h1.5A4.5 4.5 0 0 0 19 20.5v-.5a2.5 2.5 0 0 0 2.5-2.5V10a9 9 0 0 0-9-9z"/>
         </svg>
     </a>
 
