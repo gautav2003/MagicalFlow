@@ -1,82 +1,131 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - Magical Flow</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
-<body class="h-full bg-slate-950 text-slate-100 flex items-center justify-center">
-
-    <div class="w-full max-w-md p-8 rounded-2xl bg-slate-900/80 border border-purple-500/20 shadow-2xl backdrop-blur-xl">
-        
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold tracking-tight text-white mb-2">Welcome Back to Magical Flow</h1>
-            <p class="text-xs text-slate-400 uppercase tracking-widest">Sign in to your creator studio</p>
+{% extends "Base.html" %}
+{% block title %}Magical Flow - Sign In{% endblock %}
+{% block content %}
+<div class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-4">
+    
+    <div class="studio-card rounded-2xl p-6 hidden md:flex flex-col justify-between space-y-12 h-[460px] relative overflow-hidden border border-purple-500/40">
+        <div class="rounded-xl overflow-hidden border border-purple-500/30 h-48 shadow-inner">
+            <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80" alt="Studio Setup" class="w-full h-full object-cover">
         </div>
-
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="mb-6 space-y-2">
-                    {% for category, message in messages %}
-                        <div class="p-3 rounded-xl text-xs {% if category == 'success' %}bg-emerald-950/40 border border-emerald-500/30 text-emerald-300{% else %}bg-purple-950/40 border border-purple-500/30 text-purple-300{% endif %}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
-        <!-- Google OAuth Sign In Button -->
-        <a href="{{ url_for('google_login') }}" class="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl border border-purple-500/30 bg-purple-950/20 hover:bg-purple-900/30 text-white text-xs font-semibold uppercase tracking-wider transition-all mb-6">
-            <svg class="w-4 h-4" viewBox="0 0 24 24">
-                <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.3 8.9 5 12 5z"/>
-                <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
-                <path fill="#FBBC05" d="M5.3 14.7c-.2-.7-.4-1.5-.4-2.7s.2-2 .4-2.7L1.6 6.4C.6 8.4 0 10.6 0 13s.6 4.6 1.6 6.6l3.7-2.9z"/>
-                <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.3-6.7-5.3L1.6 15.6C3.5 19.4 7.4 23 12 23z"/>
-            </svg>
-            Continue with Google
-        </a>
-
-        <div class="flex items-center my-6">
-            <div class="flex-grow border-t border-slate-800"></div>
-            <span class="px-3 text-xs text-slate-500 uppercase tracking-widest">or sign in with email</span>
-            <div class="flex-grow border-t border-slate-800"></div>
+        <div class="space-y-2">
+            <h2 class="text-xl font-bold text-white italic font-serif">"Where sound meets imagination"</h2>
+            <p class="text-[11px] text-zinc-400 leading-relaxed">Create, compose, and collaborate. Your music journey starts here.</p>
         </div>
-
-        <!-- Sign In Form -->
-        <form method="POST" action="{{ url_for('signin') }}" class="space-y-4">
-            <div>
-                <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider mb-2">Email Address</label>
-                <input type="email" name="email" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="creator@magicalflow.com">
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label class="block text-xs font-medium text-slate-300 uppercase tracking-wider">Password</label>
-                    <a href="{{ url_for('reset_password') }}" class="text-xs text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</a>
-                </div>
-                <input type="password" name="password" required class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 transition-colors" placeholder="••••••••">
-            </div>
-
-            <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold uppercase tracking-wider shadow-lg shadow-purple-500/25 transition-all mt-2">
-                Sign In
-            </button>
-        </form>
-
-        <!-- Footer link -->
-        <p class="text-center text-xs text-slate-400 mt-6">
-            Don't have an account? <a href="{{ url_for('register') }}" class="text-purple-400 hover:text-purple-300 font-medium">Register here</a>
-        </p>
-
     </div>
 
-</body>
-</html>
+    <div class="studio-card rounded-2xl p-8 w-full space-y-5 border border-purple-500/40">
+        <div class="space-y-1">
+            <h2 class="text-2xl font-bold text-white tracking-tight">Sign in</h2>
+            <p class="text-xs text-zinc-400">Return to your creative universe</p>
+        </div>
+
+        {% if error %}
+        <div class="bg-red-500/20 border border-red-500 text-red-300 text-xs p-3 rounded-xl text-center">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="space-y-3">
+            <div>
+                <label class="block text-[11px] text-zinc-400 mb-1">Email Address / Username</label>
+                <input type="text" name="username" required placeholder="Gautav Sharma" 
+                    class="w-full bg-[#120822] border border-purple-500/40 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400">
+            </div>
+
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label class="text-[11px] text-zinc-400">Password</label>
+                    <a href="{{ url_for('forgot_password') }}" class="text-[10px] text-purple-400 hover:underline">Forgot Password?</a>
+                </div>
+                <div class="relative">
+                    <input type="password" id="signin_password" name="password" required placeholder="••••••••••••" oninput="checkSigninStrength()"
+                        class="w-full bg-[#120822] border border-purple-500/40 rounded-xl pl-4 pr-10 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400">
+                    <button type="button" onclick="toggleVisibility('signin_password', 'eye_signin')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white">
+                        <i id="eye_signin" class="fa-solid fa-eye-slash text-xs"></i>
+                    </button>
+                </div>
+                <div class="w-full bg-zinc-800 h-1 rounded-full mt-2 overflow-hidden">
+                    <div id="signinStrengthBar" class="h-full w-0 transition-all duration-300"></div>
+                </div>
+                <div id="signinStrengthText" class="text-[10px] text-zinc-400 mt-1 text-right"></div>
+            </div>
+
+            <div class="pt-1">
+                <button type="submit" class="w-full bg-[#180a33] hover:bg-purple-900/60 border border-purple-500/40 text-white font-semibold text-xs py-2.5 rounded-xl shadow-lg transition">
+                    Sign in Securely
+                </button>
+            </div>
+        </form>
+        <a href="{{ url_for('google_login') }}" class="w-full flex items-center justify-center space-x-2 bg-[#120822] hover:bg-purple-950/60 border border-purple-500/40 text-white text-xs font-medium py-2.5 rounded-xl transition shadow-md">
+            <i class="fa-brands fa-google text-red-400"></i>
+            <span>Continue with Google</span>
+        </a>
+
+        <div class="text-center text-[11px] text-zinc-400 pt-1">
+            No account? <a href="{{ url_for('register') }}" class="text-purple-400 font-semibold hover:underline">Register</a>
+        </div>
+
+        {% if message %}
+        <div class="bg-[#0e061c] border border-purple-900/50 rounded-lg p-2.5 text-[10px] text-purple-300 text-center mt-2">
+            {{ message }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleVisibility(inputId, eyeId) {
+    const input = document.getElementById(inputId);
+    const eye = document.getElementById(eyeId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        eye.classList.remove('fa-eye-slash');
+        eye.classList.add('fa-eye');
+    } else {
+        input.type = 'password';
+        eye.classList.remove('fa-eye');
+        eye.classList.add('fa-eye-slash');
+    }
+}
+
+function checkSigninStrength() {
+    const val = document.getElementById('signin_password').value;
+    const bar = document.getElementById('signinStrengthBar');
+    const text = document.getElementById('signinStrengthText');
+
+    let score = 0;
+    if (val.length > 5) score++;
+    if (val.length > 9) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    bar.className = "h-full transition-all duration-300";
+    if (val.length === 0) {
+        bar.style.width = "0%";
+        text.innerText = "";
+    } else if (score <= 2) {
+        bar.style.width = "25%";
+        bar.classList.add("bg-red-500");
+        text.innerText = "Weak Password";
+        text.className = "text-[10px] text-red-400 mt-1 text-right";
+    } else if (score === 3) {
+        bar.style.width = "50%";
+        bar.classList.add("bg-orange-500");
+        text.innerText = "Medium Password";
+        text.className = "text-[10px] text-orange-400 mt-1 text-right";
+    } else if (score === 4) {
+
+        bar.style.width = "75%";
+        bar.classList.add("bg-yellow-400");
+        text.innerText = "Strong Password";
+        text.className = "text-[10px] text-yellow-300 mt-1 text-right";
+    } else {
+        bar.style.width = "100%";
+        bar.classList.add("bg-green-500");
+        text.innerText = "Excellent Password";
+        text.className = "text-[10px] text-green-400 mt-1 text-right";
+    }
+}
+</script>
+{% endblock %}
