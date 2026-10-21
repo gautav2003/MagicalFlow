@@ -1,619 +1,699 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magical Flow - Pro Studio Mode</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #030008;
-            color: #ffffff;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #030008;
+        color: #ffffff;
+      }
 
-        .mono-font {
-            font-family: 'Fira Code', monospace;
-        }
+      .mono-font {
+        font-family: "Fira Code", monospace;
+      }
 
-        /* Outer Glass & DAW Panels */
-        .daw-card {
-            background: rgba(13, 5, 26, 0.85);
-            border: 1px solid rgba(139, 92, 246, 0.25);
-        }
+      /* Outer Glass & DAW Panels */
+      .daw-card {
+        background: rgba(13, 5, 26, 0.85);
+        border: 1px solid rgba(139, 92, 246, 0.25);
+      }
 
-        .daw-border-red {
-            border: 1px solid rgba(239, 68, 68, 0.4);
-        }
+      .daw-border-red {
+        border: 1px solid rgba(239, 68, 68, 0.4);
+      }
 
-        .daw-border-purple {
-            border: 1px solid rgba(147, 51, 234, 0.35);
-        }
+      .daw-border-purple {
+        border: 1px solid rgba(147, 51, 234, 0.35);
+      }
 
-        /* Waveform Graphics */
-        .audio-wave {
-            background: linear-gradient(90deg, #9333ea 0%, #a855f7 50%, #c084fc 100%);
-            border-radius: 4px;
-        }
+      /* Waveform Graphics */
+      .audio-wave {
+        background: linear-gradient(90deg, #9333ea 0%, #a855f7 50%, #c084fc 100%);
+        border-radius: 4px;
+      }
 
-        /* Custom Scrollbar for Track Workspace */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+      /* Vintage Transport Deck */
+      .tape-deck {
+        background: linear-gradient(145deg, #d2a96b, #9b7042 58%, #6f4b2b);
+        border: 1px solid #e1c18c;
+        box-shadow: inset 0 0 0 2px rgba(66, 42, 23, 0.35);
+      }
+      .tape-counter {
+        background: #302416;
+        color: #e9c982;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
+      }
+      .tape-reel {
+        background: repeating-conic-gradient(#d8c39b 0deg 12deg, #5b4530 12deg 20deg);
+        border: 3px solid #5b4530;
+        box-shadow:
+          0 0 0 2px #b68a53,
+          inset 0 0 0 3px #d8c39b;
+      }
+      .tape-reel::after {
+        content: "";
+        position: absolute;
+        inset: 35%;
+        border-radius: 9999px;
+        background: #493522;
+        border: 1px solid #e4c996;
+      }
+      .tape-reel.spinning {
+        animation: tape-spin 1.6s linear infinite;
+      }
+      @keyframes tape-spin {
+        to {
+          transform: rotate(360deg);
         }
-        ::-webkit-scrollbar-track {
-            background: #030008;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #4c1d95;
-            border-radius: 3px;
-        }
+      }
+      .tape-button {
+        background: linear-gradient(180deg, #d6b77f, #967044);
+        border: 1px solid #ead3a5;
+        color: #24170d;
+        box-shadow:
+          inset 0 1px rgba(255, 255, 255, 0.45),
+          0 2px 0 #51371f;
+      }
+      .tape-button:hover {
+        background: linear-gradient(180deg, #ead3a5, #b68a53);
+      }
+      .tape-button:active {
+        transform: translateY(1px);
+      }
 
-        /* Piano Key Styling */
-        .white-key {
-            background: #ffffff;
-            border: 1px solid #1e1035;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-            cursor: pointer;
-            transition: background 0.1s ease;
-        }
-        .white-key:active, .white-key.active-key {
-            background: #c084fc !important;
-        }
-        .black-key {
-            background: #000000;
-            border: 1px solid #3b0764;
-            border-bottom-left-radius: 3px;
-            border-bottom-right-radius: 3px;
-            z-index: 10;
-            cursor: pointer;
-            transition: background 0.1s ease;
-        }
-        .black-key:active, .black-key.active-key {
-            background: #a855f7 !important;
-        }
+      /* Custom Scrollbar for Track Workspace */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #030008;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #4c1d95;
+        border-radius: 3px;
+      }
+
+      /* Piano Key Styling */
+      .white-key {
+        background: #ffffff;
+        border: 1px solid #1e1035;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        cursor: pointer;
+        transition: background 0.1s ease;
+      }
+      .white-key:active,
+      .white-key.active-key {
+        background: #c084fc !important;
+      }
+      .black-key {
+        background: #000000;
+        border: 1px solid #3b0764;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        z-index: 10;
+        cursor: pointer;
+        transition: background 0.1s ease;
+      }
+      .black-key:active,
+      .black-key.active-key {
+        background: #a855f7 !important;
+      }
     </style>
-</head>
-<body class="min-h-screen bg-[#030008] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
-
+  </head>
+  <body class="min-h-screen bg-[#030008] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
     <!-- Top Navigation Header Bar -->
     <header class="w-full bg-[#030008] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-30">
-        <!-- Brand Logo & Name -->
-        <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
-                <div class="w-full h-full bg-[#030008] rounded-full flex items-center justify-center">
-                    <span class="text-xs">🎵</span>
-                </div>
-            </div>
-            <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
-        </a>
+      <!-- Brand Logo & Name -->
+      <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
+          <div class="w-full h-full bg-[#030008] rounded-full flex items-center justify-center">
+            <span class="text-xs">🎵</span>
+          </div>
+        </div>
+        <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
+      </a>
 
-        <!-- Navigation Links -->
-        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
-            <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
-            <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
-            <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
-            <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
-            <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-300 transition-colors">Beginner</a>
-            <a href="{{ url_for('pro_studio_mode') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Pro Studio</a>
-            <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-300 transition-colors">Beginner output</a>
-            <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
-            <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
-        </nav>
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
+        <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
+        <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
+        <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
+        <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
+        <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-300 transition-colors">Beginner</a>
+        <a href="{{ url_for('pro_studio_mode') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Pro Studio</a>
+        <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-300 transition-colors">Beginner output</a>
+        <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
+        <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
+      </nav>
 
-        <!-- User Profile Avatar -->
-        <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-        </a>
+      <!-- User Profile Avatar -->
+      <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </a>
     </header>
 
     <!-- Main DAW Interface Container -->
     <main class="flex-grow p-4 md:p-6 max-w-[1600px] w-full mx-auto space-y-4">
+      <!-- Top Transport Toolbar Panel -->
+      <div class="daw-card daw-border-red rounded-xl p-3 flex flex-wrap items-center justify-between gap-4">
+        <!-- Playback Transport Controls -->
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="rewindTransport()" aria-label="Rewind four measures" title="Rewind four measures" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+          <button type="button" id="playBtn" onclick="togglePlay()" aria-label="Play" title="Play" class="tape-button w-9 h-9 rounded-lg flex items-center justify-center text-xs">▶</button>
+          <button type="button" onclick="fastForward()" aria-label="Forward four measures" title="Forward four measures" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+          <button type="button" onclick="stopTransport()" aria-label="Stop playback" title="Stop" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+          <span id="transportLed" class="w-2.5 h-2.5 rounded-full bg-purple-400 ml-1"></span>
+          <div class="tape-deck rounded-lg px-2 py-1 flex items-center gap-2">
+            <div id="leftTapeReel" class="tape-reel relative w-7 h-7 rounded-full"></div>
+            <div class="tape-counter rounded px-2 py-1 text-[10px] leading-none font-mono text-center min-w-[76px]">
+              <span id="measureCounter">BAR 001</span>
+              <span class="block mt-1"><span id="transportTime">00:00</span><span id="transportState" class="ml-2">STOP</span></span>
+            </div>
+            <div id="rightTapeReel" class="tape-reel relative w-7 h-7 rounded-full"></div>
+          </div>
+          <input id="transportSeek" type="range" min="0" max="120" value="0" step="1" aria-label="Seek through arrangement" title="Seek through arrangement" class="w-24 accent-amber-300 cursor-pointer" />
+        </div>
 
-        <!-- Top Transport Toolbar Panel -->
-        <div class="daw-card daw-border-red rounded-xl p-3 flex flex-wrap items-center justify-between gap-4">
-            
-            <!-- Playback Transport Controls -->
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="resetTransport()" class="w-8 h-8 rounded-full bg-purple-950/80 border border-purple-800/40 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-900">⏮</button>
-                <button type="button" id="playBtn" onclick="togglePlay()" class="w-9 h-9 rounded-full bg-red-900/90 border border-red-500/50 flex items-center justify-center text-white text-xs shadow-md hover:bg-red-800">▶</button>
-                <button type="button" onclick="fastForward()" class="w-8 h-8 rounded-full bg-purple-950/80 border border-purple-800/40 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-900">⏭</button>
-                <button type="button" onclick="stopTransport()" class="w-8 h-8 rounded-full bg-purple-950/80 border border-purple-800/40 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-900">⏹</button>
-                <span id="transportLed" class="w-2.5 h-2.5 rounded-full bg-purple-400 ml-1"></span>
+        <!-- Dragon Fire Studio Mode Badge -->
+        <div class="flex items-center gap-2 bg-red-950/40 border border-red-600/40 px-3 py-1.5 rounded-full">
+          <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+          <span class="text-[10px] font-bold tracking-wider text-orange-400 uppercase">DRAGON FIRE STUDIO</span>
+          <span class="text-[10px] text-zinc-400">Precision with power</span>
+        </div>
+
+        <!-- Project Parameters (BPM, SIG, KEY, USB-MIDI) -->
+        <div class="flex items-center gap-6 mono-font text-xs font-semibold">
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">BPM</span>
+            <span id="bpmDisplay" class="text-sm font-bold text-white">128</span>
+          </div>
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">SIG</span>
+            <span class="text-sm font-bold text-white">4/4</span>
+          </div>
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">KEY</span>
+            <span class="text-sm font-bold text-white">A Min</span>
+          </div>
+          <div id="midiStatus" class="flex items-center gap-1.5 bg-purple-950/60 border border-purple-800/40 px-2.5 py-1 rounded-full text-[11px] text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> USB-MIDI</div>
+        </div>
+
+        <!-- Record Microphone & Save/Export Buttons -->
+        <div class="flex items-center gap-3">
+          <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-purple-950/80 border border-purple-700/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white hover:border-purple-400 transition-colors" title="Arm Microphone Input">🎙</button>
+          <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
+            <input type="hidden" name="bpm" value="128" />
+            <input type="hidden" name="key_scale" value="A Min" />
+            <input type="hidden" name="prompt" id="hiddenPrompt" value="" />
+            <button type="submit" class="px-4 py-1.5 bg-purple-950 border border-purple-700/40 hover:bg-purple-900 rounded-lg text-xs font-semibold text-zinc-200 transition-colors">Export</button>
+          </form>
+          <button type="button" onclick="saveProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-700/40 hover:bg-purple-900 rounded-lg text-xs font-semibold text-zinc-200 transition-colors">Save</button>
+        </div>
+      </div>
+
+      <!-- Grid Workspace (Left Stem Matrix & Right Inspector) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- LEFT 9-COLUMN: Multi-Track Timeline & Piano Roll -->
+        <div class="lg:col-span-9 space-y-4">
+          <!-- Stem Track Headers & Multi-Track Waveform Matrix -->
+          <div class="daw-card daw-border-purple rounded-xl overflow-hidden flex">
+            <!-- Track Names List (Left Fixed Header Strip) -->
+            <div class="w-48 bg-[#090318] border-r border-purple-950/60 flex-shrink-0">
+              <div class="h-7 border-b border-purple-950/60 bg-[#060110]"></div>
+
+              <!-- Track 1 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Kick 808</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 2 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Snare Crack</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 3 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Hi-Hat Perc</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 4 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Bass Synth</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 5 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Lead Keys</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 6 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Pad Atmosphere</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 7 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Guitar DI</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <!-- Track 8 -->
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
+                  <div>
+                    <h4 class="text-xs font-bold text-white leading-tight">Vox Main</h4>
+                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
+                  </div>
+                </div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
             </div>
 
-            <!-- Dragon Fire Studio Mode Badge -->
-            <div class="flex items-center gap-2 bg-red-950/40 border border-red-600/40 px-3 py-1.5 rounded-full">
-                <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
-                <span class="text-[10px] font-bold tracking-wider text-orange-400 uppercase">DRAGON FIRE STUDIO</span>
-                <span class="text-[10px] text-zinc-400">Precision with power</span>
+            <!-- Timeline Measures Ruler & Audio/MIDI Wave Track Lines -->
+            <div class="flex-grow overflow-x-auto">
+              <!-- Measure Numbers Grid Ruler -->
+              <div class="h-7 border-b border-purple-950/60 bg-[#060110] flex items-center font-mono text-[10px] text-zinc-400 px-2 gap-8">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span>
+              </div>
+
+              <!-- Track 1 Audio Waveform -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
+                <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
+              </div>
+              <!-- Track 2 Audio Waveform -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
+                <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
+              </div>
+              <!-- Track 3 Audio Waveform -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
+                <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
+              </div>
+
+              <!-- Track 4 MIDI Piano Roll Notes -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-3 bg-[#0d0422] relative">
+                <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-14 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
+              </div>
+              <!-- Track 5 MIDI Piano Roll Notes -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-2 bg-[#0d0422] relative">
+                <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-16 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
+              </div>
+              <!-- Track 6 MIDI Piano Roll Notes -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-4 bg-[#0d0422] relative">
+                <span class="h-2 w-14 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
+              </div>
+
+              <!-- Track 7 Audio Waveform -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
+                <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
+              </div>
+              <!-- Track 8 Audio Waveform -->
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
+                <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dark Recording Studio Box Area -->
+          <div class="daw-card rounded-xl h-36 bg-[#1a071d]/80 border border-purple-900/30 flex items-center justify-center p-4">
+            <span id="dawStatusText" class="text-xs font-mono text-zinc-400">Master Arrangement View • Standby</span>
+          </div>
+
+          <!-- Virtual VST Instrument Tabs & Interactive Piano Keyboard -->
+          <div class="daw-card daw-border-purple rounded-xl p-4 space-y-3">
+            <!-- Tab Category Selection Bar -->
+            <div class="flex items-center justify-between border-b border-purple-900/40 pb-2">
+              <div class="flex items-center gap-6 text-xs font-semibold text-zinc-300">
+                <button type="button" onclick="selectTab(this, 'Piano')" class="vst-tab text-white font-bold border-b-2 border-purple-400 pb-1">Piano</button>
+                <button type="button" onclick="selectTab(this, 'Guitar')" class="vst-tab hover:text-white transition-colors">Guitar</button>
+                <button type="button" onclick="selectTab(this, 'Bass')" class="vst-tab hover:text-white transition-colors">Bass</button>
+                <button type="button" onclick="selectTab(this, 'Drums')" class="vst-tab hover:text-white transition-colors">Drums</button>
+                <button type="button" onclick="selectTab(this, 'Synth')" class="vst-tab hover:text-white transition-colors">Synth</button>
+                <button type="button" onclick="selectTab(this, 'Strings')" class="vst-tab hover:text-white transition-colors">Strings</button>
+                <button type="button" onclick="selectTab(this, 'Brass')" class="vst-tab hover:text-white transition-colors">Brass</button>
+                <button type="button" onclick="selectTab(this, 'Arp')" class="vst-tab hover:text-white transition-colors">Arp</button>
+              </div>
+              <button type="button" onclick="triggerAiAssist()" class="px-3 py-1 bg-purple-950/80 border border-purple-700/40 rounded-full text-xs text-purple-300 font-semibold hover:bg-purple-900">AI Assist</button>
             </div>
 
-            <!-- Project Parameters (BPM, SIG, KEY, USB-MIDI) -->
-            <div class="flex items-center gap-6 mono-font text-xs font-semibold">
-                <div class="text-center">
-                    <span class="block text-[9px] text-zinc-400 uppercase">BPM</span>
-                    <span id="bpmDisplay" class="text-sm font-bold text-white">128</span>
-                </div>
-                <div class="text-center">
-                    <span class="block text-[9px] text-zinc-400 uppercase">SIG</span>
-                    <span class="text-sm font-bold text-white">4/4</span>
-                </div>
-                <div class="text-center">
-                    <span class="block text-[9px] text-zinc-400 uppercase">KEY</span>
-                    <span class="text-sm font-bold text-white">A Min</span>
-                </div>
-                <div id="midiStatus" class="flex items-center gap-1.5 bg-purple-950/60 border border-purple-800/40 px-2.5 py-1 rounded-full text-[11px] text-emerald-400">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> USB-MIDI
-                </div>
-            </div>
+            <!-- Virtual Synthesizer Piano Keyboard (Synthesizes Web Audio Tones) -->
+            <div class="relative h-32 w-full bg-[#05010c] rounded-lg border border-purple-900/40 p-2 flex justify-center items-stretch overflow-x-auto select-none">
+              <!-- Octave 1 Keys -->
+              <div class="flex relative h-full">
+                <div onclick="playNote(130.81)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(138.59)" class="black-key w-4 h-18 absolute left-5"></div>
+                <div onclick="playNote(146.83)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(155.56)" class="black-key w-4 h-18 absolute left-12"></div>
+                <div onclick="playNote(164.81)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(174.61)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(185.0)" class="black-key w-4 h-18 absolute left-26"></div>
+                <div onclick="playNote(196.0)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(207.65)" class="black-key w-4 h-18 absolute left-33"></div>
+                <div onclick="playNote(220.0)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(233.08)" class="black-key w-4 h-18 absolute left-40"></div>
+                <div onclick="playNote(246.94)" class="white-key w-7 h-full"></div>
+              </div>
 
-            <!-- Record Microphone & Save/Export Buttons -->
-            <div class="flex items-center gap-3">
-                <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-purple-950/80 border border-purple-700/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white hover:border-purple-400 transition-colors" title="Arm Microphone Input">
-                    🎙
-                </button>
-                <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
-                    <input type="hidden" name="bpm" value="128">
-                    <input type="hidden" name="key_scale" value="A Min">
-                    <input type="hidden" name="prompt" id="hiddenPrompt" value="">
-                    <button type="submit" class="px-4 py-1.5 bg-purple-950 border border-purple-700/40 hover:bg-purple-900 rounded-lg text-xs font-semibold text-zinc-200 transition-colors">
-                        Export
+              <!-- Octave 2 Keys -->
+              <div class="flex relative h-full">
+                <div onclick="playNote(261.63)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(277.18)" class="black-key w-4 h-18 absolute left-5"></div>
+                <div onclick="playNote(293.66)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(311.13)" class="black-key w-4 h-18 absolute left-12"></div>
+                <div onclick="playNote(329.63)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(349.23)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(369.99)" class="black-key w-4 h-18 absolute left-26"></div>
+                <div onclick="playNote(392.0)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(415.3)" class="black-key w-4 h-18 absolute left-33"></div>
+                <div onclick="playNote(440.0)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(466.16)" class="black-key w-4 h-18 absolute left-40"></div>
+                <div onclick="playNote(493.88)" class="white-key w-7 h-full"></div>
+              </div>
+
+              <!-- Octave 3 Keys -->
+              <div class="flex relative h-full">
+                <div onclick="playNote(523.25)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(554.37)" class="black-key w-4 h-18 absolute left-5"></div>
+                <div onclick="playNote(587.33)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(622.25)" class="black-key w-4 h-18 absolute left-12"></div>
+                <div onclick="playNote(659.25)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(698.46)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(739.99)" class="black-key w-4 h-18 absolute left-26"></div>
+                <div onclick="playNote(783.99)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(830.61)" class="black-key w-4 h-18 absolute left-33"></div>
+                <div onclick="playNote(880.0)" class="white-key w-7 h-full"></div>
+                <div onclick="playNote(932.33)" class="black-key w-4 h-18 absolute left-40"></div>
+                <div onclick="playNote(987.77)" class="white-key w-7 h-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT 3-COLUMN: Inspector Sidebar Panel -->
+        <div class="lg:col-span-3 space-y-4">
+          <div class="daw-card daw-border-purple rounded-xl p-4 space-y-5 h-full flex flex-col justify-between">
+            <div class="space-y-5">
+              <!-- AI Assist Input Box -->
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-2">AI Assist</h3>
+                <div class="bg-gradient-to-b from-[#240c4a] to-[#120529] border border-purple-700/40 rounded-xl p-2.5 h-20 flex flex-col justify-between">
+                  <textarea id="aiPromptInput" oninput="document.getElementById('hiddenPrompt').value = this.value" placeholder="Ask Ai to help..." class="w-full h-full bg-transparent text-xs text-purple-200 placeholder-purple-400 focus:outline-none resize-none"></textarea>
+                </div>
+              </div>
+
+              <!-- Channel Strip Controls (EQ, Compressor, Reverb Toggles) -->
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-3">Channel Strip</h3>
+                <div class="space-y-3">
+                  <!-- EQ Toggle -->
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">EQ</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
+                      <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
                     </button>
-                </form>
-                <button type="button" onclick="saveProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-700/40 hover:bg-purple-900 rounded-lg text-xs font-semibold text-zinc-200 transition-colors">
-                    Save
-                </button>
-            </div>
+                  </div>
+                  <!-- Compressor Toggle -->
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">Compressor</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
+                      <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
+                    </button>
+                  </div>
+                  <!-- Reverb Toggle -->
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">Reverb</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
+                      <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
+                    </button>
+                  </div>
+                </div>
+              </div>
 
+              <!-- Hardware Ports Status Indicators -->
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-3">Hardware Ports</h3>
+                <div class="space-y-2.5 font-mono text-xs">
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
+                    <span class="text-zinc-200">IN 1 Active</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
+                    <span class="text-zinc-200">IN 2 Active</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
+                    <span class="text-zinc-200">OUT L Active</span>
+                  </div>
+                  <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
+                    <span class="text-zinc-200">OUT R Active</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <!-- Grid Workspace (Left Stem Matrix & Right Inspector) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-
-            <!-- LEFT 9-COLUMN: Multi-Track Timeline & Piano Roll -->
-            <div class="lg:col-span-9 space-y-4">
-                
-                <!-- Stem Track Headers & Multi-Track Waveform Matrix -->
-                <div class="daw-card daw-border-purple rounded-xl overflow-hidden flex">
-                    
-                    <!-- Track Names List (Left Fixed Header Strip) -->
-                    <div class="w-48 bg-[#090318] border-r border-purple-950/60 flex-shrink-0">
-                        <div class="h-7 border-b border-purple-950/60 bg-[#060110]"></div>
-                        
-                        <!-- Track 1 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Kick 808</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 2 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Snare Crack</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 3 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Hi-Hat Perc</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 4 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Bass Synth</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 5 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Lead Keys</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 6 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Pad Atmosphere</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 7 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Guitar DI</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                        <!-- Track 8 -->
-                        <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-1.5 h-6 bg-orange-500 rounded-full"></span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white leading-tight">Vox Main</h4>
-                                    <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
-                        </div>
-                    </div>
-
-                    <!-- Timeline Measures Ruler & Audio/MIDI Wave Track Lines -->
-                    <div class="flex-grow overflow-x-auto">
-                        <!-- Measure Numbers Grid Ruler -->
-                        <div class="h-7 border-b border-purple-950/60 bg-[#060110] flex items-center font-mono text-[10px] text-zinc-400 px-2 gap-8">
-                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span>
-                        </div>
-
-                        <!-- Track 1 Audio Waveform -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
-                            <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
-                        </div>
-                        <!-- Track 2 Audio Waveform -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
-                            <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
-                        </div>
-                        <!-- Track 3 Audio Waveform -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
-                            <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
-                        </div>
-
-                        <!-- Track 4 MIDI Piano Roll Notes -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-3 bg-[#0d0422] relative">
-                            <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-14 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
-                        </div>
-                        <!-- Track 5 MIDI Piano Roll Notes -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-2 bg-[#0d0422] relative">
-                            <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-16 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
-                        </div>
-                        <!-- Track 6 MIDI Piano Roll Notes -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-4 bg-[#0d0422] relative">
-                            <span class="h-2 w-14 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
-                            <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
-                        </div>
-
-                        <!-- Track 7 Audio Waveform -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
-                            <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
-                        </div>
-                        <!-- Track 8 Audio Waveform -->
-                        <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-1 bg-[#0b031d]">
-                            <div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Dark Recording Studio Box Area -->
-                <div class="daw-card rounded-xl h-36 bg-[#1a071d]/80 border border-purple-900/30 flex items-center justify-center p-4">
-                    <span id="dawStatusText" class="text-xs font-mono text-zinc-400">Master Arrangement View • Standby</span>
-                </div>
-
-                <!-- Virtual VST Instrument Tabs & Interactive Piano Keyboard -->
-                <div class="daw-card daw-border-purple rounded-xl p-4 space-y-3">
-                    <!-- Tab Category Selection Bar -->
-                    <div class="flex items-center justify-between border-b border-purple-900/40 pb-2">
-                        <div class="flex items-center gap-6 text-xs font-semibold text-zinc-300">
-                            <button type="button" onclick="selectTab(this, 'Piano')" class="vst-tab text-white font-bold border-b-2 border-purple-400 pb-1">Piano</button>
-                            <button type="button" onclick="selectTab(this, 'Guitar')" class="vst-tab hover:text-white transition-colors">Guitar</button>
-                            <button type="button" onclick="selectTab(this, 'Bass')" class="vst-tab hover:text-white transition-colors">Bass</button>
-                            <button type="button" onclick="selectTab(this, 'Drums')" class="vst-tab hover:text-white transition-colors">Drums</button>
-                            <button type="button" onclick="selectTab(this, 'Synth')" class="vst-tab hover:text-white transition-colors">Synth</button>
-                            <button type="button" onclick="selectTab(this, 'Strings')" class="vst-tab hover:text-white transition-colors">Strings</button>
-                            <button type="button" onclick="selectTab(this, 'Brass')" class="vst-tab hover:text-white transition-colors">Brass</button>
-                            <button type="button" onclick="selectTab(this, 'Arp')" class="vst-tab hover:text-white transition-colors">Arp</button>
-                        </div>
-                        <button type="button" onclick="triggerAiAssist()" class="px-3 py-1 bg-purple-950/80 border border-purple-700/40 rounded-full text-xs text-purple-300 font-semibold hover:bg-purple-900">
-                            AI Assist
-                        </button>
-                    </div>
-
-                    <!-- Virtual Synthesizer Piano Keyboard (Synthesizes Web Audio Tones) -->
-                    <div class="relative h-32 w-full bg-[#05010c] rounded-lg border border-purple-900/40 p-2 flex justify-center items-stretch overflow-x-auto select-none">
-                        <!-- Octave 1 Keys -->
-                        <div class="flex relative h-full">
-                            <div onclick="playNote(130.81)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(138.59)" class="black-key w-4 h-18 absolute left-5"></div>
-                            <div onclick="playNote(146.83)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(155.56)" class="black-key w-4 h-18 absolute left-12"></div>
-                            <div onclick="playNote(164.81)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(174.61)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(185.00)" class="black-key w-4 h-18 absolute left-26"></div>
-                            <div onclick="playNote(196.00)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(207.65)" class="black-key w-4 h-18 absolute left-33"></div>
-                            <div onclick="playNote(220.00)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(233.08)" class="black-key w-4 h-18 absolute left-40"></div>
-                            <div onclick="playNote(246.94)" class="white-key w-7 h-full"></div>
-                        </div>
-
-                        <!-- Octave 2 Keys -->
-                        <div class="flex relative h-full">
-                            <div onclick="playNote(261.63)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(277.18)" class="black-key w-4 h-18 absolute left-5"></div>
-                            <div onclick="playNote(293.66)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(311.13)" class="black-key w-4 h-18 absolute left-12"></div>
-                            <div onclick="playNote(329.63)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(349.23)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(369.99)" class="black-key w-4 h-18 absolute left-26"></div>
-                            <div onclick="playNote(392.00)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(415.30)" class="black-key w-4 h-18 absolute left-33"></div>
-                            <div onclick="playNote(440.00)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(466.16)" class="black-key w-4 h-18 absolute left-40"></div>
-                            <div onclick="playNote(493.88)" class="white-key w-7 h-full"></div>
-                        </div>
-
-                        <!-- Octave 3 Keys -->
-                        <div class="flex relative h-full">
-                            <div onclick="playNote(523.25)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(554.37)" class="black-key w-4 h-18 absolute left-5"></div>
-                            <div onclick="playNote(587.33)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(622.25)" class="black-key w-4 h-18 absolute left-12"></div>
-                            <div onclick="playNote(659.25)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(698.46)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(739.99)" class="black-key w-4 h-18 absolute left-26"></div>
-                            <div onclick="playNote(783.99)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(830.61)" class="black-key w-4 h-18 absolute left-33"></div>
-                            <div onclick="playNote(880.00)" class="white-key w-7 h-full"></div>
-                            <div onclick="playNote(932.33)" class="black-key w-4 h-18 absolute left-40"></div>
-                            <div onclick="playNote(987.77)" class="white-key w-7 h-full"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- RIGHT 3-COLUMN: Inspector Sidebar Panel -->
-            <div class="lg:col-span-3 space-y-4">
-                
-                <div class="daw-card daw-border-purple rounded-xl p-4 space-y-5 h-full flex flex-col justify-between">
-                    
-                    <div class="space-y-5">
-                        <!-- AI Assist Input Box -->
-                        <div>
-                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-2">AI Assist</h3>
-                            <div class="bg-gradient-to-b from-[#240c4a] to-[#120529] border border-purple-700/40 rounded-xl p-2.5 h-20 flex flex-col justify-between">
-                                <textarea id="aiPromptInput" oninput="document.getElementById('hiddenPrompt').value = this.value" placeholder="Ask Ai to help..." class="w-full h-full bg-transparent text-xs text-purple-200 placeholder-purple-400 focus:outline-none resize-none"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Channel Strip Controls (EQ, Compressor, Reverb Toggles) -->
-                        <div>
-                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-3">Channel Strip</h3>
-                            <div class="space-y-3">
-                                <!-- EQ Toggle -->
-                                <div class="flex items-center justify-between text-xs font-semibold">
-                                    <span class="text-zinc-300">EQ</span>
-                                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
-                                        <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
-                                    </button>
-                                </div>
-                                <!-- Compressor Toggle -->
-                                <div class="flex items-center justify-between text-xs font-semibold">
-                                    <span class="text-zinc-300">Compressor</span>
-                                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
-                                        <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
-                                    </button>
-                                </div>
-                                <!-- Reverb Toggle -->
-                                <div class="flex items-center justify-between text-xs font-semibold">
-                                    <span class="text-zinc-300">Reverb</span>
-                                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer">
-                                        <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hardware Ports Status Indicators -->
-                        <div>
-                            <h3 class="text-xs font-extrabold uppercase tracking-wider text-white mb-3">Hardware Ports</h3>
-                            <div class="space-y-2.5 font-mono text-xs">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
-                                    <span class="text-zinc-200">IN 1 Active</span>
-                                </div>
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
-                                    <span class="text-zinc-200">IN 2 Active</span>
-                                </div>
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
-                                    <span class="text-zinc-200">OUT L Active</span>
-                                </div>
-                                <div class="flex items-center gap-2.5">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50"></span>
-                                    <span class="text-zinc-200">OUT R Active</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+      </div>
     </main>
 
     <!-- Floating Artist Support Widget (Bottom-Right Headset) -->
     <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-[#2a1052] border border-purple-400/50 rounded-full shadow-lg shadow-purple-950 hover:scale-110 transition-transform" title="Artist Support">
-        <span class="text-lg">🎧</span>
+      <span class="text-lg">🎧</span>
     </a>
 
     <!-- Interactive Transport & Web Audio Logic -->
     <script>
-        let audioCtx = null;
-        let isPlaying = false;
-        let isMicArmed = false;
+      let audioCtx = null;
+      let isPlaying = false;
+      let isMicArmed = false;
+      const bpm = 128;
+      const totalMeasures = 64;
+      const secondsPerMeasure = (4 * 60) / bpm;
+      const transportDuration = totalMeasures * secondsPerMeasure;
+      const measureSkip = secondsPerMeasure * 4;
+      let transportPosition = 0;
+      let transportInterval = null;
 
-        // Initialize Web Audio Context
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
+      // Initialize Web Audio Context
+      function initAudio() {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
+      }
 
-        // Web Audio Synthesizer Note Trigger
-        function playNote(freq) {
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+      // Web Audio Synthesizer Note Trigger
+      function playNote(freq) {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
 
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
 
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
 
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.8);
-        }
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.8);
+      }
 
-        // Transport Controls
-        function togglePlay() {
-            initAudio();
-            const btn = document.getElementById('playBtn');
-            const led = document.getElementById('transportLed');
-            const status = document.getElementById('dawStatusText');
+      // Transport Controls
+      function togglePlay() {
+        if (transportPosition >= transportDuration) transportPosition = 0;
+        isPlaying = !isPlaying;
+        if (isPlaying) startTransportClock();
+        else clearInterval(transportInterval);
+        syncTransport(isPlaying ? "Playing" : "Paused");
+      }
 
-            if (!isPlaying) {
-                isPlaying = true;
-                btn.innerText = '⏸';
-                led.classList.replace('bg-purple-400', 'bg-red-500');
-                status.innerText = 'Master Arrangement View • Playing Back Multi-Track Stems';
-            } else {
-                isPlaying = false;
-                btn.innerText = '▶';
-                led.classList.replace('bg-red-500', 'bg-purple-400');
-                status.innerText = 'Master Arrangement View • Paused';
-            }
-        }
+      function stopTransport() {
+        isPlaying = false;
+        clearInterval(transportInterval);
+        syncTransport("Stopped");
+      }
 
-        function stopTransport() {
-            isPlaying = false;
-            document.getElementById('playBtn').innerText = '▶';
-            document.getElementById('transportLed').classList.replace('bg-red-500', 'bg-purple-400');
-            document.getElementById('dawStatusText').innerText = 'Master Arrangement View • Stopped';
-        }
+      function resetTransport() {
+        isPlaying = false;
+        clearInterval(transportInterval);
+        transportPosition = 0;
+        syncTransport("Rewound to start");
+      }
 
-        function resetTransport() {
+      function fastForward() {
+        transportPosition = Math.min(transportDuration, transportPosition + measureSkip);
+        if (transportPosition >= transportDuration && isPlaying) stopTransport();
+        else syncTransport(isPlaying ? "Playing" : "Forwarded four measures");
+      }
+
+      function rewindTransport() {
+        transportPosition = Math.max(0, transportPosition - measureSkip);
+        syncTransport(isPlaying ? "Playing" : "Rewound four measures");
+      }
+
+      function startTransportClock() {
+        clearInterval(transportInterval);
+        transportInterval = setInterval(() => {
+          transportPosition = Math.min(transportDuration, transportPosition + 1);
+          if (transportPosition >= transportDuration) {
             stopTransport();
-        }
+          } else {
+            syncTransport("Playing");
+          }
+        }, 1000);
+      }
 
-        function fastForward() {
-            document.getElementById('dawStatusText').innerText = 'Fast-Forwarding 4 Measures...';
-        }
+      function formatTransportTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+      }
 
-        // Toggle Microphone Input
-        async function toggleMic() {
-            const btn = document.getElementById('micBtn');
-            if (!isMicArmed) {
-                try {
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
-                    isMicArmed = true;
-                    btn.classList.add('bg-red-600', 'text-white', 'border-red-400');
-                    document.getElementById('dawStatusText').innerText = 'Microphone Armed • Direct Hardware Streaming Active';
-                } catch (err) {
-                    alert('Audio Interface / Microphone access denied: ' + err);
-                }
-            } else {
-                isMicArmed = false;
-                btn.classList.remove('bg-red-600', 'text-white', 'border-red-400');
-                document.getElementById('dawStatusText').innerText = 'Microphone Disarmed';
-            }
-        }
+      function syncTransport(state) {
+        const playButton = document.getElementById("playBtn");
+        const led = document.getElementById("transportLed");
+        playButton.innerText = isPlaying ? "Ⅱ" : "▶";
+        playButton.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
+        playButton.setAttribute("title", isPlaying ? "Pause" : "Play");
+        led.classList.toggle("bg-red-500", isPlaying);
+        led.classList.toggle("bg-purple-400", !isPlaying);
+        document.getElementById("transportState").innerText = isPlaying ? "PLAY" : state.toUpperCase();
+        document.getElementById("transportTime").innerText = formatTransportTime(transportPosition);
+        document.getElementById("measureCounter").innerText = `BAR ${String(Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)).padStart(3, "0")}`;
+        document.getElementById("transportSeek").value = transportPosition;
+        document.getElementById("dawStatusText").innerText = `Master Arrangement View • ${state} • Bar ${Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)} of ${totalMeasures}`;
+      }
 
-        // Channel Strip FX Toggle Switch
-        function toggleSwitch(btn) {
-            const knob = btn.querySelector('div');
-            if (btn.classList.contains('justify-end')) {
-                btn.classList.replace('justify-end', 'justify-start');
-                btn.classList.replace('from-orange-500', 'from-zinc-700');
-                btn.classList.replace('to-amber-500', 'to-zinc-800');
-            } else {
-                btn.classList.replace('justify-start', 'justify-end');
-                btn.classList.replace('from-zinc-700', 'from-orange-500');
-                btn.classList.replace('to-zinc-800', 'to-amber-500');
-            }
-        }
+      document.getElementById("transportSeek").addEventListener("input", (event) => {
+        transportPosition = Number(event.target.value);
+        if (transportPosition >= transportDuration && isPlaying) stopTransport();
+        else syncTransport(isPlaying ? "Playing" : "Seeking");
+      });
 
-        // Track Mute Toggle
-        function toggleMute(btn) {
-            btn.classList.toggle('bg-red-600');
-            btn.classList.toggle('text-white');
-        }
+      syncTransport("Standby");
 
-        // Tab Selection
-        function selectTab(btn, name) {
-            document.querySelectorAll('.vst-tab').forEach(t => {
-                t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-purple-400', 'pb-1');
-                t.classList.add('hover:text-white', 'transition-colors');
-            });
-            btn.classList.add('text-white', 'font-bold', 'border-b-2', 'border-purple-400', 'pb-1');
-            btn.classList.remove('hover:text-white', 'transition-colors');
+      // Toggle Microphone Input
+      async function toggleMic() {
+        const btn = document.getElementById("micBtn");
+        if (!isMicArmed) {
+          try {
+            await navigator.mediaDevices.getUserMedia({ audio: true });
+            isMicArmed = true;
+            btn.classList.add("bg-red-600", "text-white", "border-red-400");
+            document.getElementById("dawStatusText").innerText = "Microphone Armed • Direct Hardware Streaming Active";
+          } catch (err) {
+            alert("Audio Interface / Microphone access denied: " + err);
+          }
+        } else {
+          isMicArmed = false;
+          btn.classList.remove("bg-red-600", "text-white", "border-red-400");
+          document.getElementById("dawStatusText").innerText = "Microphone Disarmed";
         }
+      }
 
-        // Save & AI Assist
-        function saveProject() {
-            alert('Pro Studio Session Saved!');
+      // Channel Strip FX Toggle Switch
+      function toggleSwitch(btn) {
+        const knob = btn.querySelector("div");
+        if (btn.classList.contains("justify-end")) {
+          btn.classList.replace("justify-end", "justify-start");
+          btn.classList.replace("from-orange-500", "from-zinc-700");
+          btn.classList.replace("to-amber-500", "to-zinc-800");
+        } else {
+          btn.classList.replace("justify-start", "justify-end");
+          btn.classList.replace("from-zinc-700", "from-orange-500");
+          btn.classList.replace("to-zinc-800", "to-amber-500");
         }
+      }
 
-        function triggerAiAssist() {
-            const text = document.getElementById('aiPromptInput').value;
-            alert(text ? `AI Studio Assistant Analyzing: "${text}"` : 'Please enter an AI prompt in the sidebar.');
-        }
+      // Track Mute Toggle
+      function toggleMute(btn) {
+        btn.classList.toggle("bg-red-600");
+        btn.classList.toggle("text-white");
+      }
+
+      // Tab Selection
+      function selectTab(btn, name) {
+        document.querySelectorAll(".vst-tab").forEach((t) => {
+          t.classList.remove("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
+          t.classList.add("hover:text-white", "transition-colors");
+        });
+        btn.classList.add("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
+        btn.classList.remove("hover:text-white", "transition-colors");
+      }
+
+      // Save & AI Assist
+      function saveProject() {
+        alert("Pro Studio Session Saved!");
+      }
+
+      function triggerAiAssist() {
+        const text = document.getElementById("aiPromptInput").value;
+        alert(text ? `AI Studio Assistant Analyzing: "${text}"` : "Please enter an AI prompt in the sidebar.");
+      }
     </script>
-</body>
+  </body>
 </html>
