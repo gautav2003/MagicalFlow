@@ -323,7 +323,7 @@ def support_chat():
         
         reply = (
             f"✨ **Maya's AI {selected_genre} Vocal Generator** ✨<br><br>"
-            f"🎉 **Generated Vocal Profile:** {selected_genre} - {gender} ({vibe})<br><br>"
+            f"🎉 **Generated Vocal Profile:** {selected_genre} {gender} ({vibe})<br><br>"
             "🔹 **Tone & Texture:** Silky smooth classical runs, lush ambient hall reverb, subtle tape warmth, and expressive dynamic pitch bends.<br>"
             "🔹 **Recommended Scale:** C# Minor / D Phrygian Dominant (for rich Eastern modal color).<br>"
             "🔹 **FX Chain Preset:** High-pass filter @ 100Hz -> Optical Compressor -> Shimmer Reverb (2.8s decay) -> Analog Delay (1/8th note triplet sync).<br><br>"
@@ -435,7 +435,7 @@ def support_chat():
 
     return jsonify({'reply': reply})
 
-# ==================== NAVIGATION PLACEHOLDERS (LOCKED) ====================
+# ==================== NAVIGATION & STUDIO MODES ====================
 @app.route('/logout')
 def logout():
     session.clear()
@@ -447,29 +447,58 @@ def select_mode():
     username = session.get('user', 'Artist')
     return render_template('SelectMode.html', username=username)
 
-@app.route('/beginner-mode')
+@app.route('/beginner-mode', methods=['GET', 'POST'])
 @login_required
-def beginner_mode(): return render_template('Home.html')
+def beginner_mode():
+    if request.method == 'POST':
+        prompt = request.form.get('prompt')
+        genre = request.form.get('genre')
+        mood = request.form.get('mood')
+        tempo = request.form.get('tempo')
+        vocals = request.form.get('vocals')
+        # Store in session if needed for output page
+        session['composition_data'] = {
+            'prompt': prompt,
+            'genre': genre,
+            'mood': mood,
+            'tempo': tempo,
+            'vocals': vocals
+        }
+        return redirect(url_for('beginner_output'))
+    return render_template('BeginnerMode.html')
 
 @app.route('/beginner-output')
 @login_required
-def beginner_output(): return render_template('Home.html')
+def beginner_output():
+    composition = session.get('composition_data', {
+        'prompt': 'A magical melody under the stars',
+        'genre': 'Bollywood Romantic',
+        'mood': 'Magical & Dreamy',
+        'tempo': '120 BPM',
+        'vocals': 'Ethereal Female'
+    })
+    return render_template('BeginnerOutput.html', composition=composition)
 
 @app.route('/pro-studio-mode')
 @login_required
-def pro_studio_mode(): return render_template('Home.html')
+def pro_studio_mode():
+    return render_template('ProStudioMode.html')
 
 @app.route('/studio-output')
 @login_required
-def studio_output(): return render_template('Home.html')
+def studio_output():
+    return render_template('StudioOutput.html')
 
 @app.route('/my-music')
 @login_required
-def my_music(): return render_template('Home.html')
+def my_music():
+    return render_template('MyMusic.html')
 
 @app.route('/account')
 @login_required
-def account(): return render_template('Home.html')
+def account():
+    return render_template('Account.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    
