@@ -263,7 +263,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="kick" aria-pressed="false" aria-label="Mute Kick 808" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 2 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -274,7 +274,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="snare" aria-pressed="false" aria-label="Mute Snare Crack" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 3 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -285,7 +285,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="hihat" aria-pressed="false" aria-label="Mute Hi-Hat Perc" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 4 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -296,7 +296,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="bass" aria-pressed="false" aria-label="Mute Bass Synth" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 5 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -307,7 +307,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="lead" aria-pressed="false" aria-label="Mute Lead Keys" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 6 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -318,7 +318,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">MIDI</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="pad" aria-pressed="false" aria-label="Mute Pad Atmosphere" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 7 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -329,7 +329,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="guitar" aria-pressed="false" aria-label="Mute Guitar DI" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
               <!-- Track 8 -->
               <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
@@ -340,7 +340,7 @@
                     <span class="text-[9px] text-zinc-400 font-mono">Audio</span>
                   </div>
                 </div>
-                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+                <button type="button" data-track="vox" aria-pressed="false" aria-label="Mute Vox Main" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
               </div>
             </div>
 
@@ -550,30 +550,59 @@
     <!-- Interactive Transport & Web Audio Logic -->
     <script>
       let audioCtx = null;
+      let masterGain = null;
+      let compressor = null;
+      let noiseBuffer = null;
       let isPlaying = false;
       let isMicArmed = false;
       let selectedInstrument = "Piano";
       const bpm = 128;
       const totalMeasures = 64;
+      const stepsPerMeasure = 16;
       const secondsPerMeasure = (4 * 60) / bpm;
+      const secondsPerStep = secondsPerMeasure / stepsPerMeasure;
+      const totalSteps = totalMeasures * stepsPerMeasure;
       const transportDuration = totalMeasures * secondsPerMeasure;
       const measureSkip = secondsPerMeasure * 4;
       let transportPosition = 0;
+      let transportStep = 0;
       let transportInterval = null;
+      const mutedTracks = new Set();
+      const chordProgression = [
+        { bass: 45, chord: [57, 60, 64] },
+        { bass: 41, chord: [53, 57, 60] },
+        { bass: 48, chord: [48, 52, 55] },
+        { bass: 43, chord: [55, 59, 62] },
+      ];
+      const leadPattern = [0, 2, 4, 2, 1, 2, 5, 4, 0, 2, 4, 6, 5, 4, 2, 1];
 
       // Initialize Web Audio Context
-      function initAudio() {
+      async function initAudio() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          masterGain = audioCtx.createGain();
+          compressor = audioCtx.createDynamicsCompressor();
+          masterGain.gain.value = 0.72;
+          compressor.threshold.value = -18;
+          compressor.ratio.value = 3;
+          masterGain.connect(compressor);
+          compressor.connect(audioCtx.destination);
         }
-        if (audioCtx.state === "suspended") audioCtx.resume();
+        if (!noiseBuffer) {
+          noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
+          const noiseData = noiseBuffer.getChannelData(0);
+          for (let index = 0; index < noiseData.length; index++) {
+            noiseData[index] = Math.random() * 2 - 1;
+          }
+        }
+        if (audioCtx.state === "suspended") await audioCtx.resume();
       }
 
       // Play the selected instrument with a browser-synthesized tone.
-      function playNote(freq) {
-        initAudio();
+      async function playNote(freq) {
+        await initAudio();
         if (selectedInstrument === "Drums") {
-          playDrumHit(freq);
+          playDrumHit(freq, audioCtx.currentTime);
           return;
         }
 
@@ -602,13 +631,13 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGain);
         osc.start();
         osc.stop(now + preset.duration);
       }
 
-      function playDrumHit(freq) {
-        const now = audioCtx.currentTime;
+      function playDrumHit(freq, startTime = audioCtx.currentTime) {
+        const now = startTime;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         const isKick = freq < 180;
@@ -619,17 +648,110 @@
         gain.gain.setValueAtTime(isKick ? 0.7 : 0.28, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + (isKick ? 0.24 : 0.12));
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(masterGain);
         osc.start(now);
         osc.stop(now + (isKick ? 0.25 : 0.13));
       }
 
+      function playSynthNote(frequency, startTime, duration, waveform, volume, attack = 0.01, filterFrequency = 7000) {
+        const oscillator = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        const endTime = startTime + duration;
+
+        oscillator.type = waveform;
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(filterFrequency, startTime);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(volume, startTime + attack);
+        gain.gain.setValueAtTime(volume, Math.max(startTime + attack, endTime - 0.08));
+        gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        oscillator.start(startTime);
+        oscillator.stop(endTime);
+      }
+
+      function playNoise(startTime, duration, volume, highpassFrequency) {
+        const source = audioCtx.createBufferSource();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        source.buffer = noiseBuffer;
+        filter.type = "highpass";
+        filter.frequency.setValueAtTime(highpassFrequency, startTime);
+        gain.gain.setValueAtTime(volume, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        source.start(startTime);
+        source.stop(startTime + duration);
+      }
+
+      function midiToFrequency(note) {
+        return 440 * Math.pow(2, (note - 69) / 12);
+      }
+
+      function playArrangementStep(step) {
+        const stepInMeasure = step % stepsPerMeasure;
+        const measure = Math.floor(step / stepsPerMeasure);
+        const progression = chordProgression[Math.floor(measure / 4) % chordProgression.length];
+        const now = audioCtx.currentTime + 0.015;
+
+        if (!mutedTracks.has("kick") && stepInMeasure % 4 === 0) {
+          playDrumHit(100, now);
+        }
+        if (!mutedTracks.has("snare") && (stepInMeasure === 4 || stepInMeasure === 12)) {
+          playNoise(now, 0.18, 0.16, 900);
+          playDrumHit(220, now);
+        }
+        if (!mutedTracks.has("hihat") && stepInMeasure % 2 === 0) {
+          playNoise(now, stepInMeasure % 4 === 0 ? 0.045 : 0.03, stepInMeasure % 4 === 0 ? 0.045 : 0.025, 6500);
+        }
+        if (!mutedTracks.has("bass") && [0, 6, 8, 14].includes(stepInMeasure)) {
+          const bassNote = progression.bass + (stepInMeasure === 6 || stepInMeasure === 14 ? 7 : 0);
+          playSynthNote(midiToFrequency(bassNote), now, secondsPerStep * 3.5, "triangle", 0.13, 0.008, 750);
+        }
+        if (!mutedTracks.has("lead") && stepInMeasure % 2 === 0) {
+          const note = [69, 72, 76, 79, 81, 84][leadPattern[(stepInMeasure / 2 + measure) % leadPattern.length] % 6];
+          playSynthNote(midiToFrequency(note), now, secondsPerStep * 1.7, "sine", 0.075, 0.012, 3600);
+        }
+        if (!mutedTracks.has("pad") && stepInMeasure === 0) {
+          progression.chord.forEach((note) => {
+            playSynthNote(midiToFrequency(note), now, secondsPerMeasure * 3.7, "sine", 0.025, 0.32, 1800);
+          });
+        }
+        if (!mutedTracks.has("guitar") && stepInMeasure % 4 === 2) {
+          const chordNote = progression.chord[(stepInMeasure / 4) % progression.chord.length] + 12;
+          playSynthNote(midiToFrequency(chordNote), now, secondsPerStep * 3.2, "triangle", 0.045, 0.006, 2800);
+        }
+        if (!mutedTracks.has("vox") && stepInMeasure === 0 && measure % 2 === 0) {
+          playSynthNote(midiToFrequency(progression.chord[2] + 12), now, secondsPerMeasure * 1.8, "sine", 0.018, 0.55, 2200);
+        }
+      }
+
       // Transport Controls
-      function togglePlay() {
-        if (transportPosition >= transportDuration) transportPosition = 0;
+      async function togglePlay() {
+        if (transportStep >= totalSteps) {
+          transportPosition = 0;
+          transportStep = 0;
+        }
         isPlaying = !isPlaying;
-        if (isPlaying) startTransportClock();
-        else clearInterval(transportInterval);
+        if (isPlaying) {
+          try {
+            await initAudio();
+            startTransportClock();
+          } catch (error) {
+            isPlaying = false;
+            console.error("Unable to start Pro Studio audio playback:", error);
+            document.getElementById("dawStatusText").innerText = "Audio playback could not start. Check browser audio support.";
+          }
+        } else {
+          clearInterval(transportInterval);
+        }
         syncTransport(isPlaying ? "Playing" : "Paused");
       }
 
@@ -642,31 +764,40 @@
       function resetTransport() {
         isPlaying = false;
         clearInterval(transportInterval);
+        transportStep = 0;
         transportPosition = 0;
         syncTransport("Rewound to start");
       }
 
       function fastForward() {
         transportPosition = Math.min(transportDuration, transportPosition + measureSkip);
-        if (transportPosition >= transportDuration && isPlaying) stopTransport();
-        else syncTransport(isPlaying ? "Playing" : "Forwarded four measures");
+        transportStep = Math.min(totalSteps, Math.round(transportPosition / secondsPerStep));
+        if (transportPosition >= transportDuration) stopTransport();
+        else {
+          if (isPlaying) startTransportClock();
+          syncTransport(isPlaying ? "Playing" : "Forwarded four measures");
+        }
       }
 
       function rewindTransport() {
         transportPosition = Math.max(0, transportPosition - measureSkip);
+        transportStep = Math.max(0, Math.round(transportPosition / secondsPerStep));
+        if (isPlaying) startTransportClock();
         syncTransport(isPlaying ? "Playing" : "Rewound four measures");
       }
 
       function startTransportClock() {
         clearInterval(transportInterval);
         transportInterval = setInterval(() => {
-          transportPosition = Math.min(transportDuration, transportPosition + 1);
-          if (transportPosition >= transportDuration) {
+          if (transportStep >= totalSteps) {
             stopTransport();
           } else {
-            syncTransport("Playing");
+            playArrangementStep(transportStep);
+            transportStep++;
+            transportPosition = Math.min(transportDuration, transportStep * secondsPerStep);
+            if (transportStep % 4 === 0 || transportStep >= totalSteps) syncTransport("Playing");
           }
-        }, 1000);
+        }, secondsPerStep * 1000);
       }
 
       function formatTransportTime(seconds) {
@@ -694,8 +825,12 @@
 
       document.getElementById("transportSeek").addEventListener("input", (event) => {
         transportPosition = Number(event.target.value);
-        if (transportPosition >= transportDuration && isPlaying) stopTransport();
-        else syncTransport(isPlaying ? "Playing" : "Seeking");
+        transportStep = Math.min(totalSteps, Math.round(transportPosition / secondsPerStep));
+        if (transportPosition >= transportDuration) stopTransport();
+        else {
+          if (isPlaying) startTransportClock();
+          syncTransport(isPlaying ? "Playing" : "Seeking");
+        }
       });
 
       syncTransport("Standby");
@@ -735,8 +870,16 @@
 
       // Track Mute Toggle
       function toggleMute(btn) {
-        btn.classList.toggle("bg-red-600");
-        btn.classList.toggle("text-white");
+        const track = btn.dataset.track;
+        const muted = mutedTracks.has(track);
+        if (muted) mutedTracks.delete(track);
+        else mutedTracks.add(track);
+        btn.setAttribute("aria-pressed", String(!muted));
+        btn.setAttribute("aria-label", `${muted ? "Mute" : "Unmute"} ${btn.closest("div").querySelector("h4").innerText}`);
+        btn.classList.toggle("bg-red-600", !muted);
+        btn.classList.toggle("bg-purple-950", muted);
+        btn.classList.toggle("text-white", !muted);
+        btn.classList.toggle("text-purple-300", muted);
       }
 
       // Tab Selection
