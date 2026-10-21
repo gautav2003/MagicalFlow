@@ -419,6 +419,7 @@
               </div>
               <button type="button" onclick="triggerAiAssist()" class="px-3 py-1 bg-purple-950/80 border border-purple-700/40 rounded-full text-xs text-purple-300 font-semibold hover:bg-purple-900">AI Assist</button>
             </div>
+            <p id="instrumentStatus" class="text-[10px] text-purple-300" aria-live="polite">Piano selected · Click a key or use A–L to play</p>
 
             <!-- Virtual Synthesizer Piano Keyboard (Synthesizes Web Audio Tones) -->
             <div class="relative h-32 w-full bg-[#05010c] rounded-lg border border-purple-900/40 p-2 flex justify-center items-stretch overflow-x-auto select-none">
@@ -551,6 +552,7 @@
       let audioCtx = null;
       let isPlaying = false;
       let isMicArmed = false;
+      let selectedInstrument = "Piano";
       const bpm = 128;
       const totalMeasures = 64;
       const secondsPerMeasure = (4 * 60) / bpm;
@@ -564,25 +566,62 @@
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
+        if (audioCtx.state === "suspended") audioCtx.resume();
       }
 
-      // Web Audio Synthesizer Note Trigger
+      // Play the selected instrument with a browser-synthesized tone.
       function playNote(freq) {
         initAudio();
+        if (selectedInstrument === "Drums") {
+          playDrumHit(freq);
+          return;
+        }
+
+        const presets = {
+          Piano: { type: "sine", duration: 0.9, volume: 0.22, filter: 4200 },
+          Guitar: { type: "triangle", duration: 0.65, volume: 0.2, filter: 2600 },
+          Bass: { type: "sawtooth", duration: 0.7, volume: 0.2, filter: 900 },
+          Synth: { type: "sawtooth", duration: 0.85, volume: 0.16, filter: 3200 },
+          Strings: { type: "sawtooth", duration: 1.3, volume: 0.12, filter: 2400 },
+          Brass: { type: "square", duration: 0.55, volume: 0.12, filter: 1300 },
+          Arp: { type: "square", duration: 0.32, volume: 0.12, filter: 3000 },
+        };
+        const preset = presets[selectedInstrument] || presets.Piano;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        const now = audioCtx.currentTime;
 
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.type = preset.type;
+        osc.frequency.setValueAtTime(freq, now);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(preset.filter, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(preset.volume, now + (selectedInstrument === "Strings" ? 0.08 : 0.015));
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + preset.duration);
 
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + preset.duration);
+      }
 
+      function playDrumHit(freq) {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const isKick = freq < 180;
+
+        osc.type = isKick ? "sine" : "triangle";
+        osc.frequency.setValueAtTime(isKick ? 150 : freq > 350 ? 900 : 190, now);
+        if (isKick) osc.frequency.exponentialRampToValueAtTime(45, now + 0.18);
+        gain.gain.setValueAtTime(isKick ? 0.7 : 0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (isKick ? 0.24 : 0.12));
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.8);
+        osc.start(now);
+        osc.stop(now + (isKick ? 0.25 : 0.13));
       }
 
       // Transport Controls
@@ -702,13 +741,25 @@
 
       // Tab Selection
       function selectTab(btn, name) {
+        selectedInstrument = name;
         document.querySelectorAll(".vst-tab").forEach((t) => {
           t.classList.remove("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
           t.classList.add("hover:text-white", "transition-colors");
         });
         btn.classList.add("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
         btn.classList.remove("hover:text-white", "transition-colors");
+        document.getElementById("instrumentStatus").innerText = `${name} selected · Click a key or use A–L to play`;
       }
+
+      // Play the keyboard with A–L and the adjacent black-key shortcuts.
+      const keyboardNotes = "awsedftgyhujkolp;";
+      document.addEventListener("keydown", (event) => {
+        if (event.repeat || event.target.closest("input, textarea, select, button")) return;
+        const noteIndex = keyboardNotes.indexOf(event.key.toLowerCase());
+        if (noteIndex < 0) return;
+        event.preventDefault();
+        playNote(130.81 * Math.pow(2, noteIndex / 12));
+      });
 
       // Save & AI Assist
       function saveProject() {

@@ -454,15 +454,18 @@ def beginner_mode():
         prompt = request.form.get('prompt')
         genre = request.form.get('genre')
         mood = request.form.get('mood')
-        tempo = request.form.get('tempo')
-        vocals = request.form.get('vocals')
-        # Store in session if needed for output page
+        bpm = request.form.get('bpm', '90')
+        duration = request.form.get('duration', '3')
+        instruments = request.form.getlist('instruments')
+        vocals = request.form.get('vocals', 'Instrumental')
         session['composition_data'] = {
             'prompt': prompt,
             'genre': genre,
             'mood': mood,
-            'tempo': tempo,
-            'vocals': vocals
+            'tempo': f'{bpm} BPM',
+            'duration': duration,
+            'instruments': instruments,
+            'vocals': vocals,
         }
         return redirect(url_for('beginner_output'))
     return render_template('BeginnerMode.html')
@@ -501,4 +504,3 @@ def account():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
-    

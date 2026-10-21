@@ -180,7 +180,7 @@
     <!-- Main Workspace Dashboard Grid -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
       <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
-      <form method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
+      <form method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
         <!-- AI Prompt Input -->
         <div>
           <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI Prompt</label>
@@ -341,8 +341,11 @@
         <!-- Vintage Cassette Player and Waveform -->
         <div class="glass-panel rounded-2xl p-5 space-y-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-amber-200">Late Night Lo-Fi</span>
+            <div>
+              <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
+              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Browser-synthesized demo preview</span>
+            </div>
+            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
           </div>
 
           <div class="cassette-shell rounded-xl p-3">
@@ -353,7 +356,7 @@
               </div>
               <div class="flex items-center justify-center gap-8 py-3">
                 <div id="leftReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
-                <div class="h-1 w-10 bg-[#5b4530] rounded-full"></div>
+                <div class="h-1 w-10 bg-violet-700 rounded-full shadow-[0_0_8px_rgba(167,139,250,0.8)]"></div>
                 <div id="rightReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
               </div>
               <div class="flex items-center justify-between text-[9px] font-mono">
@@ -440,54 +443,138 @@
 
       // Vintage Cassette Player: playback state and track durations
       const tracks = {
-        "Late Night Lo-Fi": 204,
-        "Morning Jazz": 178,
-        "Dark Ambient": 250,
+        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle" },
+        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine" },
+        "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine" },
       };
+      let previewAudioContext = null;
       let isPlaying = false;
       let timerSeconds = 0;
       let timerInterval = null;
+      let sequenceInterval = null;
+      let sequenceStep = 0;
       let selectedTrack = "Late Night Lo-Fi";
 
-      function togglePlay(trackName) {
+      async function togglePlay(trackName) {
         if (trackName && trackName !== selectedTrack) {
           selectedTrack = trackName;
           timerSeconds = 0;
           isPlaying = true;
+          sequenceStep = 0;
         } else {
           isPlaying = !isPlaying;
         }
-        if (isPlaying && timerSeconds >= tracks[selectedTrack]) timerSeconds = 0;
-        syncPlayer();
-        if (isPlaying) startTimer();
-        else clearInterval(timerInterval);
+        if (!isPlaying) {
+          clearInterval(timerInterval);
+          clearInterval(sequenceInterval);
+          syncPlayer();
+          document.getElementById("previewStatus").innerText = "Preview paused";
+          return;
+        }
+        if (timerSeconds >= tracks[selectedTrack].duration) {
+          timerSeconds = 0;
+          sequenceStep = 0;
+        }
+        try {
+          await startPreviewAudio();
+          syncPlayer();
+          startTimer();
+          startAudioSequence();
+          document.getElementById("previewStatus").innerText = "Playing a synthesized demo loop · not AI-generated audio";
+        } catch (error) {
+          isPlaying = false;
+          syncPlayer();
+          document.getElementById("previewStatus").innerText = "Audio playback is unavailable in this browser";
+          console.error("Unable to start the browser audio preview:", error);
+        }
+      }
+
+      async function startPreviewAudio() {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
+        if (!previewAudioContext) previewAudioContext = new AudioContextConstructor();
+        if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
+      }
+
+      function playPreviewTone(frequency, duration, waveform = "triangle", volume = 0.08) {
+        const now = previewAudioContext.currentTime;
+        const oscillator = previewAudioContext.createOscillator();
+        const gain = previewAudioContext.createGain();
+        oscillator.type = waveform;
+        oscillator.frequency.setValueAtTime(frequency, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.connect(gain);
+        gain.connect(previewAudioContext.destination);
+        oscillator.start(now);
+        oscillator.stop(now + duration);
+      }
+
+      function playPreviewStep() {
+        const track = tracks[selectedTrack];
+        const noteIndex = [0, 2, 4, 2, 1, 3, 5, 3, 0, 2, 6, 4, 1, 3, 5, 7][sequenceStep];
+        const melodyFrequency = track.root * Math.pow(2, track.scale[noteIndex] / 12);
+        const halfBeatSeconds = 30 / track.bpm;
+        playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, 0.07);
+
+        if (sequenceStep % 4 === 0) {
+          const bassFrequency = track.root / 2;
+          playPreviewTone(bassFrequency, halfBeatSeconds * 1.8, "triangle", 0.12);
+        }
+        if (sequenceStep % 8 === 0) {
+          track.chord.forEach((interval) => {
+            playPreviewTone(track.root * Math.pow(2, interval / 12), halfBeatSeconds * 3.5, "sine", 0.025);
+          });
+          playPreviewTone(70, 0.16, "sine", 0.08);
+        }
+        if (sequenceStep % 8 === 4) playPreviewTone(185, 0.09, "triangle", 0.035);
+        sequenceStep = (sequenceStep + 1) % 16;
+      }
+
+      function startAudioSequence() {
+        clearInterval(sequenceInterval);
+        const halfBeatMilliseconds = (30 / tracks[selectedTrack].bpm) * 1000;
+        sequenceInterval = setInterval(playPreviewStep, halfBeatMilliseconds);
+        playPreviewStep();
+      }
+
+      function syncSequenceToPosition() {
+        const halfBeatSeconds = 30 / tracks[selectedTrack].bpm;
+        sequenceStep = Math.floor(timerSeconds / halfBeatSeconds) % 16;
+        if (isPlaying) startAudioSequence();
       }
 
       // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
         isPlaying = false;
         clearInterval(timerInterval);
+        clearInterval(sequenceInterval);
         timerSeconds = 0;
+        sequenceStep = 0;
         syncPlayer();
+        document.getElementById("previewStatus").innerText = "Preview stopped";
       }
 
       function rewindPlayer() {
         timerSeconds = Math.max(0, timerSeconds - 10);
+        syncSequenceToPosition();
         syncPlayer();
       }
 
       function fastForward() {
-        timerSeconds = Math.min(tracks[selectedTrack], timerSeconds + 10);
+        timerSeconds = Math.min(tracks[selectedTrack].duration, timerSeconds + 10);
+        syncSequenceToPosition();
         syncPlayer();
-        if (timerSeconds >= tracks[selectedTrack] && isPlaying) stopPlayer();
+        if (timerSeconds >= tracks[selectedTrack].duration && isPlaying) stopPlayer();
       }
 
       function startTimer() {
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
           timerSeconds++;
-          if (timerSeconds >= tracks[selectedTrack]) {
-            timerSeconds = tracks[selectedTrack];
+          if (timerSeconds >= tracks[selectedTrack].duration) {
+            timerSeconds = tracks[selectedTrack].duration;
             stopPlayer();
           } else {
             syncPlayer();
@@ -497,7 +584,7 @@
 
       // Vintage Cassette Player: synchronize deck and playback display
       function syncPlayer() {
-        const duration = tracks[selectedTrack];
+        const duration = tracks[selectedTrack].duration;
         const playSymbol = isPlaying ? "Ⅱ" : "▶";
         document.getElementById("mainPlayBtn").innerText = playSymbol;
         document.querySelectorAll(".track-play-btn").forEach((button) => {
@@ -537,8 +624,9 @@
       // Vintage Cassette Player: direct track seeking
       document.getElementById("playbackSeek").addEventListener("input", (event) => {
         timerSeconds = Number(event.target.value);
+        syncSequenceToPosition();
         syncPlayer();
-        if (timerSeconds >= tracks[selectedTrack] && isPlaying) stopPlayer();
+        if (timerSeconds >= tracks[selectedTrack].duration && isPlaying) stopPlayer();
       });
 
       syncPlayer();
