@@ -14,7 +14,7 @@
             color: #ffffff;
         }
 
-        /* Glassmorphism Outer Panel Borders & Glow */
+        /* Glassmorphism Outer Panel Borders & Glow matching mockup */
         .glass-panel {
             background: linear-gradient(165deg, rgba(20, 9, 40, 0.8) 0%, rgba(7, 2, 18, 0.95) 100%);
             border: 1px solid rgba(139, 92, 246, 0.3);
@@ -39,7 +39,7 @@
             border-radius: 4px;
         }
 
-        /* Pill Button Styles */
+        /* Pill Button Selector Styles */
         .pill-inactive {
             background: rgba(20, 8, 42, 0.9);
             border: 1px solid rgba(147, 51, 234, 0.4);
@@ -56,7 +56,7 @@
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
         }
 
-        /* Square Button Custom Borders */
+        /* Custom Control Buttons */
         .ctrl-btn {
             background: rgba(25, 10, 50, 0.9);
             border: 1px solid rgba(147, 51, 234, 0.3);
@@ -70,7 +70,7 @@
 </head>
 <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
 
-    <!-- Top Navigation Bar Header -->
+    <!-- Top Navigation Header -->
     <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
         <!-- Brand Logo & Name -->
         <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
@@ -106,23 +106,23 @@
     <!-- Main Workspace Dashboard Grid -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- LEFT COLUMN: AI Music Form Sidebar -->
+        <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
         <form method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
             
-            <!-- AI Prompt Header & Textarea -->
+            <!-- AI Prompt Input -->
             <div>
                 <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI Prompt</label>
-                <textarea name="prompt" rows="2" placeholder="Describe your music..." class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"></textarea>
+                <textarea id="promptArea" name="prompt" rows="2" required placeholder="Describe your music..." class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"></textarea>
                 
                 <!-- Quick Preset Prompts -->
                 <div class="space-y-2">
-                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Late night lo-fi with warm keys'" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
+                    <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
                         Late night lo-fi with warm keys
                     </button>
-                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Upbeat jazzy morning vibes'" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
+                    <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
                         Upbeat jazzy morning vibes
                     </button>
-                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Dark cinematic synth atmosphere'" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
+                    <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">
                         Dark cinematic synth atmosphere
                     </button>
                 </div>
@@ -130,7 +130,7 @@
 
             <hr class="border-purple-900/30">
 
-            <!-- Genre Options -->
+            <!-- Genre Selection (Includes Punjabi & Bollywood Options) -->
             <div>
                 <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
                 <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
@@ -142,10 +142,12 @@
                     <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer"><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Folk</span></label>
                     <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer"><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">R&B</span></label>
                     <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer"><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer"><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Sufi" class="hidden peer"><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood</span></label>
                 </div>
             </div>
 
-            <!-- Mood Options -->
+            <!-- Mood Selection -->
             <div>
                 <label class="block text-xs font-semibold text-zinc-300 mb-2">Mood</label>
                 <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
@@ -159,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Instruments Options -->
+            <!-- Instruments Selection -->
             <div>
                 <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
                 <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
@@ -176,41 +178,41 @@
                 </div>
             </div>
 
-            <!-- BPM and Duration Counters -->
+            <!-- BPM & Duration Counter Controls -->
             <div class="grid grid-cols-2 gap-4 text-center pt-2">
                 <div>
                     <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">BPM</label>
                     <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
-                        <button type="button" onclick="let b=document.getElementById('bpm'); b.value=Math.max(60, parseInt(b.value)-1)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
+                        <button type="button" onclick="adjustValue('bpm', -1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
                         <input type="number" id="bpm" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none">
-                        <button type="button" onclick="let b=document.getElementById('bpm'); b.value=Math.min(180, parseInt(b.value)+1)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
+                        <button type="button" onclick="adjustValue('bpm', 1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
                     </div>
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">Duration (min)</label>
                     <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
-                        <button type="button" onclick="let d=document.getElementById('duration'); d.value=Math.max(1, parseInt(d.value)-1)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
+                        <button type="button" onclick="adjustValue('duration', -1, 1, 10)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
                         <input type="number" id="duration" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none">
-                        <button type="button" onclick="let d=document.getElementById('duration'); d.value=Math.min(10, parseInt(d.value)+1)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
+                        <button type="button" onclick="adjustValue('duration', 1, 1, 10)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Generate Track Button -->
-            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2">
+            <!-- Submit Generation Button -->
+            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2 cursor-pointer">
                 Generate Track
             </button>
 
         </form>
 
-        <!-- RIGHT COLUMN: Dashboard, Waveform & Record Over Card -->
+        <!-- RIGHT COLUMN: Song Dashboard, Waveform Player & Microphone Record Overlay -->
         <div class="lg:col-span-8 flex flex-col justify-between space-y-6">
             
             <!-- Recent Generation Playlist Panel -->
             <div class="glass-panel rounded-2xl p-5 space-y-4">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-semibold tracking-wider bg-purple-950/60 text-purple-200 border border-purple-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-blue-400"></span> MOONLIT turn imagination into sound
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> MOONLIT turn imagination into sound
                     </span>
                     <span class="text-xs font-medium text-zinc-400">Recent Generation</span>
                 </div>
@@ -222,10 +224,10 @@
                         <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏮</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md">▶</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏭</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                        <button type="button" onclick="resetPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏮</button>
+                        <button type="button" onclick="togglePlay('Late Night Lo-Fi')" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md hover:bg-purple-700">▶</button>
+                        <button type="button" onclick="fastForward()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏭</button>
+                        <button type="button" onclick="stopPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏹</button>
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
                     </div>
                 </div>
@@ -237,10 +239,10 @@
                         <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏮</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md">▶</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏭</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                        <button type="button" onclick="resetPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏮</button>
+                        <button type="button" onclick="togglePlay('Morning Jazz')" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md hover:bg-purple-700">▶</button>
+                        <button type="button" onclick="fastForward()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏭</button>
+                        <button type="button" onclick="stopPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏹</button>
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
                     </div>
                 </div>
@@ -252,10 +254,10 @@
                         <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏮</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md">▶</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏭</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                        <button type="button" onclick="resetPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏮</button>
+                        <button type="button" onclick="togglePlay('Dark Ambient')" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md hover:bg-purple-700">▶</button>
+                        <button type="button" onclick="fastForward()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏭</button>
+                        <button type="button" onclick="stopPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏹</button>
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
                     </div>
                 </div>
@@ -266,53 +268,53 @@
                 <span class="text-xs font-semibold text-zinc-300">Waveform Preview</span>
 
                 <!-- Audio Waveform Visualizer Bars -->
-                <div class="h-20 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5">
-                    <div class="w-1.5 h-10 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-14 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-8 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-16 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-6 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-12 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-16 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-8 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-5 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-10 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-14 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-12 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-5 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-16 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-10 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-14 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-12 bg-blue-400 rounded-full"></div>
-                    <div class="w-1.5 h-16 bg-blue-500 rounded-full"></div>
-                    <div class="w-1.5 h-8 bg-blue-400 rounded-full"></div>
+                <div id="waveformContainer" class="h-20 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5">
+                    <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-12 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-8 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
+                    <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
                 </div>
 
                 <div class="flex items-center justify-between pt-1">
                     <div class="flex items-center gap-2">
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏮</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md">▶</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏭</button>
-                        <button type="button" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                        <button type="button" onclick="resetPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏮</button>
+                        <button type="button" id="mainPlayBtn" onclick="togglePlay('Active Track')" class="w-8 h-8 rounded-lg bg-purple-900 border border-purple-500/40 flex items-center justify-center text-white text-xs shadow-md hover:bg-purple-700">▶</button>
+                        <button type="button" onclick="fastForward()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏭</button>
+                        <button type="button" onclick="stopPlayer()" class="w-8 h-8 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-xs hover:bg-purple-800">⏹</button>
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
                     </div>
-                    <span class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
+                    <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
                 </div>
             </div>
 
             <!-- Record Over Vocal Card -->
             <div class="glass-panel rounded-2xl p-6 flex items-center gap-6">
-                <div class="w-14 h-14 rounded-full bg-zinc-200 text-[#05010c] flex items-center justify-center shadow-lg">
+                <div id="micBtn" onclick="toggleMicRecording()" class="w-14 h-14 rounded-full bg-zinc-200 text-[#05010c] flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform">
                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                         <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-extrabold text-base text-white">Record Over</h3>
-                    <p class="text-xs text-zinc-400 mt-1">Add your Voice or instrument on top</p>
+                    <h3 id="micStatusTitle" class="font-extrabold text-base text-white">Record Over</h3>
+                    <p id="micStatusSub" class="text-xs text-zinc-400 mt-1">Add your Voice or instrument on top</p>
                 </div>
             </div>
 
@@ -325,5 +327,129 @@
         <span class="text-lg">🎧</span>
     </a>
 
+    <!-- Full Interactive JavaScript Logic -->
+    <script>
+        // Set Preset Prompt
+        function setPrompt(text) {
+            document.getElementById('promptArea').value = text;
+        }
+
+        // Adjust BPM / Duration Counter Controls
+        function adjustValue(id, delta, min, max) {
+            const el = document.getElementById(id);
+            let val = parseInt(el.value) + delta;
+            if (val < min) val = min;
+            if (val > max) val = max;
+            el.value = val;
+        }
+
+        // Audio Player Simulation Logic
+        let isPlaying = false;
+        let timerSeconds = 0;
+        let timerInterval = null;
+
+        function togglePlay(trackName) {
+            const playBtn = document.getElementById('mainPlayBtn');
+            if (!isPlaying) {
+                isPlaying = true;
+                playBtn.innerText = '⏸';
+                startTimer();
+                animateWaveform(true);
+            } else {
+                isPlaying = false;
+                playBtn.innerText = '▶';
+                clearInterval(timerInterval);
+                animateWaveform(false);
+            }
+        }
+
+        function stopPlayer() {
+            isPlaying = false;
+            document.getElementById('mainPlayBtn').innerText = '▶';
+            clearInterval(timerInterval);
+            timerSeconds = 0;
+            updateTimerDisplay();
+            animateWaveform(false);
+        }
+
+        function resetPlayer() {
+            timerSeconds = 0;
+            updateTimerDisplay();
+        }
+
+        function fastForward() {
+            timerSeconds += 10;
+            updateTimerDisplay();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                if (timerSeconds >= 204) { // 3:24 total
+                    stopPlayer();
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${mins}:${secs} / 3:24`;
+        }
+
+        function animateWaveform(active) {
+            const bars = document.querySelectorAll('#waveformContainer div');
+            bars.forEach(bar => {
+                if (active) {
+                    const randomHeight = Math.floor(Math.random() * 40) + 20;
+                    bar.style.height = `${randomHeight}px`;
+                } else {
+                    bar.style.height = '30px';
+                }
+            });
+        }
+
+        // Live Voice Microphone Recording Handler
+        let mediaRecorder, audioChunks = [], isRecording = false;
+
+        async function toggleMicRecording() {
+            const micBtn = document.getElementById('micBtn');
+            const title = document.getElementById('micStatusTitle');
+            const sub = document.getElementById('micStatusSub');
+
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                        alert('Vocal track recording saved! Ready to merge.');
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micBtn.classList.replace('bg-zinc-200', 'bg-red-500');
+                    micBtn.classList.add('animate-pulse');
+                    title.innerText = 'Recording Live...';
+                    sub.innerText = 'Click microphone icon again to stop and save vocal overlay';
+                } catch (err) {
+                    alert('Microphone access denied or unavailable: ' + err);
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                micBtn.classList.replace('bg-red-500', 'bg-zinc-200');
+                micBtn.classList.remove('animate-pulse');
+                title.innerText = 'Record Over';
+                sub.innerText = 'Add your Voice or instrument on top';
+            }
+        }
+    </script>
 </body>
 </html>
