@@ -69,55 +69,77 @@
 
       /* Vintage Cassette Player Styles */
       .cassette-shell {
-        background: linear-gradient(145deg, #d2a96b, #9b7042 58%, #6f4b2b);
-        border: 2px solid #e1c18c;
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(ellipse at 50% 0%, rgba(192, 132, 252, 0.32), transparent 58%), linear-gradient(145deg, #302052, #17102d 58%, #0b081c);
+        border: 2px solid #a78bfa;
         box-shadow:
-          inset 0 0 0 3px rgba(66, 42, 23, 0.42),
-          0 8px 20px rgba(0, 0, 0, 0.35);
+          inset 0 0 0 3px rgba(192, 132, 252, 0.16),
+          0 0 24px rgba(139, 92, 246, 0.28);
       }
       .cassette-label {
-        background: linear-gradient(180deg, #f2e4c6, #d8c39b);
-        color: #402b1b;
+        background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.95), transparent 68%), linear-gradient(145deg, #ede9fe, #c4b5fd);
+        color: #31205c;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        box-shadow: inset 0 0 18px rgba(124, 58, 237, 0.16);
       }
       .cassette-reel {
-        background: repeating-conic-gradient(#d8c39b 0deg 12deg, #5b4530 12deg 20deg);
-        border: 4px solid #5b4530;
+        background: repeating-conic-gradient(#ddd6fe 0deg 12deg, #5b3c91 12deg 20deg);
+        border: 4px solid #4c1d95;
         box-shadow:
-          0 0 0 3px #b68a53,
-          inset 0 0 0 4px #d8c39b;
+          0 0 0 3px #c4b5fd,
+          inset 0 0 0 4px #8b5cf6,
+          0 0 12px rgba(139, 92, 246, 0.42);
       }
       .cassette-reel::after {
         content: "";
         position: absolute;
         inset: 35%;
         border-radius: 9999px;
-        background: #493522;
-        border: 2px solid #e4c996;
+        background: #2e185c;
+        border: 2px solid #ddd6fe;
       }
       .cassette-reel.spinning {
-        animation: cassette-spin 1.6s linear infinite;
+        animation:
+          cassette-spin 1.6s linear infinite,
+          cassette-glow 2.4s ease-in-out infinite alternate;
       }
       @keyframes cassette-spin {
         to {
           transform: rotate(360deg);
         }
       }
+      @keyframes cassette-glow {
+        from {
+          filter: drop-shadow(0 0 2px rgba(196, 181, 253, 0.55));
+        }
+        to {
+          filter: drop-shadow(0 0 9px rgba(192, 132, 252, 0.95));
+        }
+      }
       .transport-btn {
-        background: linear-gradient(180deg, #d6b77f, #967044);
-        border: 1px solid #ead3a5;
-        color: #24170d;
+        background: linear-gradient(180deg, #c4b5fd, #6d28d9);
+        border: 1px solid #ddd6fe;
+        color: #ffffff;
         box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.5),
-          0 2px 0 #51371f;
+          inset 0 1px rgba(255, 255, 255, 0.45),
+          0 2px 0 #3b0764,
+          0 0 10px rgba(139, 92, 246, 0.25);
       }
       .transport-btn:hover {
-        background: linear-gradient(180deg, #ead3a5, #b68a53);
+        background: linear-gradient(180deg, #ddd6fe, #8b5cf6);
+        box-shadow: 0 0 14px rgba(192, 132, 252, 0.55);
       }
       .transport-btn:active {
         transform: translateY(1px);
         box-shadow:
           inset 0 1px rgba(255, 255, 255, 0.35),
-          0 1px 0 #51371f;
+          0 1px 0 #3b0764;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cassette-reel.spinning {
+          animation: none;
+        }
       }
     </style>
   </head>
@@ -327,7 +349,7 @@
             <div class="cassette-label rounded-lg p-3">
               <div class="flex items-center justify-between text-[9px] font-bold uppercase tracking-[0.2em]">
                 <span>Magical Flow</span>
-                <span>Side A</span>
+                <span>✦ Side A ✦</span>
               </div>
               <div class="flex items-center justify-center gap-8 py-3">
                 <div id="leftReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>

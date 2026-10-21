@@ -40,51 +40,74 @@
 
       /* Vintage Transport Deck */
       .tape-deck {
-        background: linear-gradient(145deg, #d2a96b, #9b7042 58%, #6f4b2b);
-        border: 1px solid #e1c18c;
-        box-shadow: inset 0 0 0 2px rgba(66, 42, 23, 0.35);
+        background: radial-gradient(ellipse at 50% 0%, rgba(192, 132, 252, 0.3), transparent 65%), linear-gradient(145deg, #302052, #17102d 58%, #0b081c);
+        border: 1px solid #a78bfa;
+        box-shadow:
+          inset 0 0 0 2px rgba(192, 132, 252, 0.16),
+          0 0 16px rgba(139, 92, 246, 0.3);
       }
       .tape-counter {
-        background: #302416;
-        color: #e9c982;
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
+        background: #180d32;
+        color: #ddd6fe;
+        border: 1px solid rgba(196, 181, 253, 0.5);
+        box-shadow:
+          inset 0 0 6px rgba(0, 0, 0, 0.9),
+          0 0 8px rgba(139, 92, 246, 0.3);
       }
       .tape-reel {
-        background: repeating-conic-gradient(#d8c39b 0deg 12deg, #5b4530 12deg 20deg);
-        border: 3px solid #5b4530;
+        background: repeating-conic-gradient(#ddd6fe 0deg 12deg, #5b3c91 12deg 20deg);
+        border: 3px solid #4c1d95;
         box-shadow:
-          0 0 0 2px #b68a53,
-          inset 0 0 0 3px #d8c39b;
+          0 0 0 2px #c4b5fd,
+          inset 0 0 0 3px #8b5cf6,
+          0 0 9px rgba(139, 92, 246, 0.4);
       }
       .tape-reel::after {
         content: "";
         position: absolute;
         inset: 35%;
         border-radius: 9999px;
-        background: #493522;
-        border: 1px solid #e4c996;
+        background: #2e185c;
+        border: 1px solid #ddd6fe;
       }
       .tape-reel.spinning {
-        animation: tape-spin 1.6s linear infinite;
+        animation:
+          tape-spin 1.6s linear infinite,
+          tape-glow 2.4s ease-in-out infinite alternate;
       }
       @keyframes tape-spin {
         to {
           transform: rotate(360deg);
         }
       }
+      @keyframes tape-glow {
+        from {
+          filter: drop-shadow(0 0 2px rgba(196, 181, 253, 0.55));
+        }
+        to {
+          filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.95));
+        }
+      }
       .tape-button {
-        background: linear-gradient(180deg, #d6b77f, #967044);
-        border: 1px solid #ead3a5;
-        color: #24170d;
+        background: linear-gradient(180deg, #c4b5fd, #6d28d9);
+        border: 1px solid #ddd6fe;
+        color: #ffffff;
         box-shadow:
           inset 0 1px rgba(255, 255, 255, 0.45),
-          0 2px 0 #51371f;
+          0 2px 0 #3b0764,
+          0 0 8px rgba(139, 92, 246, 0.25);
       }
       .tape-button:hover {
-        background: linear-gradient(180deg, #ead3a5, #b68a53);
+        background: linear-gradient(180deg, #ddd6fe, #8b5cf6);
+        box-shadow: 0 0 12px rgba(192, 132, 252, 0.55);
       }
       .tape-button:active {
         transform: translateY(1px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tape-reel.spinning {
+          animation: none;
+        }
       }
 
       /* Custom Scrollbar for Track Workspace */
@@ -621,6 +644,8 @@
         playButton.setAttribute("title", isPlaying ? "Pause" : "Play");
         led.classList.toggle("bg-red-500", isPlaying);
         led.classList.toggle("bg-purple-400", !isPlaying);
+        document.getElementById("leftTapeReel").classList.toggle("spinning", isPlaying);
+        document.getElementById("rightTapeReel").classList.toggle("spinning", isPlaying);
         document.getElementById("transportState").innerText = isPlaying ? "PLAY" : state.toUpperCase();
         document.getElementById("transportTime").innerText = formatTransportTime(transportPosition);
         document.getElementById("measureCounter").innerText = `BAR ${String(Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)).padStart(3, "0")}`;
