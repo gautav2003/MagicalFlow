@@ -1,12 +1,18 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, send_from_directory
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from functools import wraps
+import base64
+import json
 import os
+from pathlib import Path
 import sqlite3
 import random
 import smtplib
 import ssl
+import uuid
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -16,6 +22,86 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'magical_flow_super_secret_production_key'
 DB_NAME = 'MagicalFlow.db'
+GENERATED_AUDIO_DIR = Path(app.instance_path) / 'generated_audio'
+GEMINI_INTERACTIONS_URL = 'https://generativelanguage.googleapis.com/v1beta/interactions'
+GEMINI_MUSIC_MODEL = os.getenv('GEMINI_MUSIC_MODEL') or 'lyria-3.5'
+
+
+class MusicGenerationError(Exception):
+    """Raised when the configured music-generation provider cannot return a song."""
+
+
+def generate_music(prompt):
+    api_key = os.getenv('GEMINI_API_KEY')
+    if not api_key:
+        raise MusicGenerationError(
+            'Music generation is not configured yet. Add GEMINI_API_KEY to your local .env file.'
+        )
+
+    payload = json.dumps({
+        'model': GEMINI_MUSIC_MODEL,
+        'input': prompt,
+    }).encode('utf-8')
+    api_request = Request(
+        GEMINI_INTERACTIONS_URL,
+        data=payload,
+        headers={
+            'Content-Type': 'application/json',
+            'x-goog-api-key': api_key,
+        },
+        method='POST',
+    )
+
+    try:
+        with urlopen(api_request, timeout=300) as response:
+            result = json.loads(response.read())
+    except HTTPError as error:
+        app.logger.error('Gemini music generation returned HTTP %s.', error.code)
+        raise MusicGenerationError(
+            'The music provider could not generate this song. Check model access, quota, and billing.'
+        ) from error
+    except (URLError, TimeoutError, OSError) as error:
+        app.logger.error('Gemini music generation request failed: %s', error)
+        raise MusicGenerationError(
+            'Could not reach the music provider. Please try again.'
+        ) from error
+    except (json.JSONDecodeError, UnicodeDecodeError) as error:
+        app.logger.error('Gemini returned an unreadable music-generation response.')
+        raise MusicGenerationError(
+            'The music provider returned an unreadable response. Please try again.'
+        ) from error
+
+    if not isinstance(result, dict):
+        raise MusicGenerationError('The music provider returned an unreadable response. Please try again.')
+    output_audio = result.get('output_audio')
+    audio_data = output_audio.get('data') if isinstance(output_audio, dict) else None
+    if not audio_data:
+        app.logger.error('Gemini music generation response did not contain audio.')
+        raise MusicGenerationError(
+            'The music provider returned no audio for this request. Please try again.'
+        )
+    if not isinstance(audio_data, str):
+        raise MusicGenerationError('The music provider returned invalid audio. Please try again.')
+    try:
+        audio_bytes = base64.b64decode(audio_data, validate=True)
+    except (ValueError, TypeError) as error:
+        app.logger.error('Gemini returned invalid encoded audio.')
+        raise MusicGenerationError(
+            'The music provider returned invalid audio. Please try again.'
+        ) from error
+    if not audio_bytes:
+        raise MusicGenerationError('The music provider returned an empty audio file.')
+
+    GENERATED_AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+    audio_id = uuid.uuid4().hex
+    audio_path = GENERATED_AUDIO_DIR / f'{audio_id}.mp3'
+    try:
+        audio_path.write_bytes(audio_bytes)
+    except OSError as error:
+        app.logger.error('Unable to save generated music: %s', error)
+        raise MusicGenerationError('The generated song could not be saved on this server.') from error
+    lyrics = result.get('output_text', '')
+    return audio_id, lyrics if isinstance(lyrics, str) else ''
 
 # ==================== OFFICIAL GMAIL SMTP CONFIGURATION (SSL PORT 465) ====================
 SMTP_SERVER = "smtp.gmail.com"
@@ -451,14 +537,27 @@ def select_mode():
 @login_required
 def beginner_mode():
     if request.method == 'POST':
-        prompt = request.form.get('prompt')
-        genre = request.form.get('genre')
-        mood = request.form.get('mood')
-        bpm = request.form.get('bpm', '90')
-        duration = request.form.get('duration', '3')
+        prompt = request.form.get('prompt', '').strip()
+        genre = request.form.get('genre', '')
+        mood = request.form.get('mood', '')
+        allowed_genres = {
+            'Lo-Fi', 'Hip-Hop', 'Jazz', 'Electronic', 'Pop', 'Folk',
+            'R&B', 'Classical', 'Punjabi Pop', 'Bollywood Sufi',
+        }
+        allowed_moods = {'Chill', 'Energetic', 'Dark', 'Happy', 'Sad', 'Romantic', 'Focused'}
+        allowed_instruments = {
+            'Piano', 'Guitar', 'Bass', 'Drums', 'Synth', 'Strings',
+            'Brass', 'Pad', 'Arp', 'Vocals',
+        }
+        try:
+            bpm = int(request.form.get('bpm', '90'))
+            duration = int(request.form.get('duration', '2'))
+        except ValueError:
+            bpm, duration = 0, 0
         instruments = request.form.getlist('instruments')
-        vocals = request.form.get('vocals', 'Instrumental')
-        session['composition_data'] = {
+        instruments = [instrument for instrument in instruments if instrument in allowed_instruments]
+        vocals = 'Generated vocals' if 'Vocals' in instruments else 'Instrumental'
+        composition = {
             'prompt': prompt,
             'genre': genre,
             'mood': mood,
@@ -467,8 +566,35 @@ def beginner_mode():
             'instruments': instruments,
             'vocals': vocals,
         }
+        if not prompt or len(prompt) > 500:
+            composition['generation_error'] = 'Enter a song description of 1 to 500 characters.'
+        elif genre not in allowed_genres or mood not in allowed_moods:
+            composition['generation_error'] = 'Choose a valid genre and mood before generating.'
+        elif not 60 <= bpm <= 180 or not 1 <= duration <= 3:
+            composition['generation_error'] = 'Choose a tempo from 60 to 180 BPM and a song length from 1 to 3 minutes.'
+        else:
+            selected_instruments = ', '.join(instruments) if instruments else 'a suitable original arrangement'
+            vocal_direction = (
+                'Include original, newly written sung lyrics in English unless the description requests another language. '
+                if vocals == 'Generated vocals' else 'Instrumental only; no sung vocals or lyrics. '
+            )
+            generation_prompt = (
+                f"Create a complete, original {genre} song with a {mood} mood, approximately {duration} minutes long, "
+                f"at {bpm} BPM. Use {selected_instruments}. "
+                f"{vocal_direction}"
+                f"Follow this creative description: {prompt}. "
+                "Use an original melody, lyrics, and arrangement; do not imitate or reproduce any existing song or artist."
+            )
+            try:
+                audio_id, lyrics = generate_music(generation_prompt)
+                composition['audio_id'] = audio_id
+                composition['lyrics'] = lyrics
+                composition['generation_error'] = ''
+            except MusicGenerationError as error:
+                composition['generation_error'] = str(error)
+        session['composition_data'] = composition
         return redirect(url_for('beginner_output'))
-    return render_template('BeginnerMode.html')
+    return render_template('Beginnermode.html')
 
 @app.route('/beginner-output')
 @login_required
@@ -478,9 +604,26 @@ def beginner_output():
         'genre': 'Bollywood Romantic',
         'mood': 'Magical & Dreamy',
         'tempo': '120 BPM',
-        'vocals': 'Ethereal Female'
+        'vocals': 'Instrumental',
+        'generation_error': 'Describe a song in Beginner Mode to generate your first track.',
     })
-    return render_template('BeginnerOutput.html', composition=composition)
+    if not composition.get('audio_id') and not composition.get('generation_error'):
+        composition['generation_error'] = 'No generated song is available yet. Create a song in Beginner Mode to get started.'
+    return render_template('BeginnerGeneration.html', composition=composition)
+
+@app.route('/generated-audio/<audio_id>')
+@login_required
+def generated_audio(audio_id):
+    composition = session.get('composition_data', {})
+    if audio_id != composition.get('audio_id'):
+        return 'Audio not found.', 404
+    return send_from_directory(
+        str(GENERATED_AUDIO_DIR),
+        f'{audio_id}.mp3',
+        mimetype='audio/mpeg',
+        as_attachment=request.args.get('download') == '1',
+        download_name='magical-flow-song.mp3',
+    )
 
 @app.route('/pro-studio-mode')
 @login_required

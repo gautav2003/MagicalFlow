@@ -218,7 +218,7 @@
         <div class="flex items-center gap-6 mono-font text-xs font-semibold">
           <div class="text-center">
             <span class="block text-[9px] text-zinc-400 uppercase">BPM</span>
-            <span id="bpmDisplay" class="text-sm font-bold text-white">128</span>
+            <span id="bpmDisplay" class="text-sm font-bold text-white">96</span>
           </div>
           <div class="text-center">
             <span class="block text-[9px] text-zinc-400 uppercase">SIG</span>
@@ -226,7 +226,7 @@
           </div>
           <div class="text-center">
             <span class="block text-[9px] text-zinc-400 uppercase">KEY</span>
-            <span class="text-sm font-bold text-white">A Min</span>
+            <span class="text-sm font-bold text-white">D Min</span>
           </div>
           <div id="midiStatus" class="flex items-center gap-1.5 bg-purple-950/60 border border-purple-800/40 px-2.5 py-1 rounded-full text-[11px] text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-400"></span> USB-MIDI</div>
         </div>
@@ -235,8 +235,8 @@
         <div class="flex items-center gap-3">
           <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-purple-950/80 border border-purple-700/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white hover:border-purple-400 transition-colors" title="Arm Microphone Input">🎙</button>
           <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
-            <input type="hidden" name="bpm" value="128" />
-            <input type="hidden" name="key_scale" value="A Min" />
+            <input type="hidden" name="bpm" value="96" />
+            <input type="hidden" name="key_scale" value="D Min" />
             <input type="hidden" name="prompt" id="hiddenPrompt" value="" />
             <button type="submit" class="px-4 py-1.5 bg-purple-950 border border-purple-700/40 hover:bg-purple-900 rounded-lg text-xs font-semibold text-zinc-200 transition-colors">Export</button>
           </form>
@@ -400,7 +400,7 @@
 
           <!-- Dark Recording Studio Box Area -->
           <div class="daw-card rounded-xl h-36 bg-[#1a071d]/80 border border-purple-900/30 flex items-center justify-center p-4">
-            <span id="dawStatusText" class="text-xs font-mono text-zinc-400">Master Arrangement View • Standby</span>
+            <span id="dawStatusText" class="text-xs font-mono text-zinc-400">Original browser-synthesized Punjabi Hip-Hop • Standby</span>
           </div>
 
           <!-- Virtual VST Instrument Tabs & Interactive Piano Keyboard -->
@@ -556,7 +556,7 @@
       let isPlaying = false;
       let isMicArmed = false;
       let selectedInstrument = "Piano";
-      const bpm = 128;
+      const bpm = 96;
       const totalMeasures = 64;
       const stepsPerMeasure = 16;
       const secondsPerMeasure = (4 * 60) / bpm;
@@ -569,12 +569,23 @@
       let transportInterval = null;
       const mutedTracks = new Set();
       const chordProgression = [
-        { bass: 45, chord: [57, 60, 64] },
+        { bass: 38, chord: [50, 53, 57] },
+        { bass: 34, chord: [46, 50, 53] },
         { bass: 41, chord: [53, 57, 60] },
-        { bass: 48, chord: [48, 52, 55] },
-        { bass: 43, chord: [55, 59, 62] },
+        { bass: 36, chord: [48, 52, 55] },
       ];
-      const leadPattern = [0, 2, 4, 2, 1, 2, 5, 4, 0, 2, 4, 6, 5, 4, 2, 1];
+      const leadNotes = [62, 65, 67, 69, 72, 74];
+      const leadPattern = [0, 2, 3, 2, 4, 3, 2, 1, 0, 2, 4, 5, 4, 3, 2, 0];
+
+      function getArrangementSection(measure) {
+        if (measure < 4) return "intro";
+        if (measure < 20) return "verse";
+        if (measure < 36) return "hook";
+        if (measure < 44) return "verse";
+        if (measure < 56) return "hook";
+        if (measure < 60) return "bridge";
+        return "outro";
+      }
 
       // Initialize Web Audio Context
       async function initAudio() {
@@ -699,36 +710,48 @@
         const stepInMeasure = step % stepsPerMeasure;
         const measure = Math.floor(step / stepsPerMeasure);
         const progression = chordProgression[Math.floor(measure / 4) % chordProgression.length];
+        const section = getArrangementSection(measure);
+        const isHook = section === "hook";
+        const isIntro = section === "intro";
+        const isOutro = section === "outro";
+        const isBridge = section === "bridge";
         const now = audioCtx.currentTime + 0.015;
 
-        if (!mutedTracks.has("kick") && stepInMeasure % 4 === 0) {
-          playDrumHit(100, now);
+        if (!mutedTracks.has("kick")) {
+          const kickSteps = isHook ? [0, 6, 8, 11, 14] : isIntro || isOutro || isBridge ? [0, 8] : [0, 6, 8, 11];
+          if (kickSteps.includes(stepInMeasure)) playDrumHit(100, now);
+          if (!isIntro && !isOutro && [2, 7, 10, 15].includes(stepInMeasure)) {
+            const dholPitch = stepInMeasure === 7 || stepInMeasure === 15 ? 145 : 118;
+            playSynthNote(dholPitch, now, secondsPerStep * 1.2, "triangle", isHook ? 0.12 : 0.085, 0.004, 950);
+            playSynthNote(dholPitch * 1.9, now, secondsPerStep * 0.55, "sine", 0.035, 0.002, 1400);
+          }
         }
-        if (!mutedTracks.has("snare") && (stepInMeasure === 4 || stepInMeasure === 12)) {
+        if (!mutedTracks.has("snare") && !isIntro && !isOutro && (stepInMeasure === 4 || stepInMeasure === 12)) {
           playNoise(now, 0.18, 0.16, 900);
           playDrumHit(220, now);
         }
-        if (!mutedTracks.has("hihat") && stepInMeasure % 2 === 0) {
+        if (!mutedTracks.has("hihat") && stepInMeasure % (isIntro || isOutro ? 4 : 2) === 0) {
           playNoise(now, stepInMeasure % 4 === 0 ? 0.045 : 0.03, stepInMeasure % 4 === 0 ? 0.045 : 0.025, 6500);
         }
-        if (!mutedTracks.has("bass") && [0, 6, 8, 14].includes(stepInMeasure)) {
+        if (!mutedTracks.has("bass") && !isIntro && !isOutro && [0, 6, 8, 14].includes(stepInMeasure)) {
           const bassNote = progression.bass + (stepInMeasure === 6 || stepInMeasure === 14 ? 7 : 0);
-          playSynthNote(midiToFrequency(bassNote), now, secondsPerStep * 3.5, "triangle", 0.13, 0.008, 750);
+          playSynthNote(midiToFrequency(bassNote), now, secondsPerStep * 3.5, "triangle", isHook ? 0.15 : 0.13, 0.008, 750);
         }
-        if (!mutedTracks.has("lead") && stepInMeasure % 2 === 0) {
-          const note = [69, 72, 76, 79, 81, 84][leadPattern[(stepInMeasure / 2 + measure) % leadPattern.length] % 6];
-          playSynthNote(midiToFrequency(note), now, secondsPerStep * 1.7, "sine", 0.075, 0.012, 3600);
+        const leadInterval = isHook ? 2 : isIntro || isOutro || isBridge ? 4 : 2;
+        if (!mutedTracks.has("lead") && stepInMeasure % leadInterval === 0) {
+          const note = leadNotes[leadPattern[(stepInMeasure / 2 + measure) % leadPattern.length] % leadNotes.length];
+          playSynthNote(midiToFrequency(note), now, secondsPerStep * (isHook ? 1.45 : 1.7), "triangle", isHook ? 0.085 : 0.065, 0.012, 2600);
         }
-        if (!mutedTracks.has("pad") && stepInMeasure === 0) {
+        if (!mutedTracks.has("pad") && stepInMeasure === 0 && !isBridge) {
           progression.chord.forEach((note) => {
-            playSynthNote(midiToFrequency(note), now, secondsPerMeasure * 3.7, "sine", 0.025, 0.32, 1800);
+            playSynthNote(midiToFrequency(note), now, secondsPerMeasure * (isHook ? 3.7 : 2.8), "sine", 0.025, 0.32, 1800);
           });
         }
-        if (!mutedTracks.has("guitar") && stepInMeasure % 4 === 2) {
+        if (!mutedTracks.has("guitar") && !isIntro && !isOutro && stepInMeasure % (isHook ? 4 : 8) === 2) {
           const chordNote = progression.chord[(stepInMeasure / 4) % progression.chord.length] + 12;
-          playSynthNote(midiToFrequency(chordNote), now, secondsPerStep * 3.2, "triangle", 0.045, 0.006, 2800);
+          playSynthNote(midiToFrequency(chordNote), now, secondsPerStep * 3.2, "triangle", isHook ? 0.055 : 0.04, 0.006, 2800);
         }
-        if (!mutedTracks.has("vox") && stepInMeasure === 0 && measure % 2 === 0) {
+        if (!mutedTracks.has("vox") && stepInMeasure === 0 && measure % 2 === 0 && !isIntro && !isOutro) {
           playSynthNote(midiToFrequency(progression.chord[2] + 12), now, secondsPerMeasure * 1.8, "sine", 0.018, 0.55, 2200);
         }
       }
@@ -820,7 +843,8 @@
         document.getElementById("transportTime").innerText = formatTransportTime(transportPosition);
         document.getElementById("measureCounter").innerText = `BAR ${String(Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)).padStart(3, "0")}`;
         document.getElementById("transportSeek").value = transportPosition;
-        document.getElementById("dawStatusText").innerText = `Master Arrangement View • ${state} • Bar ${Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)} of ${totalMeasures}`;
+        const section = getArrangementSection(Math.min(totalMeasures - 1, Math.floor(transportPosition / secondsPerMeasure)));
+        document.getElementById("dawStatusText").innerText = `Browser-synthesized Punjabi Hip-Hop • ${section} • ${state} • Bar ${Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)} of ${totalMeasures}`;
       }
 
       document.getElementById("transportSeek").addEventListener("input", (event) => {

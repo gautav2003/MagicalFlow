@@ -180,7 +180,7 @@
     <!-- Main Workspace Dashboard Grid -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
       <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
-      <form method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
+      <form id="songGenerationForm" method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
         <!-- AI Prompt Input -->
         <div>
           <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI Prompt</label>
@@ -188,6 +188,7 @@
             id="promptArea"
             name="prompt"
             rows="2"
+            maxlength="500"
             required
             placeholder="Describe your music..."
             class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"
@@ -237,6 +238,7 @@
         <!-- Instruments Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
+          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics, or leave it unchecked for an instrumental.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
@@ -264,19 +266,21 @@
           <div>
             <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">Duration (min)</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
-              <button type="button" onclick="adjustValue('duration', -1, 1, 10)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="duration" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
-              <button type="button" onclick="adjustValue('duration', 1, 1, 10)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
+              <button type="button" onclick="adjustValue('duration', -1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
+              <input type="number" id="duration" name="duration" value="2" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <button type="button" onclick="adjustValue('duration', 1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
             </div>
           </div>
         </div>
 
         <!-- Submit Generation Button -->
+        <p class="text-[10px] leading-4 text-zinc-400">Your prompt is sent to Google for music generation. Usage may incur charges if free credits or quotas are unavailable or exhausted; avoid entering private information.</p>
         <button
+          id="generateTrackButton"
           type="submit"
           class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2 cursor-pointer"
         >
-          Generate Track
+          Generate Full Song
         </button>
       </form>
 
@@ -337,15 +341,15 @@
             </div>
           </div>
 
-          <!-- Original Western Dance-Pop Demo -->
+          <!-- Original Western Hip-Hop Demo -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm text-white">Neon Dance Parade</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">118 BPM · A Maj · Original synth demo</p>
+              <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
-              <button type="button" aria-label="Play or pause Neon Dance Parade" onclick="togglePlay('Neon Dance Parade')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
               <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
               <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
             </div>
@@ -355,7 +359,7 @@
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
               <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Original synth demo</p>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Original Punjabi hip-hop demo</p>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
@@ -365,11 +369,11 @@
             </div>
           </div>
 
-          <!-- Original Bollywood Romantic Demo -->
+          <!-- Original 1990s-Inspired Bollywood Romance Demo -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
               <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">88 BPM · A Min · Original synth demo</p>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">88 BPM · A Min · Original 90s-inspired synth demo</p>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
@@ -490,9 +494,9 @@
         "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
         "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
-        "Neon Dance Parade": { duration: 210, bpm: 118, root: 196, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sawtooth", style: "dance", melody: [0, 2, 4, 2, 5, 4, 2, 6] },
+        "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
         "Midnight Dhol Cypher": { duration: 196, bpm: 96, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "triangle", style: "punjabi", melody: [0, 3, 4, 2, 6, 4, 3, 1] },
-        "Moonlit Bollywood Romance": { duration: 220, bpm: 88, root: 220, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sine", style: "bollywood", melody: [0, 2, 4, 6, 5, 4, 2, 1] },
+        "Moonlit Bollywood Romance": { duration: 220, bpm: 88, root: 220, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sine", style: "bollywood", melody: [0, 2, 4, 5, 4, 2, 1, 3] },
       };
       let previewAudioContext = null;
       let isPlaying = false;
@@ -599,6 +603,12 @@
         });
       });
 
+      document.getElementById("songGenerationForm").addEventListener("submit", () => {
+        const button = document.getElementById("generateTrackButton");
+        button.disabled = true;
+        button.innerText = "Generating your song...";
+      });
+
       async function togglePlay(trackName) {
         if (trackName && trackName !== selectedTrack) {
           selectedTrack = trackName;
@@ -685,7 +695,7 @@
           playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018);
         }
 
-        if (instruments.includes("Bass") && !isIntro && !isOutro && step % 4 === 0) {
+        if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
           playPreviewTone(track.root / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05);
         }
         if (instruments.includes("Drums") && !isIntro && !isOutro) {
@@ -696,6 +706,9 @@
           if (([4, 12].includes(phraseStep) || (track.style === "punjabi" && phraseStep === 4)) && !isBuild) {
             playPreviewTone(track.style === "jazz" ? 210 : track.style === "bollywood" ? 230 : 185, 0.09, "triangle", 0.035);
           }
+          if ((track.style === "punjabi" || track.style === "hiphop") && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook || track.style === "punjabi")) {
+            playPreviewTone(220, 0.075, "triangle", track.style === "punjabi" ? 0.035 : 0.025);
+          }
           if ((track.style === "dance" || track.style === "hiphop" || track.style === "punjabi") && phraseStep % 2 === 1 && (isBuild || isHook)) {
             playPreviewTone(6200, 0.035, "square", 0.009);
           }
@@ -703,6 +716,9 @@
 
         if (instruments.includes("Strings") && step % 4 === 0 && !isBuild) {
           track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, (interval + 12) / 12), halfBeatSeconds * 2, "sine", 0.014));
+        }
+        if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 1.7, "sine", isHook ? 0.025 : 0.018);
         }
         if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
           track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, interval / 12), halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018));
@@ -712,8 +728,12 @@
           playPreviewTone(track.root * Math.pow(2, (chordTone + 12) / 12), halfBeatSeconds * 0.45, "triangle", 0.022);
         }
 
-        if (track.style === "bollywood" && instruments.includes("Drums") && phraseStep % 4 === 2 && (isBuild || isHook)) {
-          playPreviewTone(track.root * 1.5, 0.06, "triangle", 0.018);
+        if (track.style === "bollywood" && instruments.includes("Drums") && [3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
+          playPreviewTone(220 + (phraseStep % 3) * 35, 0.075, "triangle", 0.025);
+        }
+        if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+          const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
+          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022);
         }
 
         if ((isIntro || isOutro) && step % 8 === 0 && instruments.includes("Drums")) {
