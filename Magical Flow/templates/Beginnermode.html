@@ -1,190 +1,283 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magical Flow - AI Compose (Beginner)</title>
+    <title>Beginner Mode - Magical Flow</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #030008;
+            background-color: #080314;
             color: #ffffff;
         }
-        .mono-text {
-            font-family: 'Fira Code', monospace;
+        /* Custom Glowing Card Borders matching screenshot */
+        .moonlit-panel {
+            background: linear-gradient(180deg, rgba(20, 10, 40, 0.8) 0%, rgba(10, 4, 25, 0.9) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            box-shadow: 0 0 30px rgba(88, 28, 135, 0.15);
         }
-        .brand-heading {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 50%, #c084fc 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Scrollbar styling for long prompt controls */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-        .card-bg {
-            background: linear-gradient(145deg, rgba(15, 8, 30, 0.85) 0%, rgba(3, 0, 8, 0.95) 100%);
+        ::-webkit-scrollbar-track {
+            background: #0d0620;
         }
-        .card-border {
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            transition: all 0.35s ease-in-out;
-        }
-        .card-border:focus-within, .card-border:hover {
-            border-color: rgba(168, 85, 247, 0.5);
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
-        }
-        .glow-button {
-            background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
-            box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
-            transition: all 0.3s ease;
-        }
-        .glow-button:hover {
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.7);
-            transform: translateY(-1px);
+        ::-webkit-scrollbar-thumb {
+            background: #4c1d95;
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between bg-[#030008] text-white relative overflow-x-hidden selection:bg-purple-500 selection:text-white">
+<body class="min-h-screen bg-[#080314] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
 
-    <!-- Top Navigation Bar Header -->
-    <header class="w-full bg-[#030008] border-b border-purple-950/40">
-        <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between z-20">
-            <!-- Brand Logo & Name -->
-            <a href="{{ url_for('home') }}" class="flex items-center gap-2.5 group">
-                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-7 h-7 object-contain group-hover:scale-105 transition-transform" onerror="this.src='https://via.placeholder.com/28/9333ea/ffffff?text=MF'">
-                <span class="font-extrabold text-base tracking-wide text-white group-hover:text-purple-300 transition-colors">Magical Flow</span>
-            </a>
-
-            <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center gap-6 text-xs text-zinc-300 font-medium">
-                <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Login</a>
-                <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
-                <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
-                <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
-                <a href="{{ url_for('beginner_mode') }}" class="text-purple-400 font-bold border-b border-purple-400 pb-0.5">AI Compose</a>
-                <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-300 transition-colors">Pro Studio</a>
-                <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-300 transition-colors">AI Output</a>
-                <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Pro Output</a>
-                <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">Library</a>
-                <a href="{{ url_for('artist_support') }}" class="text-purple-300 font-bold hover:text-white transition-colors">Support</a>
-            </nav>
-
-            <!-- User Profile Avatar Circle -->
-            <a href="{{ url_for('account') }}" class="w-8 h-8 rounded-full bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-200 hover:text-white hover:border-purple-400 transition-all shadow-inner">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+    <!-- Top Navigation Header -->
+    <header class="w-full bg-[#080314] border-b border-purple-900/30 px-6 py-3.5 flex items-center justify-between z-20">
+        <div class="flex items-center gap-3">
+            <!-- Brand Logo -->
+            <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/40">
+                    <div class="w-full h-full bg-[#080314] rounded-full flex items-center justify-center">
+                        <span class="text-xs">🎵</span>
+                    </div>
+                </div>
+                <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
             </a>
         </div>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
+            <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
+            <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
+            <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
+            <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
+            <a href="{{ url_for('beginner_mode') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Beginner</a>
+            <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-300 transition-colors">Pro Studio</a>
+            <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-300 transition-colors">Beginner output</a>
+            <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
+            <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
+        </nav>
+
+        <!-- User Profile Avatar -->
+        <a href="{{ url_for('account') }}" class="text-zinc-300 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+        </a>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-4xl mx-auto px-6 py-10 flex-grow flex flex-col items-center justify-center z-10">
-        
-        <!-- Category Badge -->
-        <span class="mono-text text-[11px] font-semibold tracking-[0.2em] text-purple-400/90 uppercase mb-3 bg-purple-950/40 border border-purple-500/20 px-3.5 py-1 rounded-full">
-            AI COMPOSER
-        </span>
+    <!-- Main Dual-Column Content -->
+    <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Page Heading -->
-        <h1 class="brand-heading text-3xl md:text-5xl font-extrabold text-center mb-3 tracking-tight">
-            Describe Your Song Idea
-        </h1>
-        <p class="mono-text text-xs text-zinc-400 text-center mb-8 max-w-lg">
-            Select your genre, mood, tempo, and vocal choices to generate custom AI music instantly.
-        </p>
-
-        <!-- Song Generator Form Card -->
-        <form action="{{ url_for('beginner_mode') }}" method="POST" class="card-bg card-border rounded-2xl p-6 md:p-8 w-full space-y-6">
+        <!-- LEFT COLUMN: AI Music Controls (Form) -->
+        <form method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 moonlit-panel rounded-2xl p-5 flex flex-col justify-between space-y-5 overflow-y-auto max-h-[85vh]">
             
-            <!-- Prompt Input Field -->
+            <!-- AI Prompt Section -->
             <div>
-                <label class="block mono-text text-xs text-purple-300 mb-2 font-semibold tracking-wider uppercase">
-                    Song Description / Prompt
-                </label>
-                <textarea name="prompt" rows="3" required placeholder="e.g., A slow Punjabi sad song with emotional acoustic guitar, dholak beats, and heartfelt male vocals..." class="w-full bg-[#030008]/80 border border-purple-900/60 rounded-xl p-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"></textarea>
-            </div>
-
-            <!-- Parameters Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <label class="block text-center text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">AI Prompt</label>
+                <textarea name="prompt" rows="2" placeholder="Describe your music..." class="w-full bg-[#0a0418] border border-purple-800/40 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"></textarea>
                 
-                <!-- Complete Musical Genre Selection (Includes Punjabi) -->
-                <div>
-                    <label class="block mono-text text-[10px] text-zinc-400 mb-1.5 uppercase font-medium">Genre</label>
-                    <select name="genre" class="w-full bg-[#0a0518] border border-purple-900/50 rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-purple-500">
-                        <option value="Punjabi">Punjabi</option>
-                        <option value="Punjabi Pop">Punjabi Pop</option>
-                        <option value="Punjabi Bhangra">Punjabi Bhangra</option>
-                        <option value="Punjabi Sad Ballad">Punjabi Sad / Sufi</option>
-                        <option value="Punjabi Folk">Punjabi Folk</option>
-                        <option value="Bollywood Pop">Bollywood Pop</option>
-                        <option value="Bollywood Sufi">Bollywood Sufi</option>
-                        <option value="Modern Pop">Modern Pop</option>
-                        <option value="EDM / House">EDM / House</option>
-                        <option value="Hip-Hop / Trap">Hip-Hop / Trap</option>
-                        <option value="Lo-Fi Chill">Lo-Fi Chill</option>
-                        <option value="Cinematic">Cinematic Orchestral</option>
-                        <option value="Acoustic / Folk">Acoustic / Folk</option>
-                        <option value="Rock / Alternative">Rock / Alternative</option>
-                        <option value="R&B / Soul">R&B / Soul</option>
-                    </select>
-                </div>
-
-                <!-- Complete Mood Selection (Includes Sad Options) -->
-                <div>
-                    <label class="block mono-text text-[10px] text-zinc-400 mb-1.5 uppercase font-medium">Mood</label>
-                    <select name="mood" class="w-full bg-[#0a0518] border border-purple-900/50 rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-purple-500">
-                        <option value="Sad">Sad</option>
-                        <option value="Melancholic & Sad">Melancholic & Sad</option>
-                        <option value="Heartbreak & Emotional">Heartbreak & Emotional</option>
-                        <option value="Sufi Sad & Deep">Sufi Sad & Deep</option>
-                        <option value="Nostalgic Sadness">Nostalgic Sadness</option>
-                        <option value="Magical & Dreamy">Magical & Dreamy</option>
-                        <option value="Romantic & Soulful">Romantic & Soulful</option>
-                        <option value="High Energy & Hype">High Energy & Hype</option>
-                        <option value="Uplifting & Inspiring">Uplifting</option>
-                        <option value="Dark & Dramatic">Dark & Dramatic</option>
-                        <option value="Chill & Relaxed">Chill & Relaxed</option>
-                    </select>
-                </div>
-
-                <!-- Tempo Selection -->
-                <div>
-                    <label class="block mono-text text-[10px] text-zinc-400 mb-1.5 uppercase font-medium">Tempo</label>
-                    <select name="tempo" class="w-full bg-[#0a0518] border border-purple-900/50 rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-purple-500">
-                        <option value="Slow Sad (70 BPM)">Slow Sad (70 BPM)</option>
-                        <option value="Mid-Tempo (100 BPM)">Mid (100 BPM)</option>
-                        <option value="Upbeat (128 BPM)">Fast (128 BPM)</option>
-                        <option value="High Speed (145+ BPM)">High Speed (145 BPM)</option>
-                    </select>
-                </div>
-
-                <!-- Vocal Type Selection -->
-                <div>
-                    <label class="block mono-text text-[10px] text-zinc-400 mb-1.5 uppercase font-medium">Vocals</label>
-                    <select name="vocals" class="w-full bg-[#0a0518] border border-purple-900/50 rounded-lg px-3 py-2.5 text-xs text-zinc-200 focus:outline-none focus:border-purple-500">
-                        <option value="Male Vocalist">Male Vocalist</option>
-                        <option value="Female Vocalist">Female Vocalist</option>
-                        <option value="Duet (Male & Female)">Male & Female Duet</option>
-                        <option value="Instrumental Only">Instrumental Only</option>
-                    </select>
+                <!-- Quick Suggestion Buttons -->
+                <div class="space-y-2">
+                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Late night lo-fi with warm keys'" class="w-full py-2 px-3 bg-[#110826] hover:bg-[#1a0c3b] border border-purple-800/40 rounded-xl text-xs text-purple-200 text-center transition-all">
+                        Late night lo-fi with warm keys
+                    </button>
+                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Upbeat jazzy morning vibes'" class="w-full py-2 px-3 bg-[#110826] hover:bg-[#1a0c3b] border border-purple-800/40 rounded-xl text-xs text-purple-200 text-center transition-all">
+                        Upbeat jazzy morning vibes
+                    </button>
+                    <button type="button" onclick="document.querySelector('[name=prompt]').value = 'Dark cinematic synth atmosphere'" class="w-full py-2 px-3 bg-[#110826] hover:bg-[#1a0c3b] border border-purple-800/40 rounded-xl text-xs text-purple-200 text-center transition-all">
+                        Dark cinematic synth atmosphere
+                    </button>
                 </div>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="glow-button w-full py-4 rounded-xl font-bold text-xs uppercase tracking-widest text-white flex items-center justify-center gap-2 cursor-pointer mt-4">
-                <svg class="w-4 h-4 text-purple-200" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
-                Generate Track with AI
+            <hr class="border-purple-900/30">
+
+            <!-- Genre Selection Pills -->
+            <div>
+                <label class="block text-xs font-semibold text-zinc-400 mb-2">Genre</label>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" checked class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Lo-Fi</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Hip-Hop</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Jazz</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Electronic</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Pop" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Pop</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Folk</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">R&B</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Classical</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Punjabi</span></label>
+                </div>
+            </div>
+
+            <!-- Mood Selection Pills -->
+            <div>
+                <label class="block text-xs font-semibold text-zinc-400 mb-2">Mood</label>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Chill" checked class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Chill</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Energetic" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Energetic</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Dark" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Dark</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Happy</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Sad" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Sad</span></label>
+                    <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Romantic</span></label>
+                </div>
+            </div>
+
+            <!-- Instruments Selection Pills -->
+            <div>
+                <label class="block text-xs font-semibold text-zinc-400 mb-2">Instruments</label>
+                <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Piano</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Guitar</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Bass</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Drums</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Synth</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Strings</span></label>
+                    <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Vocals" class="hidden peer"><span class="block py-1.5 px-2 bg-[#12082b] peer-checked:bg-purple-600 border border-purple-800/40 rounded-full text-purple-200 peer-checked:text-white transition-all">Vocals</span></label>
+                </div>
+            </div>
+
+            <!-- BPM & Duration Adjustment Controls -->
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">BPM</label>
+                    <div class="flex items-center justify-center gap-2 bg-[#0c051f] border border-purple-800/40 rounded-xl py-1.5 px-3">
+                        <button type="button" onclick="let b=document.getElementById('bpm'); b.value=Math.max(60, parseInt(b.value)-1)" class="text-lg font-bold text-zinc-400 hover:text-white">-</button>
+                        <input type="number" id="bpm" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none">
+                        <button type="button" onclick="let b=document.getElementById('bpm'); b.value=Math.min(180, parseInt(b.value)+1)" class="text-lg font-bold text-zinc-400 hover:text-white">+</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-zinc-400 mb-1">Duration (min)</label>
+                    <div class="flex items-center justify-center gap-2 bg-[#0c051f] border border-purple-800/40 rounded-xl py-1.5 px-3">
+                        <button type="button" onclick="let d=document.getElementById('duration'); d.value=Math.max(1, parseInt(d.value)-1)" class="text-lg font-bold text-zinc-400 hover:text-white">-</button>
+                        <input type="number" id="duration" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none">
+                        <button type="button" onclick="let d=document.getElementById('duration'); d.value=Math.min(10, parseInt(d.value)+1)" class="text-lg font-bold text-zinc-400 hover:text-white">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Track Button -->
+            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-800 hover:from-purple-700 hover:to-indigo-700 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/50 transition-all">
+                Generate Track
             </button>
+
         </form>
+
+        <!-- RIGHT COLUMN: Player Dashboard, Waveform & Recording -->
+        <div class="lg:col-span-8 space-y-6 flex flex-col justify-between">
+            
+            <!-- Recent Generation Playlist Panel -->
+            <div class="moonlit-panel rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs uppercase tracking-widest bg-purple-900/40 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full text-[10px] font-semibold">
+                        ● MOONLIT turn imagination into sound
+                    </span>
+                    <span class="text-xs font-semibold text-zinc-400">Recent Generation</span>
+                </div>
+
+                <!-- Track Card 1 -->
+                <div class="bg-[#12082b]/80 border border-purple-800/30 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
+                        <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM • C Min • 3:24</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏮</button>
+                        <button class="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm shadow-md">▶</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏭</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                    </div>
+                </div>
+
+                <!-- Track Card 2 -->
+                <div class="bg-[#12082b]/80 border border-purple-800/30 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
+                        <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM • F Maj • 2:58</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏮</button>
+                        <button class="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm shadow-md">▶</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏭</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                    </div>
+                </div>
+
+                <!-- Track Card 3 -->
+                <div class="bg-[#12082b]/80 border border-purple-800/30 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
+                        <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM • B Min • 4:10</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏮</button>
+                        <button class="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm shadow-md">▶</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏭</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waveform Preview Card -->
+            <div class="moonlit-panel rounded-2xl p-5 space-y-4">
+                <span class="text-xs font-semibold text-zinc-300">Waveform Preview</span>
+
+                <!-- Animated Waveform Visualizer -->
+                <div class="h-20 bg-[#0d0522] rounded-xl border border-purple-800/30 px-4 flex items-center justify-between gap-1">
+                    <div class="w-1.5 h-12 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-16 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-8 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-14 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-10 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-16 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-12 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-4 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-8 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-14 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-10 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-16 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-6 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-12 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-16 bg-blue-400 rounded-full"></div>
+                    <div class="w-1.5 h-8 bg-blue-500 rounded-full"></div>
+                    <div class="w-1.5 h-14 bg-blue-400 rounded-full"></div>
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <div class="flex items-center gap-2">
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏮</button>
+                        <button class="w-9 h-9 rounded-full bg-purple-600 flex items-center justify-center text-white text-sm shadow-md">▶</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏭</button>
+                        <button class="w-8 h-8 rounded-full bg-purple-950 border border-purple-700/40 flex items-center justify-center text-purple-300 text-xs">⏹</button>
+                    </div>
+                    <span class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
+                </div>
+            </div>
+
+            <!-- Record Over Vocal Overlay Box -->
+            <div class="moonlit-panel rounded-2xl p-6 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-zinc-200 text-purple-950 flex items-center justify-center text-xl shadow-lg font-bold">
+                        🎙
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-white">Record Over</h3>
+                        <p class="text-xs text-zinc-400">Add your Voice or instrument on top</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </main>
 
-    <!-- Floating Artist Support Headset Widget -->
-    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-14 h-14 bg-[#5b1494] border border-purple-400/50 rounded-full shadow-[0_0_25px_rgba(139,92,246,0.6)] hover:scale-110 hover:border-purple-300 transition-all" title="Artist Support">
-        <svg class="w-7 h-7 text-[#facc15]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 1a9 9 0 0 0-9 9v7a3 3 0 0 0 3 3h3a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1H5v-2a7 7 0 1 1 14 0v2h-4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.5a.5.5 0 0 1 .5.5v.5a2.5 2.5 0 0 0-2.5 2.5H13a1 1 0 1 0 0 2h1.5A4.5 4.5 0 0 0 19 20.5v-.5a2.5 2.5 0 0 0 2.5-2.5V10a9 9 0 0 0-9-9z"/>
-        </svg>
+    <!-- Floating Artist Support Widget (Bottom Right) -->
+    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-purple-900 border border-purple-400/50 rounded-full shadow-lg shadow-purple-950 hover:scale-110 transition-transform">
+        <span class="text-lg">🎧</span>
     </a>
 
 </body>
