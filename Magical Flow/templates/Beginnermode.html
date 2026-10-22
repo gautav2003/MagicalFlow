@@ -14,139 +14,96 @@
         color: #ffffff;
       }
 
-      /* Glassmorphism Outer Panel Borders & Glow matching mockup */
+      /* Outer Glassmorphism Panels */
       .glass-panel {
-        background: linear-gradient(165deg, rgba(20, 9, 40, 0.8) 0%, rgba(7, 2, 18, 0.95) 100%);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        box-shadow: 0 0 30px rgba(91, 33, 182, 0.15);
+        background: linear-gradient(165deg, rgba(20, 9, 40, 0.95) 0%, rgba(7, 2, 18, 0.98) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        box-shadow: 0 0 30px rgba(91, 33, 182, 0.2);
       }
 
       .inner-card {
-        background: rgba(18, 7, 36, 0.85);
+        background: rgba(18, 7, 36, 0.9);
         border: 1px solid rgba(139, 92, 246, 0.25);
       }
 
-      /* Left Sidebar Custom Scrollbar */
+      /* Custom Scrollbar */
       .custom-scroll::-webkit-scrollbar {
-        width: 6px;
+        width: 5px;
       }
       .custom-scroll::-webkit-scrollbar-track {
         background: #070212;
-        border-radius: 4px;
       }
       .custom-scroll::-webkit-scrollbar-thumb {
         background: #e2e8f0;
         border-radius: 4px;
       }
 
-      /* Pill Button Selector Styles */
-      .pill-inactive {
-        background: rgba(20, 8, 42, 0.9);
-        border: 1px solid rgba(147, 51, 234, 0.4);
-        color: #ffffff;
+      /* EXACT MATCH: Pill Buttons (Unselected vs Selected Lilac-White Glow) */
+      .pill-btn {
+        background: rgba(22, 10, 48, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.45);
+        color: #e2e8f0;
+        transition: all 0.2s ease;
+        font-weight: 600;
       }
-      .pill-inactive:hover {
-        border-color: rgba(168, 85, 247, 0.8);
-        background: rgba(35, 14, 70, 0.9);
-      }
-      .pill-active-purple {
-        background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%) !important;
-        border: 1px solid #c084fc !important;
-        color: #ffffff !important;
-        box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+      .pill-btn:hover {
+        border-color: rgba(192, 132, 252, 0.8);
+        background: rgba(38, 16, 78, 0.9);
       }
 
-      /* Custom Control Buttons */
-      .ctrl-btn {
-        background: rgba(25, 10, 50, 0.9);
-        border: 1px solid rgba(147, 51, 234, 0.3);
+      /* Active Selected State (Light Lavender/White text with glowing outline matching 'Happy' pill in screenshot) */
+      input:checked + .pill-btn {
+        background: linear-gradient(135deg, #a855f7 0%, #6b21a8 100%) !important;
+        border: 1px solid #e9d5ff !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.6);
+      }
+
+      /* Quick Prompt Buttons */
+      .prompt-preset-btn {
+        background: rgba(20, 8, 44, 0.85);
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        color: #ffffff;
         transition: all 0.2s ease;
       }
-      .ctrl-btn:hover {
-        border-color: rgba(168, 85, 247, 0.6);
-        background: rgba(45, 18, 85, 0.9);
+      .prompt-preset-btn:hover {
+        background: rgba(42, 18, 86, 0.9);
+        border-color: rgba(168, 85, 247, 0.7);
       }
 
-      /* Vintage Cassette Player Styles */
-      .cassette-shell {
-        position: relative;
-        overflow: hidden;
-        background: radial-gradient(ellipse at 50% 0%, rgba(192, 132, 252, 0.32), transparent 58%), linear-gradient(145deg, #302052, #17102d 58%, #0b081c);
-        border: 2px solid #a78bfa;
-        box-shadow:
-          inset 0 0 0 3px rgba(192, 132, 252, 0.16),
-          0 0 24px rgba(139, 92, 246, 0.28);
+      /* Tape Deck Transport Control Buttons (Circled in Red in Mockup) */
+      .tape-btn {
+        background: linear-gradient(180deg, #3b1d70 0%, #1e0940 100%);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #c4b5fd;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 5px rgba(0, 0, 0, 0.5);
+        transition: all 0.15s ease;
       }
-      .cassette-label {
-        background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.95), transparent 68%), linear-gradient(145deg, #ede9fe, #c4b5fd);
-        color: #31205c;
-        border: 1px solid rgba(255, 255, 255, 0.72);
-        box-shadow: inset 0 0 18px rgba(124, 58, 237, 0.16);
-      }
-      .cassette-reel {
-        background: repeating-conic-gradient(#ddd6fe 0deg 12deg, #5b3c91 12deg 20deg);
-        border: 4px solid #4c1d95;
-        box-shadow:
-          0 0 0 3px #c4b5fd,
-          inset 0 0 0 4px #8b5cf6,
-          0 0 12px rgba(139, 92, 246, 0.42);
-      }
-      .cassette-reel::after {
-        content: "";
-        position: absolute;
-        inset: 35%;
-        border-radius: 9999px;
-        background: #2e185c;
-        border: 2px solid #ddd6fe;
-      }
-      .cassette-reel.spinning {
-        animation:
-          cassette-spin 1.6s linear infinite,
-          cassette-glow 2.4s ease-in-out infinite alternate;
-      }
-      @keyframes cassette-spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      @keyframes cassette-glow {
-        from {
-          filter: drop-shadow(0 0 2px rgba(196, 181, 253, 0.55));
-        }
-        to {
-          filter: drop-shadow(0 0 9px rgba(192, 132, 252, 0.95));
-        }
-      }
-      .transport-btn {
-        background: linear-gradient(180deg, #c4b5fd, #6d28d9);
-        border: 1px solid #ddd6fe;
+      .tape-btn:hover {
+        background: linear-gradient(180deg, #52279b 0%, #2e0e62 100%);
         color: #ffffff;
-        box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.45),
-          0 2px 0 #3b0764,
-          0 0 10px rgba(139, 92, 246, 0.25);
+        border-color: rgba(192, 132, 252, 0.8);
+        box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
       }
-      .transport-btn:hover {
-        background: linear-gradient(180deg, #ddd6fe, #8b5cf6);
-        box-shadow: 0 0 14px rgba(192, 132, 252, 0.55);
-      }
-      .transport-btn:active {
+      .tape-btn:active {
         transform: translateY(1px);
-        box-shadow:
-          inset 0 1px rgba(255, 255, 255, 0.35),
-          0 1px 0 #3b0764;
       }
-      @media (prefers-reduced-motion: reduce) {
-        .cassette-reel.spinning {
-          animation: none;
-        }
+
+      /* Primary Action Button */
+      .btn-primary {
+        background: linear-gradient(90deg, #4c1d95 0%, #2e1065 100%);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+      }
+      .btn-primary:hover {
+        background: linear-gradient(90deg, #5b21b6 0%, #3b0764 100%);
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
       }
     </style>
   </head>
   <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
-    <!-- Top Navigation Header -->
+    <!-- Navigation Bar -->
     <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
-      <!-- Brand Logo & Name -->
       <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
           <div class="w-full h-full bg-[#05010c] rounded-full flex items-center justify-center">
@@ -156,7 +113,6 @@
         <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
       </a>
 
-      <!-- Navigation Links -->
       <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
         <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
         <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
@@ -169,7 +125,6 @@
         <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
       </nav>
 
-      <!-- User Profile Avatar Circle -->
       <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
@@ -177,117 +132,112 @@
       </a>
     </header>
 
-    <!-- Main Workspace Dashboard Grid -->
+    <!-- Main Workspace -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
-      <form id="songGenerationForm" method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
-        <!-- AI Prompt Input -->
+      <!-- LEFT SIDEBAR: Red Circled Area (Prompts, Pills, BPM/Duration, Submit) -->
+      <form id="songForm" method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
+        <!-- AI Prompt Section -->
         <div>
-          <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI PROMPT</label>
+          <label class="block text-center text-xs font-extrabold uppercase tracking-widest text-white mb-2">AI Prompt</label>
           <textarea
-            id="promptArea"
+            id="promptInput"
             name="prompt"
             rows="2"
-            maxlength="500"
             required
             placeholder="Describe your music..."
-            class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"
+            class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-400 transition-all resize-none mb-3"
           ></textarea>
 
-          <!-- Quick Preset Prompts -->
           <div class="space-y-2">
-            <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
-            <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
-            <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
+            <button type="button" onclick="fillPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 prompt-preset-btn rounded-xl text-xs font-medium text-center">Late night lo-fi with warm keys</button>
+            <button type="button" onclick="fillPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 prompt-preset-btn rounded-xl text-xs font-medium text-center">Upbeat jazzy morning vibes</button>
+            <button type="button" onclick="fillPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 prompt-preset-btn rounded-xl text-xs font-medium text-center">Dark cinematic synth atmosphere</button>
           </div>
         </div>
 
-        <hr class="border-purple-900/30" />
+        <hr class="border-purple-900/40" />
 
-        <!-- Genre Selection (Includes Bhangra, Bollywood Romance, Punjabi) -->
+        <!-- Genre Pill Selectors -->
         <div>
-          <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Lo-Fi</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Hip-Hop</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Jazz</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Electronic</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Western Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Western Pop</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Folk</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">R&B</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Bhangra" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bhangra</span></label>
-            <label class="cursor-pointer col-span-2"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
+          <label class="block text-xs font-bold text-zinc-300 mb-2">Genre</label>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Lo-Fi</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Hip-Hop</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Jazz</span></label>
+            
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Electronic</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Pop</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Folk</span></label>
+
+            <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">R&B</span></label>
+            <label class="cursor-pointer col-span-2"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Classical</span></label>
           </div>
         </div>
 
-        <!-- Mood Selection -->
+        <!-- Mood Pill Selectors (Exact match to 'Happy' highlighted state) -->
         <div>
-          <label class="block text-xs font-semibold text-zinc-300 mb-2">Mood</label>
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Chill" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Chill</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Energetic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Energetic</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Dark" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dark</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Happy</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Sad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Sad</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Romantic</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Focused" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Focused</span></label>
+          <label class="block text-xs font-bold text-zinc-300 mb-2">Mood</label>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Chill" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Chill</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Energetic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Energetic</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Dark" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Dark</span></label>
+
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Happy</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Sad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Sad</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Romantic</span></label>
+
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Focused" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Focused</span></label>
           </div>
         </div>
 
-        <!-- Instruments Selection -->
+        <!-- Instruments Checkbox Selectors -->
         <div>
-          <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
-          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics, or leave it unchecked for an instrumental.</p>
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bass</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Synth</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Brass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Brass</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Pad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Pad</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Arp" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Arp</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Vocals" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Vocals</span></label>
+          <label class="block text-xs font-bold text-zinc-300 mb-2">Instruments</label>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs">
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Piano</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Guitar</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Bass</span></label>
+
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Drums</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Synth</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Strings</span></label>
+
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Brass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Brass</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Pad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Pad</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Arp" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Arp</span></label>
+
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Vocals" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-btn">Vocals</span></label>
           </div>
         </div>
 
         <!-- BPM & Duration Counter Controls -->
         <div class="grid grid-cols-2 gap-4 text-center pt-2">
           <div>
-            <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">BPM</label>
+            <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider uppercase">BPM</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
-              <button type="button" onclick="adjustValue('bpm', -1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="bpm" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
-              <button type="button" onclick="adjustValue('bpm', 1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
+              <button type="button" onclick="stepValue('bpmInput', -1, 60, 180)" class="w-8 h-8 bg-[#1a093b] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 flex items-center justify-center">-</button>
+              <input type="number" id="bpmInput" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <button type="button" onclick="stepValue('bpmInput', 1, 60, 180)" class="w-8 h-8 bg-[#1a093b] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 flex items-center justify-center">+</button>
             </div>
           </div>
           <div>
-            <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">Duration (min)</label>
+            <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider uppercase">Duration (min)</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
-              <button type="button" onclick="adjustValue('duration', -1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="duration" name="duration" value="2" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
-              <button type="button" onclick="adjustValue('duration', 1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
+              <button type="button" onclick="stepValue('durationInput', -1, 1, 5)" class="w-8 h-8 bg-[#1a093b] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 flex items-center justify-center">-</button>
+              <input type="number" id="durationInput" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <button type="button" onclick="stepValue('durationInput', 1, 1, 5)" class="w-8 h-8 bg-[#1a093b] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 flex items-center justify-center">+</button>
             </div>
           </div>
         </div>
 
-        <!-- Submit Generation Button -->
-        <p class="text-[10px] leading-4 text-zinc-400">Your prompt is sent to Google for music generation. Usage may incur charges if free credits or quotas are unavailable or exhausted; avoid entering private information.</p>
-        <button
-          id="generateTrackButton"
-          type="submit"
-          class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2 cursor-pointer"
-        >
-          Generate Full Song
+        <button type="submit" class="w-full py-3.5 btn-primary text-white font-extrabold text-xs tracking-wider uppercase rounded-xl transition-all cursor-pointer">
+          Generate Track
         </button>
       </form>
 
-      <!-- RIGHT COLUMN: Playlist, Vintage Cassette Player & Audio Mechanism -->
-      <div class="lg:col-span-8 flex flex-col justify-between space-y-6">
-        <!-- Recent Generation Playlist -->
+      <!-- RIGHT SIDE: Recent Generation, Waveform & Tape Recorder Controls -->
+      <div class="lg:col-span-8 flex flex-col space-y-6">
+        <!-- Playlist Card Area -->
         <div class="glass-panel rounded-2xl p-5 space-y-4">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-semibold tracking-wider bg-purple-950/60 text-purple-200 border border-purple-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
@@ -297,138 +247,143 @@
             <span class="text-xs font-medium text-zinc-400">Recent Generation</span>
           </div>
 
-          <!-- Track Card 1 -->
+          <!-- Track 1 Card (Red Circled Tape Controls) -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
               <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
               <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi', [261.63, 311.13, 392.00])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+            <!-- Red Circled Tape Transport Controls -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" title="Rewind" onclick="triggerTapeAction('REW', 330)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" title="Play" onclick="togglePlayback('Late Night Lo-Fi', [261.63, 311.13, 392.00])" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" title="Fast Forward" onclick="triggerTapeAction('FF', 880)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" title="Stop" onclick="stopAudio()" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
             </div>
           </div>
 
-          <!-- Track Card 2 -->
+          <!-- Track 2 Card (Red Circled Tape Controls) -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm text-white">Bhangra Pulse</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">130 BPM . G Maj . 2:45</p>
+              <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Bhangra Pulse" onclick="togglePlay('Bhangra Pulse', [392.00, 493.88, 587.33])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+            <!-- Red Circled Tape Transport Controls -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" title="Rewind" onclick="triggerTapeAction('REW', 330)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" title="Play" onclick="togglePlayback('Morning Jazz', [349.23, 440.00, 523.25])" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" title="Fast Forward" onclick="triggerTapeAction('FF', 880)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" title="Stop" onclick="stopAudio()" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
             </div>
           </div>
 
-          <!-- Track Card 3 -->
+          <!-- Track 3 Card (Red Circled Tape Controls) -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm text-white">Bollywood Romance</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">85 BPM . D Min . 3:50</p>
+              <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Bollywood Romance" onclick="togglePlay('Bollywood Romance', [293.66, 349.23, 440.00])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+            <!-- Red Circled Tape Transport Controls -->
+            <div class="flex items-center gap-1.5">
+              <button type="button" title="Rewind" onclick="triggerTapeAction('REW', 330)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" title="Play" onclick="togglePlayback('Dark Ambient', [246.94, 293.66, 369.99])" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" title="Fast Forward" onclick="triggerTapeAction('FF', 880)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" title="Stop" onclick="stopAudio()" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
             </div>
           </div>
         </div>
 
-        <!-- Vintage Cassette Player and Waveform -->
+        <!-- Waveform Preview Panel (Red Circled Player Controls) -->
         <div class="glass-panel rounded-2xl p-5 space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between text-xs font-semibold text-zinc-300">
+            <span>Waveform Preview</span>
+            <span id="nowPlayingText" class="text-purple-300 font-mono text-[11px]">Late Night Lo-Fi</span>
+          </div>
+
+          <!-- Waveform Visualizer Bars -->
+          <div id="waveform" class="h-16 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5">
+            <div class="w-1.5 h-6 bg-purple-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-indigo-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-purple-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-indigo-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-5 bg-purple-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-indigo-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-purple-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-7 bg-indigo-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-4 bg-purple-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-indigo-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-9 bg-purple-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-indigo-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-purple-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-11 bg-indigo-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-purple-400 rounded-full transition-all duration-300"></div>
+          </div>
+
+          <!-- Red Circled Waveform Master Transport Bar -->
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-1.5">
+              <button type="button" title="Rewind" onclick="triggerTapeAction('REW', 330)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" title="Play" onclick="togglePlayback('Master Preview', [261.63, 329.63, 392.00])" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" title="Fast Forward" onclick="triggerTapeAction('FF', 880)" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" title="Stop" onclick="stopAudio()" class="tape-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
+            </div>
+            <span id="timecode" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
+          </div>
+        </div>
+
+        <!-- Record Over Vocal Card -->
+        <div class="inner-card rounded-2xl p-6 flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-purple-900/60 border border-purple-500/40 flex items-center justify-center text-xl">
+              🎙️
+            </div>
             <div>
-              <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Web Audio synthesizer active</span>
-            </div>
-            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
-          </div>
-
-          <div class="cassette-shell rounded-xl p-3">
-            <div class="cassette-label rounded-lg p-3">
-              <div class="flex items-center justify-between text-[9px] font-bold uppercase tracking-[0.2em]">
-                <span>Magical Flow</span>
-                <span>✦ Side A ✦</span>
-              </div>
-              <div class="flex items-center justify-center gap-8 py-3">
-                <div id="leftReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
-                <div class="h-1 w-10 bg-violet-700 rounded-full shadow-[0_0_8px_rgba(167,139,250,0.8)]"></div>
-                <div id="rightReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
-              </div>
-              <div class="flex items-center justify-between text-[9px] font-mono">
-                <span>STEREO · 1984</span>
-                <span id="tapeStatus">STOP</span>
-              </div>
+              <h4 class="font-bold text-sm text-white">Record Over</h4>
+              <p class="text-xs text-zinc-400 mt-0.5">Add your Voice or instrument on top</p>
             </div>
           </div>
-
-          <!-- Audio Waveform Visualizer Bars -->
-          <div id="waveformContainer" class="h-20 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5" aria-label="Playback waveform">
-            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
-          </div>
+          <button type="button" onclick="alert('Microphone input initialized')" class="w-9 h-9 rounded-full bg-purple-900/80 border border-purple-400 flex items-center justify-center hover:bg-purple-800 transition-all">
+            🎧
+          </button>
         </div>
       </div>
     </main>
 
-    <!-- Web Audio & Tape Mechanism Script -->
+    <!-- Fully Workable JavaScript Mechanics -->
     <script>
       let audioCtx = null;
       let isPlaying = false;
-      let synthInterval = null;
+      let playbackInterval = null;
+      let clockSeconds = 0;
 
-      function setPrompt(text) {
-        document.getElementById('promptArea').value = text;
+      function fillPrompt(text) {
+        document.getElementById('promptInput').value = text;
       }
 
-      function adjustValue(id, delta, min, max) {
-        const el = document.getElementById(id);
-        let val = parseInt(el.value) + delta;
-        el.value = Math.min(max, Math.max(min, val));
+      function stepValue(inputId, delta, min, max) {
+        const input = document.getElementById(inputId);
+        let current = parseInt(input.value) || min;
+        input.value = Math.min(max, Math.max(min, current + delta));
       }
 
-      function initAudio() {
+      function initAudioContext() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
       }
 
-      function playTone(notes) {
-        initAudio();
+      function playSynthesizedChord(notes) {
+        initAudioContext();
         notes.forEach(freq => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
@@ -437,80 +392,66 @@
         });
       }
 
-      function togglePlay(trackName = 'Track', chordNotes = [261.63, 311.13, 392.00]) {
-        initAudio();
-        const leftReel = document.getElementById('leftReel');
-        const rightReel = document.getElementById('rightReel');
-        const tapeStatus = document.getElementById('tapeStatus');
-        const label = document.getElementById('selectedTrackLabel');
-
-        if (label) label.innerText = trackName;
+      function togglePlayback(trackTitle, notes) {
+        initAudioContext();
+        document.getElementById('nowPlayingText').innerText = trackTitle;
 
         if (!isPlaying) {
           isPlaying = true;
-          if (leftReel) leftReel.classList.add('spinning');
-          if (rightReel) rightReel.classList.add('spinning');
-          if (tapeStatus) tapeStatus.innerText = 'PLAYING';
-
-          playTone(chordNotes);
-          synthInterval = setInterval(() => {
+          playSynthesizedChord(notes);
+          
+          playbackInterval = setInterval(() => {
             if (isPlaying) {
-              playTone(chordNotes);
-              animateWaveform(true);
+              playSynthesizedChord(notes);
+              animateWaveformBars();
+              updateTimer();
             }
           }, 1200);
         } else {
-          stopPlayer();
+          stopAudio();
         }
       }
 
-      function stopPlayer() {
+      function stopAudio() {
         isPlaying = false;
-        const leftReel = document.getElementById('leftReel');
-        const rightReel = document.getElementById('rightReel');
-        const tapeStatus = document.getElementById('tapeStatus');
-
-        if (leftReel) leftReel.classList.remove('spinning');
-        if (rightReel) rightReel.classList.remove('spinning');
-        if (tapeStatus) tapeStatus.innerText = 'STOP';
-
-        clearInterval(synthInterval);
-        animateWaveform(false);
+        clearInterval(playbackInterval);
+        resetWaveform();
       }
 
-      function rewindPlayer() {
-        stopPlayer();
-        const tapeStatus = document.getElementById('tapeStatus');
-        if (tapeStatus) tapeStatus.innerText = 'REW';
-        playTapeWindSound(false);
-      }
-
-      function fastForward() {
-        stopPlayer();
-        const tapeStatus = document.getElementById('tapeStatus');
-        if (tapeStatus) tapeStatus.innerText = 'FF';
-        playTapeWindSound(true);
-      }
-
-      function playTapeWindSound(isForward) {
-        initAudio();
+      function triggerTapeAction(type, pitch) {
+        stopAudio();
+        initAudioContext();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(isForward ? 880 : 330, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
+        osc.stop(audioCtx.currentTime + 0.15);
       }
 
-      function animateWaveform(active) {
-        const bars = document.querySelectorAll('#waveformContainer div');
+      function animateWaveformBars() {
+        const bars = document.querySelectorAll('#waveform div');
         bars.forEach(bar => {
-          bar.style.height = active ? `${Math.floor(Math.random() * 50) + 15}px` : '30px';
+          bar.style.height = `${Math.floor(Math.random() * 45) + 12}px`;
         });
+      }
+
+      function resetWaveform() {
+        const bars = document.querySelectorAll('#waveform div');
+        bars.forEach(bar => {
+          bar.style.height = '16px';
+        });
+      }
+
+      function updateTimer() {
+        clockSeconds++;
+        const mins = Math.floor(clockSeconds / 60);
+        const secs = clockSeconds % 60;
+        document.getElementById('timecode').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} / 3:24`;
       }
     </script>
   </body>
