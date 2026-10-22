@@ -541,8 +541,21 @@ def beginner_mode():
         genre = request.form.get('genre', '')
         mood = request.form.get('mood', '')
         allowed_genres = {
-            'Lo-Fi', 'Hip-Hop', 'Jazz', 'Electronic', 'Pop', 'Folk',
-            'R&B', 'Classical', 'Punjabi Pop', 'Bollywood Sufi',
+            'Lo-Fi', 'Hip-Hop', 'Jazz', 'Electronic', 'Western Pop', 'Folk',
+            'R&B', 'Classical', 'Punjabi Pop', 'Bhangra', 'Bollywood Romance',
+        }
+        genre_directions = {
+            'Lo-Fi': 'A relaxed, dusty hip-hop groove with warm keys and soft drums.',
+            'Hip-Hop': 'A Western hip-hop production with a steady kick and snare, deep bass, and a memorable original instrumental hook.',
+            'Jazz': 'A warm small-combo jazz arrangement with expressive harmony and a relaxed rhythmic feel.',
+            'Electronic': 'A modern electronic production with layered synthesizers and a clear rhythmic build.',
+            'Western Pop': 'A polished Western pop production with a clear verse and chorus, memorable original hook, lively drums, and layered harmony.',
+            'Folk': 'An acoustic folk arrangement with organic strumming, gentle percussion, and an intimate melody.',
+            'R&B': 'A smooth contemporary R&B production with warm chords, a relaxed groove, and expressive original melody.',
+            'Classical': 'A cinematic orchestral arrangement with a developing melody and dynamic instrumental sections.',
+            'Punjabi Pop': 'A contemporary Punjabi pop production with original Punjabi folk-inspired rhythm, dhol accents, bass, and melodic instrumentation.',
+            'Bhangra': 'An upbeat Punjabi Bhangra song with an energetic dhol groove, tumbi-inspired melodic flourishes, handclaps, and a celebratory original chorus.',
+            'Bollywood Romance': 'A romantic Hindi film-song arrangement inspired by broad 1990s Bollywood production traits: expressive strings, flute-like melodic fills, hand percussion, lush harmony, and a memorable original chorus.',
         }
         allowed_moods = {'Chill', 'Energetic', 'Dark', 'Happy', 'Sad', 'Romantic', 'Focused'}
         allowed_instruments = {
@@ -574,13 +587,15 @@ def beginner_mode():
             composition['generation_error'] = 'Choose a tempo from 60 to 180 BPM and a song length from 1 to 3 minutes.'
         else:
             selected_instruments = ', '.join(instruments) if instruments else 'a suitable original arrangement'
+            genre_direction = genre_directions[genre]
             vocal_direction = (
-                'Include original, newly written sung lyrics in English unless the description requests another language. '
+                'Include original, newly written sung lyrics appropriate to the selected genre and language requested in the description. '
                 if vocals == 'Generated vocals' else 'Instrumental only; no sung vocals or lyrics. '
             )
             generation_prompt = (
-                f"Create a complete, original {genre} song with a {mood} mood, approximately {duration} minutes long, "
-                f"at {bpm} BPM. Use {selected_instruments}. "
+                f"Create a complete, original {genre} song. {genre_direction} "
+                f"The mood is {mood}; make it approximately {duration} minutes long at {bpm} BPM. "
+                f"Use {selected_instruments}. "
                 f"{vocal_direction}"
                 f"Follow this creative description: {prompt}. "
                 "Use an original melody, lyrics, and arrangement; do not imitate or reproduce any existing song or artist."

@@ -204,7 +204,7 @@
 
         <hr class="border-purple-900/30" />
 
-        <!-- Genre Selection (Includes Punjabi & Bollywood Options) -->
+        <!-- Genre Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
@@ -212,12 +212,13 @@
             <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Hip-Hop</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Jazz</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Electronic</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Pop</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Western Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Western Pop</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Folk</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">R&B</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Sufi" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Bhangra" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bhangra</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
           </div>
         </div>
 
@@ -514,11 +515,14 @@
         Jazz: "jazz",
         Electronic: "dance",
         Pop: "dance",
+        "Western Pop": "dance",
         Folk: "folk",
         "R&B": "rnb",
         Classical: "cinematic",
         "Punjabi Pop": "punjabi",
+        Bhangra: "punjabi",
         "Bollywood Sufi": "bollywood",
+        "Bollywood Romance": "bollywood",
       };
       const scales = {
         major: [0, 2, 4, 7, 9, 12, 14, 16],
