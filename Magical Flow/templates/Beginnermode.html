@@ -180,10 +180,10 @@
     <!-- Main Workspace Dashboard Grid -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
       <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
-      <form id="songGenerationForm" method="POST" action="{{ url_for('beginner_output') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
+      <form id="songGenerationForm" method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
         <!-- AI Prompt Input -->
         <div>
-          <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI PROMPT</label>
+          <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI Prompt</label>
           <textarea
             id="promptArea"
             name="prompt"
@@ -204,7 +204,7 @@
 
         <hr class="border-purple-900/30" />
 
-        <!-- Genre Selection (Includes Bhangra, Bollywood Romance, Punjabi) -->
+        <!-- Genre Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
@@ -216,9 +216,9 @@
             <label class="cursor-pointer"><input type="radio" name="genre" value="Folk" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Folk</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="R&B" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">R&B</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Bhangra" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bhangra</span></label>
-            <label class="cursor-pointer col-span-2"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
           </div>
         </div>
 
@@ -285,7 +285,7 @@
         </button>
       </form>
 
-      <!-- RIGHT COLUMN: Playlist, Vintage Cassette Player & Audio Mechanism -->
+      <!-- RIGHT COLUMN: Playlist, Vintage Cassette Player & Vocal Recording -->
       <div class="lg:col-span-8 flex flex-col justify-between space-y-6">
         <!-- Recent Generation Playlist -->
         <div class="glass-panel rounded-2xl p-5 space-y-4">
@@ -297,48 +297,90 @@
             <span class="text-xs font-medium text-zinc-400">Recent Generation</span>
           </div>
 
-          <!-- Track Card 1 -->
+          <!-- Track Card 1: Late Night Lo-Fi -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
               <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
               <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi', [261.63, 311.13, 392.00])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
               <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
             </div>
           </div>
 
-          <!-- Track Card 2 -->
+          <!-- Track Card 2: Morning Jazz -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm text-white">Bhangra Pulse</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">130 BPM . G Maj . 2:45</p>
+              <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Bhangra Pulse" onclick="togglePlay('Bhangra Pulse', [392.00, 493.88, 587.33])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause Morning Jazz" onclick="togglePlay('Morning Jazz')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
               <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
             </div>
           </div>
 
-          <!-- Track Card 3 -->
+          <!-- Track Card 3: Dark Ambient -->
           <div class="inner-card rounded-xl p-4 flex items-center justify-between">
             <div>
-              <h3 class="font-bold text-sm text-white">Bollywood Romance</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">85 BPM . D Min . 3:50</p>
+              <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" aria-label="Play Bollywood Romance" onclick="togglePlay('Bollywood Romance', [293.66, 349.23, 440.00])" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Fast Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" aria-label="Stop playback" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
               <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+            </div>
+          </div>
+
+          <!-- Original Western Hip-Hop Demo -->
+          <div class="inner-card rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+            </div>
+          </div>
+
+          <!-- Original Punjabi Hip-Hop Demo -->
+          <div class="inner-card rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Original Punjabi hip-hop demo</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause Midnight Dhol Cypher" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+            </div>
+          </div>
+
+          <!-- Original 1990s-Inspired Bollywood Romance Demo -->
+          <div class="inner-card rounded-xl p-4 flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
+              <p class="text-[11px] font-mono text-zinc-400 mt-1">88 BPM · A Min · Original 90s-inspired synth demo</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
             </div>
           </div>
         </div>
@@ -348,7 +390,7 @@
           <div class="flex items-center justify-between">
             <div>
               <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Web Audio synthesizer active</span>
+              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Original browser synth · no recordings or sung vocals</span>
             </div>
             <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
           </div>
@@ -395,122 +437,459 @@
             <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
           </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2">
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" id="mainPlayBtn" aria-label="Play or pause" onclick="togglePlay()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+            </div>
+            <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
+          </div>
+          <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
+        </div>
+
+        <!-- Record Over Vocal Card -->
+        <div class="glass-panel rounded-2xl p-6 flex items-center gap-6">
+          <div id="micBtn" onclick="toggleMicRecording()" class="w-14 h-14 rounded-full bg-zinc-200 text-[#05010c] flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
+              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 id="micStatusTitle" class="font-extrabold text-base text-white">Record Over</h3>
+            <p id="micStatusSub" class="text-xs text-zinc-400 mt-1">Add your Voice or instrument on top</p>
+          </div>
         </div>
       </div>
     </main>
 
-    <!-- Web Audio & Tape Mechanism Script -->
-    <script>
-      let audioCtx = null;
-      let isPlaying = false;
-      let synthInterval = null;
+    <!-- Floating Artist Support Widget (Bottom-Right Headset) -->
+    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-[#2a1052] border border-purple-400/50 rounded-full shadow-lg shadow-purple-950 hover:scale-110 transition-transform" title="Artist Support">
+      <span class="text-lg">🎧</span>
+    </a>
 
+    <!-- Page Interactions -->
+    <script>
+      // Prompt Presets
       function setPrompt(text) {
-        document.getElementById('promptArea').value = text;
+        document.getElementById("promptArea").value = text;
       }
 
+      // BPM and Duration Controls
       function adjustValue(id, delta, min, max) {
         const el = document.getElementById(id);
         let val = parseInt(el.value) + delta;
-        el.value = Math.min(max, Math.max(min, val));
+        if (val < min) val = min;
+        if (val > max) val = max;
+        el.value = val;
+        if (id === "bpm") bpmWasCustomized = true;
+        handlePreviewSettingChange();
       }
 
-      function initAudio() {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      // Vintage Cassette Player: playback state and track durations
+      const tracks = {
+        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
+        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
+        "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
+        "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
+        "Midnight Dhol Cypher": { duration: 196, bpm: 96, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "triangle", style: "punjabi", melody: [0, 3, 4, 2, 6, 4, 3, 1] },
+        "Moonlit Bollywood Romance": { duration: 220, bpm: 88, root: 220, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sine", style: "bollywood", melody: [0, 2, 4, 5, 4, 2, 1, 3] },
+      };
+      let previewAudioContext = null;
+      let isPlaying = false;
+      let timerSeconds = 0;
+      let timerInterval = null;
+      let sequenceInterval = null;
+      let sequenceStep = 0;
+      let selectedTrack = "Late Night Lo-Fi";
+      let bpmWasCustomized = false;
+      let genreWasCustomized = false;
+
+      const genreStyles = {
+        "Lo-Fi": "lofi",
+        "Hip-Hop": "hiphop",
+        Jazz: "jazz",
+        Electronic: "dance",
+        Pop: "dance",
+        "Western Pop": "dance",
+        Folk: "folk",
+        "R&B": "rnb",
+        Classical: "cinematic",
+        "Punjabi Pop": "punjabi",
+        Bhangra: "punjabi",
+        "Bollywood Sufi": "bollywood",
+        "Bollywood Romance": "bollywood",
+      };
+      const scales = {
+        major: [0, 2, 4, 7, 9, 12, 14, 16],
+        minor: [0, 2, 3, 7, 9, 12, 14, 15],
+        blues: [0, 3, 5, 6, 7, 10, 12, 15],
+      };
+      const drumPatterns = {
+        dance: [0, 8],
+        hiphop: [0, 6, 8, 14],
+        punjabi: [0, 3, 8, 11],
+        bollywood: [0, 8],
+        jazz: [0, 10],
+        ambient: [0],
+        folk: [0, 8],
+        rnb: [0, 6, 8, 14],
+        cinematic: [0],
+        lofi: [0, 8],
+      };
+
+      function getPreviewSettings() {
+        const preset = tracks[selectedTrack];
+        const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
+        const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
+        const instruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
+        const style = genreWasCustomized ? genreStyles[genre] : preset.style;
+        const minorMood = ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood);
+        const scale = style === "jazz" ? scales.blues : minorMood ? scales.minor : scales.major;
+        const chord = mood === "Romantic" ? [0, 4, 7, 11] : minorMood ? [0, 3, 7] : [0, 4, 7];
+        const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
+        const waveforms = {
+          lofi: "triangle",
+          jazz: "sine",
+          ambient: "sine",
+          dance: "square",
+          hiphop: "sawtooth",
+          punjabi: "triangle",
+          bollywood: "sine",
+          folk: "triangle",
+          rnb: "sawtooth",
+          cinematic: "sine",
+        };
+
+        return {
+          ...preset,
+          style,
+          mood,
+          scale,
+          chord,
+          wave: waveforms[style] || preset.wave,
+          bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
+          duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
+          instruments: instruments.length ? instruments : ["Piano"],
+        };
+      }
+
+      function getSongSection(duration) {
+        const progress = timerSeconds / duration;
+        if (progress < 0.12) return "intro";
+        if (progress < 0.36) return "verse";
+        if (progress < 0.48) return "build";
+        if (progress < 0.72) return "hook";
+        if (progress < 0.88) return "bridge";
+        return "outro";
+      }
+
+      function handlePreviewSettingChange() {
+        const instrumentInputs = [...document.querySelectorAll('input[name="instruments"]')];
+        if (instrumentInputs.length && !instrumentInputs.some((input) => input.checked)) {
+          const piano = instrumentInputs.find((input) => input.value === "Piano");
+          if (piano) piano.checked = true;
         }
+        const duration = getPreviewSettings().duration;
+        timerSeconds = Math.min(timerSeconds, duration);
+        syncPlayer();
+        if (isPlaying) syncSequenceToPosition();
       }
 
-      function playTone(notes) {
-        initAudio();
-        notes.forEach(freq => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 1.2);
+      document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          if (input.name === "genre") genreWasCustomized = true;
+          handlePreviewSettingChange();
         });
-      }
+      });
 
-      function togglePlay(trackName = 'Track', chordNotes = [261.63, 311.13, 392.00]) {
-        initAudio();
-        const leftReel = document.getElementById('leftReel');
-        const rightReel = document.getElementById('rightReel');
-        const tapeStatus = document.getElementById('tapeStatus');
-        const label = document.getElementById('selectedTrackLabel');
+      document.getElementById("songGenerationForm").addEventListener("submit", () => {
+        const button = document.getElementById("generateTrackButton");
+        button.disabled = true;
+        button.innerText = "Generating your song...";
+      });
 
-        if (label) label.innerText = trackName;
-
-        if (!isPlaying) {
+      async function togglePlay(trackName) {
+        if (trackName && trackName !== selectedTrack) {
+          selectedTrack = trackName;
+          timerSeconds = 0;
           isPlaying = true;
-          if (leftReel) leftReel.classList.add('spinning');
-          if (rightReel) rightReel.classList.add('spinning');
-          if (tapeStatus) tapeStatus.innerText = 'PLAYING';
-
-          playTone(chordNotes);
-          synthInterval = setInterval(() => {
-            if (isPlaying) {
-              playTone(chordNotes);
-              animateWaveform(true);
-            }
-          }, 1200);
+          sequenceStep = 0;
+          if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
         } else {
-          stopPlayer();
+          isPlaying = !isPlaying;
+        }
+        if (!isPlaying) {
+          clearInterval(timerInterval);
+          clearInterval(sequenceInterval);
+          syncPlayer();
+          document.getElementById("previewStatus").innerText = "Preview paused";
+          return;
+        }
+        if (timerSeconds >= getPreviewSettings().duration) {
+          timerSeconds = 0;
+          sequenceStep = 0;
+        }
+        try {
+          await startPreviewAudio();
+          syncPlayer();
+          startTimer();
+          startAudioSequence();
+          document.getElementById("previewStatus").innerText = "Playing an original browser-synthesized demo · no recordings or sung vocals";
+        } catch (error) {
+          isPlaying = false;
+          syncPlayer();
+          document.getElementById("previewStatus").innerText = "Audio playback is unavailable in this browser";
+          console.error("Unable to start the browser audio preview:", error);
         }
       }
 
+      async function startPreviewAudio() {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
+        if (!previewAudioContext) previewAudioContext = new AudioContextConstructor();
+        if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
+      }
+
+      function playPreviewTone(frequency, duration, waveform = "triangle", volume = 0.08) {
+        const now = previewAudioContext.currentTime;
+        const oscillator = previewAudioContext.createOscillator();
+        const gain = previewAudioContext.createGain();
+        oscillator.type = waveform;
+        oscillator.frequency.setValueAtTime(frequency, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.connect(gain);
+        gain.connect(previewAudioContext.destination);
+        oscillator.start(now);
+        oscillator.stop(now + duration);
+      }
+
+      function playPreviewStep() {
+        const track = getPreviewSettings();
+        const noteIndex = track.melody[sequenceStep % track.melody.length];
+        const melodyFrequency = track.root * Math.pow(2, track.scale[noteIndex] / 12);
+        const halfBeatSeconds = 30 / track.bpm;
+        const step = sequenceStep;
+        const section = getSongSection(track.duration);
+        const instruments = track.instruments;
+        const isHook = section === "hook";
+        const isBuild = section === "build";
+        const isIntro = section === "intro";
+        const isOutro = section === "outro";
+        const isSparseMood = ["Chill", "Focused"].includes(track.mood);
+        const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
+        const phraseStep = step % 16;
+
+        if (instruments.includes("Piano") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, isHook ? 0.065 : 0.045);
+        }
+        if (instruments.includes("Guitar") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency * 1.5, halfBeatSeconds * 0.4, "square", 0.025);
+        }
+        if (instruments.includes("Synth") && step % (isHook ? 1 : 2) === 0) {
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.75, "sawtooth", 0.018);
+        }
+        if (instruments.includes("Vocals") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018);
+        }
+
+        if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
+          playPreviewTone(track.root / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05);
+        }
+        if (instruments.includes("Drums") && !isIntro && !isOutro) {
+          const kickSteps = drumPatterns[track.style] || [0, 8];
+          if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0 || track.style === "punjabi")) {
+            playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07);
+          }
+          if (([4, 12].includes(phraseStep) || (track.style === "punjabi" && phraseStep === 4)) && !isBuild) {
+            playPreviewTone(track.style === "jazz" ? 210 : track.style === "bollywood" ? 230 : 185, 0.09, "triangle", 0.035);
+          }
+          if ((track.style === "punjabi" || track.style === "hiphop") && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook || track.style === "punjabi")) {
+            playPreviewTone(220, 0.075, "triangle", track.style === "punjabi" ? 0.035 : 0.025);
+          }
+          if ((track.style === "dance" || track.style === "hiphop" || track.style === "punjabi") && phraseStep % 2 === 1 && (isBuild || isHook)) {
+            playPreviewTone(6200, 0.035, "square", 0.009);
+          }
+        }
+
+        if (instruments.includes("Strings") && step % 4 === 0 && !isBuild) {
+          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, (interval + 12) / 12), halfBeatSeconds * 2, "sine", 0.014));
+        }
+        if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 1.7, "sine", isHook ? 0.025 : 0.018);
+        }
+        if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
+          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, interval / 12), halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018));
+        }
+        if (instruments.includes("Arp") && (isBuild || isHook) && step % 2 === 0) {
+          const chordTone = track.chord[(step / 2) % track.chord.length];
+          playPreviewTone(track.root * Math.pow(2, (chordTone + 12) / 12), halfBeatSeconds * 0.45, "triangle", 0.022);
+        }
+
+        if (track.style === "bollywood" && instruments.includes("Drums") && [3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
+          playPreviewTone(220 + (phraseStep % 3) * 35, 0.075, "triangle", 0.025);
+        }
+        if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+          const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
+          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022);
+        }
+
+        if ((isIntro || isOutro) && step % 8 === 0 && instruments.includes("Drums")) {
+          playPreviewTone(4200, 0.035, "square", 0.006);
+        }
+
+        if (isOutro && step % 8 === 0 && instruments.includes("Pad")) {
+          playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012);
+        }
+        sequenceStep = (sequenceStep + 1) % 16;
+      }
+
+      function startAudioSequence() {
+        clearInterval(sequenceInterval);
+        const halfBeatMilliseconds = (30 / getPreviewSettings().bpm) * 1000;
+        sequenceInterval = setInterval(playPreviewStep, halfBeatMilliseconds);
+        playPreviewStep();
+      }
+
+      function syncSequenceToPosition() {
+        const halfBeatSeconds = 30 / getPreviewSettings().bpm;
+        sequenceStep = Math.floor(timerSeconds / halfBeatSeconds) % 16;
+        if (isPlaying) startAudioSequence();
+      }
+
+      // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
         isPlaying = false;
-        const leftReel = document.getElementById('leftReel');
-        const rightReel = document.getElementById('rightReel');
-        const tapeStatus = document.getElementById('tapeStatus');
-
-        if (leftReel) leftReel.classList.remove('spinning');
-        if (rightReel) rightReel.classList.remove('spinning');
-        if (tapeStatus) tapeStatus.innerText = 'STOP';
-
-        clearInterval(synthInterval);
-        animateWaveform(false);
+        clearInterval(timerInterval);
+        clearInterval(sequenceInterval);
+        timerSeconds = 0;
+        sequenceStep = 0;
+        syncPlayer();
+        document.getElementById("previewStatus").innerText = "Preview stopped";
       }
 
       function rewindPlayer() {
-        stopPlayer();
-        const tapeStatus = document.getElementById('tapeStatus');
-        if (tapeStatus) tapeStatus.innerText = 'REW';
-        playTapeWindSound(false);
+        timerSeconds = Math.max(0, timerSeconds - 10);
+        syncSequenceToPosition();
+        syncPlayer();
       }
 
       function fastForward() {
-        stopPlayer();
-        const tapeStatus = document.getElementById('tapeStatus');
-        if (tapeStatus) tapeStatus.innerText = 'FF';
-        playTapeWindSound(true);
+        timerSeconds = Math.min(getPreviewSettings().duration, timerSeconds + 10);
+        syncSequenceToPosition();
+        syncPlayer();
+        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
       }
 
-      function playTapeWindSound(isForward) {
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(isForward ? 880 : 330, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.1);
+      function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          timerSeconds++;
+          if (timerSeconds >= getPreviewSettings().duration) {
+            timerSeconds = getPreviewSettings().duration;
+            stopPlayer();
+          } else {
+            syncPlayer();
+          }
+        }, 1000);
+      }
+
+      // Vintage Cassette Player: synchronize deck and playback display
+      function syncPlayer() {
+        const duration = getPreviewSettings().duration;
+        const playSymbol = isPlaying ? "Ⅱ" : "▶";
+        document.getElementById("mainPlayBtn").innerText = playSymbol;
+        document.querySelectorAll(".track-play-btn").forEach((button) => {
+          const card = button.closest(".inner-card");
+          const title = card.querySelector("h3").innerText;
+          button.innerText = title === selectedTrack && isPlaying ? "Ⅱ" : "▶";
+        });
+        document.getElementById("selectedTrackLabel").innerText = selectedTrack;
+        document.getElementById("tapeStatus").innerText = isPlaying ? "PLAY" : "STOP";
+        document.getElementById("leftReel").classList.toggle("spinning", isPlaying);
+        document.getElementById("rightReel").classList.toggle("spinning", isPlaying);
+        document.getElementById("playbackSeek").max = duration;
+        document.getElementById("playbackSeek").value = timerSeconds;
+        document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(duration)}`;
+        animateWaveform(isPlaying);
+      }
+
+      // Vintage Cassette Player: display helpers
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = (seconds % 60).toString().padStart(2, "0");
+        return `${mins}:${secs}`;
       }
 
       function animateWaveform(active) {
-        const bars = document.querySelectorAll('#waveformContainer div');
-        bars.forEach(bar => {
-          bar.style.height = active ? `${Math.floor(Math.random() * 50) + 15}px` : '30px';
+        const bars = document.querySelectorAll("#waveformContainer div");
+        bars.forEach((bar) => {
+          if (active) {
+            const randomHeight = Math.floor(Math.random() * 40) + 20;
+            bar.style.height = `${randomHeight}px`;
+          } else {
+            bar.style.height = "";
+          }
         });
+      }
+
+      // Vintage Cassette Player: direct track seeking
+      document.getElementById("playbackSeek").addEventListener("input", (event) => {
+        timerSeconds = Number(event.target.value);
+        syncSequenceToPosition();
+        syncPlayer();
+        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
+      });
+
+      syncPlayer();
+
+      // Vocal Recording Controls
+      let mediaRecorder,
+        audioChunks = [],
+        isRecording = false;
+
+      async function toggleMicRecording() {
+        const micBtn = document.getElementById("micBtn");
+        const title = document.getElementById("micStatusTitle");
+        const sub = document.getElementById("micStatusSub");
+
+        if (!isRecording) {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+            });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+            mediaRecorder.onstop = () => {
+              const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+              alert("Vocal track recording saved! Ready to merge.");
+            };
+
+            mediaRecorder.start();
+            isRecording = true;
+            micBtn.classList.replace("bg-zinc-200", "bg-red-500");
+            micBtn.classList.add("animate-pulse");
+            title.innerText = "Recording Live...";
+            sub.innerText = "Click microphone icon again to stop and save vocal overlay";
+          } catch (err) {
+            alert("Microphone access denied or unavailable: " + err);
+          }
+        } else {
+          mediaRecorder.stop();
+          isRecording = false;
+          micBtn.classList.replace("bg-red-500", "bg-zinc-200");
+          micBtn.classList.remove("animate-pulse");
+          title.innerText = "Record Over";
+          sub.innerText = "Add your Voice or instrument on top";
+        }
       }
     </script>
   </body>
