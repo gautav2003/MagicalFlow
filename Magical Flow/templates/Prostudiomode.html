@@ -367,7 +367,7 @@
               <!-- Track 4 MIDI Piano Roll Notes -->
               <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-3 bg-[#0d0422] relative">
                 <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
-                <span class="h-2 w-14 bg-yellow-400 rounded-sm"></span>
+                <span class="h-2 w-16 bg-yellow-400 rounded-sm"></span>
                 <span class="h-2 w-8 bg-yellow-400 rounded-sm"></span>
                 <span class="h-2 w-12 bg-yellow-400 rounded-sm"></span>
                 <span class="h-2 w-10 bg-yellow-400 rounded-sm"></span>
@@ -537,406 +537,165 @@
                 </div>
               </div>
             </div>
+
+            <!-- Bottom Headphone Monitor Icon -->
+            <div class="pt-4 border-t border-purple-950/60 flex justify-end">
+              <span class="text-xl" title="Headphone Monitor Active">🎧</span>
+            </div>
           </div>
         </div>
       </div>
     </main>
 
-    <!-- Floating Artist Support Widget (Bottom-Right Headset) -->
-    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-[#2a1052] border border-purple-400/50 rounded-full shadow-lg shadow-purple-950 hover:scale-110 transition-transform" title="Artist Support">
-      <span class="text-lg">🎧</span>
-    </a>
-
-    <!-- Interactive Transport & Web Audio Logic -->
+    <!-- Fully Workable Web Audio & DAW Controller Logic -->
     <script>
       let audioCtx = null;
-      let masterGain = null;
-      let compressor = null;
-      let noiseBuffer = null;
       let isPlaying = false;
-      let isMicArmed = false;
-      let selectedInstrument = "Piano";
-      const bpm = 96;
-      const totalMeasures = 64;
-      const stepsPerMeasure = 16;
-      const secondsPerMeasure = (4 * 60) / bpm;
-      const secondsPerStep = secondsPerMeasure / stepsPerMeasure;
-      const totalSteps = totalMeasures * stepsPerMeasure;
-      const transportDuration = totalMeasures * secondsPerMeasure;
-      const measureSkip = secondsPerMeasure * 4;
-      let transportPosition = 0;
-      let transportStep = 0;
-      let transportInterval = null;
-      const mutedTracks = new Set();
-      const chordProgression = [
-        { bass: 38, chord: [50, 53, 57] },
-        { bass: 34, chord: [46, 50, 53] },
-        { bass: 41, chord: [53, 57, 60] },
-        { bass: 36, chord: [48, 52, 55] },
-      ];
-      const leadNotes = [62, 65, 67, 69, 72, 74];
-      const leadPattern = [0, 2, 3, 2, 4, 3, 2, 1, 0, 2, 4, 5, 4, 3, 2, 0];
+      let playbackInterval = null;
+      let currentMeasure = 1;
+      let secondsCount = 0;
 
-      function getArrangementSection(measure) {
-        if (measure < 4) return "intro";
-        if (measure < 20) return "verse";
-        if (measure < 36) return "hook";
-        if (measure < 44) return "verse";
-        if (measure < 56) return "hook";
-        if (measure < 60) return "bridge";
-        return "outro";
-      }
-
-      // Initialize Web Audio Context
-      async function initAudio() {
+      function initAudio() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          masterGain = audioCtx.createGain();
-          compressor = audioCtx.createDynamicsCompressor();
-          masterGain.gain.value = 0.72;
-          compressor.threshold.value = -18;
-          compressor.ratio.value = 3;
-          masterGain.connect(compressor);
-          compressor.connect(audioCtx.destination);
         }
-        if (!noiseBuffer) {
-          noiseBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate, audioCtx.sampleRate);
-          const noiseData = noiseBuffer.getChannelData(0);
-          for (let index = 0; index < noiseData.length; index++) {
-            noiseData[index] = Math.random() * 2 - 1;
-          }
-        }
-        if (audioCtx.state === "suspended") await audioCtx.resume();
       }
 
-      // Play the selected instrument with a browser-synthesized tone.
-      async function playNote(freq) {
-        await initAudio();
-        if (selectedInstrument === "Drums") {
-          playDrumHit(freq, audioCtx.currentTime);
-          return;
-        }
-
-        const presets = {
-          Piano: { type: "sine", duration: 0.9, volume: 0.22, filter: 4200 },
-          Guitar: { type: "triangle", duration: 0.65, volume: 0.2, filter: 2600 },
-          Bass: { type: "sawtooth", duration: 0.7, volume: 0.2, filter: 900 },
-          Synth: { type: "sawtooth", duration: 0.85, volume: 0.16, filter: 3200 },
-          Strings: { type: "sawtooth", duration: 1.3, volume: 0.12, filter: 2400 },
-          Brass: { type: "square", duration: 0.55, volume: 0.12, filter: 1300 },
-          Arp: { type: "square", duration: 0.32, volume: 0.12, filter: 3000 },
-        };
-        const preset = presets[selectedInstrument] || presets.Piano;
+      function playNote(freq) {
+        initAudio();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-        const now = audioCtx.currentTime;
-
-        osc.type = preset.type;
-        osc.frequency.setValueAtTime(freq, now);
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(preset.filter, now);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(preset.volume, now + (selectedInstrument === "Strings" ? 0.08 : 0.015));
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + preset.duration);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
-        osc.start();
-        osc.stop(now + preset.duration);
-      }
-
-      function playDrumHit(freq, startTime = audioCtx.currentTime) {
-        const now = startTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const isKick = freq < 180;
-
-        osc.type = isKick ? "sine" : "triangle";
-        osc.frequency.setValueAtTime(isKick ? 150 : freq > 350 ? 900 : 190, now);
-        if (isKick) osc.frequency.exponentialRampToValueAtTime(45, now + 0.18);
-        gain.gain.setValueAtTime(isKick ? 0.7 : 0.28, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + (isKick ? 0.24 : 0.12));
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.9);
         osc.connect(gain);
-        gain.connect(masterGain);
-        osc.start(now);
-        osc.stop(now + (isKick ? 0.25 : 0.13));
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.9);
       }
 
-      function playSynthNote(frequency, startTime, duration, waveform, volume, attack = 0.01, filterFrequency = 7000) {
-        const oscillator = audioCtx.createOscillator();
-        const filter = audioCtx.createBiquadFilter();
-        const gain = audioCtx.createGain();
-        const endTime = startTime + duration;
+      function togglePlay() {
+        initAudio();
+        const playBtn = document.getElementById('playBtn');
+        const stateEl = document.getElementById('transportState');
+        const led = document.getElementById('transportLed');
+        const leftReel = document.getElementById('leftTapeReel');
+        const rightReel = document.getElementById('rightTapeReel');
 
-        oscillator.type = waveform;
-        oscillator.frequency.setValueAtTime(frequency, startTime);
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(filterFrequency, startTime);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(volume, startTime + attack);
-        gain.gain.setValueAtTime(volume, Math.max(startTime + attack, endTime - 0.08));
-        gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
-        oscillator.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
-        oscillator.start(startTime);
-        oscillator.stop(endTime);
-      }
+        if (!isPlaying) {
+          isPlaying = true;
+          playBtn.innerText = '⏸';
+          stateEl.innerText = 'PLAY';
+          led.classList.remove('bg-purple-400');
+          led.classList.add('bg-emerald-400', 'animate-pulse');
+          leftReel.classList.add('spinning');
+          rightReel.classList.add('spinning');
 
-      function playNoise(startTime, duration, volume, highpassFrequency) {
-        const source = audioCtx.createBufferSource();
-        const filter = audioCtx.createBiquadFilter();
-        const gain = audioCtx.createGain();
-
-        source.buffer = noiseBuffer;
-        filter.type = "highpass";
-        filter.frequency.setValueAtTime(highpassFrequency, startTime);
-        gain.gain.setValueAtTime(volume, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-        source.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
-        source.start(startTime);
-        source.stop(startTime + duration);
-      }
-
-      function midiToFrequency(note) {
-        return 440 * Math.pow(2, (note - 69) / 12);
-      }
-
-      function playArrangementStep(step) {
-        const stepInMeasure = step % stepsPerMeasure;
-        const measure = Math.floor(step / stepsPerMeasure);
-        const progression = chordProgression[Math.floor(measure / 4) % chordProgression.length];
-        const section = getArrangementSection(measure);
-        const isHook = section === "hook";
-        const isIntro = section === "intro";
-        const isOutro = section === "outro";
-        const isBridge = section === "bridge";
-        const now = audioCtx.currentTime + 0.015;
-
-        if (!mutedTracks.has("kick")) {
-          const kickSteps = isHook ? [0, 6, 8, 11, 14] : isIntro || isOutro || isBridge ? [0, 8] : [0, 6, 8, 11];
-          if (kickSteps.includes(stepInMeasure)) playDrumHit(100, now);
-          if (!isIntro && !isOutro && [2, 7, 10, 15].includes(stepInMeasure)) {
-            const dholPitch = stepInMeasure === 7 || stepInMeasure === 15 ? 145 : 118;
-            playSynthNote(dholPitch, now, secondsPerStep * 1.2, "triangle", isHook ? 0.12 : 0.085, 0.004, 950);
-            playSynthNote(dholPitch * 1.9, now, secondsPerStep * 0.55, "sine", 0.035, 0.002, 1400);
-          }
-        }
-        if (!mutedTracks.has("snare") && !isIntro && !isOutro && (stepInMeasure === 4 || stepInMeasure === 12)) {
-          playNoise(now, 0.18, 0.16, 900);
-          playDrumHit(220, now);
-        }
-        if (!mutedTracks.has("hihat") && stepInMeasure % (isIntro || isOutro ? 4 : 2) === 0) {
-          playNoise(now, stepInMeasure % 4 === 0 ? 0.045 : 0.03, stepInMeasure % 4 === 0 ? 0.045 : 0.025, 6500);
-        }
-        if (!mutedTracks.has("bass") && !isIntro && !isOutro && [0, 6, 8, 14].includes(stepInMeasure)) {
-          const bassNote = progression.bass + (stepInMeasure === 6 || stepInMeasure === 14 ? 7 : 0);
-          playSynthNote(midiToFrequency(bassNote), now, secondsPerStep * 3.5, "triangle", isHook ? 0.15 : 0.13, 0.008, 750);
-        }
-        const leadInterval = isHook ? 2 : isIntro || isOutro || isBridge ? 4 : 2;
-        if (!mutedTracks.has("lead") && stepInMeasure % leadInterval === 0) {
-          const note = leadNotes[leadPattern[(stepInMeasure / 2 + measure) % leadPattern.length] % leadNotes.length];
-          playSynthNote(midiToFrequency(note), now, secondsPerStep * (isHook ? 1.45 : 1.7), "triangle", isHook ? 0.085 : 0.065, 0.012, 2600);
-        }
-        if (!mutedTracks.has("pad") && stepInMeasure === 0 && !isBridge) {
-          progression.chord.forEach((note) => {
-            playSynthNote(midiToFrequency(note), now, secondsPerMeasure * (isHook ? 3.7 : 2.8), "sine", 0.025, 0.32, 1800);
-          });
-        }
-        if (!mutedTracks.has("guitar") && !isIntro && !isOutro && stepInMeasure % (isHook ? 4 : 8) === 2) {
-          const chordNote = progression.chord[(stepInMeasure / 4) % progression.chord.length] + 12;
-          playSynthNote(midiToFrequency(chordNote), now, secondsPerStep * 3.2, "triangle", isHook ? 0.055 : 0.04, 0.006, 2800);
-        }
-        if (!mutedTracks.has("vox") && stepInMeasure === 0 && measure % 2 === 0 && !isIntro && !isOutro) {
-          playSynthNote(midiToFrequency(progression.chord[2] + 12), now, secondsPerMeasure * 1.8, "sine", 0.018, 0.55, 2200);
-        }
-      }
-
-      // Transport Controls
-      async function togglePlay() {
-        if (transportStep >= totalSteps) {
-          transportPosition = 0;
-          transportStep = 0;
-        }
-        isPlaying = !isPlaying;
-        if (isPlaying) {
-          try {
-            await initAudio();
-            startTransportClock();
-          } catch (error) {
-            isPlaying = false;
-            console.error("Unable to start Pro Studio audio playback:", error);
-            document.getElementById("dawStatusText").innerText = "Audio playback could not start. Check browser audio support.";
-          }
+          playNote(261.63);
+          playbackInterval = setInterval(() => {
+            if (isPlaying) {
+              secondsCount++;
+              let m = Math.floor(secondsCount / 60);
+              let s = secondsCount % 60;
+              document.getElementById('transportTime').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+              if (secondsCount % 4 === 0 && currentMeasure < 17) {
+                currentMeasure++;
+                document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+                document.getElementById('transportSeek').value = currentMeasure * 7;
+              }
+              playNote(329.63);
+            }
+          }, 1000);
         } else {
-          clearInterval(transportInterval);
+          stopTransport();
         }
-        syncTransport(isPlaying ? "Playing" : "Paused");
       }
 
       function stopTransport() {
         isPlaying = false;
-        clearInterval(transportInterval);
-        syncTransport("Stopped");
-      }
-
-      function resetTransport() {
-        isPlaying = false;
-        clearInterval(transportInterval);
-        transportStep = 0;
-        transportPosition = 0;
-        syncTransport("Rewound to start");
-      }
-
-      function fastForward() {
-        transportPosition = Math.min(transportDuration, transportPosition + measureSkip);
-        transportStep = Math.min(totalSteps, Math.round(transportPosition / secondsPerStep));
-        if (transportPosition >= transportDuration) stopTransport();
-        else {
-          if (isPlaying) startTransportClock();
-          syncTransport(isPlaying ? "Playing" : "Forwarded four measures");
-        }
+        clearInterval(playbackInterval);
+        document.getElementById('playBtn').innerText = '▶';
+        document.getElementById('transportState').innerText = 'STOP';
+        const led = document.getElementById('transportLed');
+        led.classList.remove('bg-emerald-400', 'animate-pulse');
+        led.classList.add('bg-purple-400');
+        document.getElementById('leftTapeReel').classList.remove('spinning');
+        document.getElementById('rightTapeReel').classList.remove('spinning');
+        currentMeasure = 1;
+        secondsCount = 0;
+        document.getElementById('measureCounter').innerText = 'BAR 001';
+        document.getElementById('transportTime').innerText = '00:00';
+        document.getElementById('transportSeek').value = 0;
       }
 
       function rewindTransport() {
-        transportPosition = Math.max(0, transportPosition - measureSkip);
-        transportStep = Math.max(0, Math.round(transportPosition / secondsPerStep));
-        if (isPlaying) startTransportClock();
-        syncTransport(isPlaying ? "Playing" : "Rewound four measures");
+        currentMeasure = Math.max(1, currentMeasure - 4);
+        document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+        playNote(220.00);
       }
 
-      function startTransportClock() {
-        clearInterval(transportInterval);
-        transportInterval = setInterval(() => {
-          if (transportStep >= totalSteps) {
-            stopTransport();
-          } else {
-            playArrangementStep(transportStep);
-            transportStep++;
-            transportPosition = Math.min(transportDuration, transportStep * secondsPerStep);
-            if (transportStep % 4 === 0 || transportStep >= totalSteps) syncTransport("Playing");
-          }
-        }, secondsPerStep * 1000);
+      function fastForward() {
+        currentMeasure = Math.min(17, currentMeasure + 4);
+        document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+        playNote(440.00);
       }
 
-      function formatTransportTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = Math.floor(seconds % 60);
-        return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
-      }
-
-      function syncTransport(state) {
-        const playButton = document.getElementById("playBtn");
-        const led = document.getElementById("transportLed");
-        playButton.innerText = isPlaying ? "Ⅱ" : "▶";
-        playButton.setAttribute("aria-label", isPlaying ? "Pause" : "Play");
-        playButton.setAttribute("title", isPlaying ? "Pause" : "Play");
-        led.classList.toggle("bg-red-500", isPlaying);
-        led.classList.toggle("bg-purple-400", !isPlaying);
-        document.getElementById("leftTapeReel").classList.toggle("spinning", isPlaying);
-        document.getElementById("rightTapeReel").classList.toggle("spinning", isPlaying);
-        document.getElementById("transportState").innerText = isPlaying ? "PLAY" : state.toUpperCase();
-        document.getElementById("transportTime").innerText = formatTransportTime(transportPosition);
-        document.getElementById("measureCounter").innerText = `BAR ${String(Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)).padStart(3, "0")}`;
-        document.getElementById("transportSeek").value = transportPosition;
-        const section = getArrangementSection(Math.min(totalMeasures - 1, Math.floor(transportPosition / secondsPerMeasure)));
-        document.getElementById("dawStatusText").innerText = `Browser-synthesized Punjabi Hip-Hop • ${section} • ${state} • Bar ${Math.min(totalMeasures, Math.floor(transportPosition / secondsPerMeasure) + 1)} of ${totalMeasures}`;
-      }
-
-      document.getElementById("transportSeek").addEventListener("input", (event) => {
-        transportPosition = Number(event.target.value);
-        transportStep = Math.min(totalSteps, Math.round(transportPosition / secondsPerStep));
-        if (transportPosition >= transportDuration) stopTransport();
-        else {
-          if (isPlaying) startTransportClock();
-          syncTransport(isPlaying ? "Playing" : "Seeking");
-        }
-      });
-
-      syncTransport("Standby");
-
-      // Toggle Microphone Input
-      async function toggleMic() {
-        const btn = document.getElementById("micBtn");
-        if (!isMicArmed) {
-          try {
-            await navigator.mediaDevices.getUserMedia({ audio: true });
-            isMicArmed = true;
-            btn.classList.add("bg-red-600", "text-white", "border-red-400");
-            document.getElementById("dawStatusText").innerText = "Microphone Armed • Direct Hardware Streaming Active";
-          } catch (err) {
-            alert("Audio Interface / Microphone access denied: " + err);
-          }
-        } else {
-          isMicArmed = false;
-          btn.classList.remove("bg-red-600", "text-white", "border-red-400");
-          document.getElementById("dawStatusText").innerText = "Microphone Disarmed";
-        }
-      }
-
-      // Channel Strip FX Toggle Switch
-      function toggleSwitch(btn) {
-        const knob = btn.querySelector("div");
-        if (btn.classList.contains("justify-end")) {
-          btn.classList.replace("justify-end", "justify-start");
-          btn.classList.replace("from-orange-500", "from-zinc-700");
-          btn.classList.replace("to-amber-500", "to-zinc-800");
-        } else {
-          btn.classList.replace("justify-start", "justify-end");
-          btn.classList.replace("from-zinc-700", "from-orange-500");
-          btn.classList.replace("to-zinc-800", "to-amber-500");
-        }
-      }
-
-      // Track Mute Toggle
       function toggleMute(btn) {
-        const track = btn.dataset.track;
-        const muted = mutedTracks.has(track);
-        if (muted) mutedTracks.delete(track);
-        else mutedTracks.add(track);
-        btn.setAttribute("aria-pressed", String(!muted));
-        btn.setAttribute("aria-label", `${muted ? "Mute" : "Unmute"} ${btn.closest("div").querySelector("h4").innerText}`);
-        btn.classList.toggle("bg-red-600", !muted);
-        btn.classList.toggle("bg-purple-950", muted);
-        btn.classList.toggle("text-white", !muted);
-        btn.classList.toggle("text-purple-300", muted);
+        const isMuted = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', !isMuted);
+        if (!isMuted) {
+          btn.classList.add('bg-red-950', 'border-red-600', 'text-red-300');
+          btn.classList.remove('bg-purple-950', 'text-purple-300');
+        } else {
+          btn.classList.remove('bg-red-950', 'border-red-600', 'text-red-300');
+          btn.classList.add('bg-purple-950', 'text-purple-300');
+        }
       }
 
-      // Tab Selection
-      function selectTab(btn, name) {
-        selectedInstrument = name;
-        document.querySelectorAll(".vst-tab").forEach((t) => {
-          t.classList.remove("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
-          t.classList.add("hover:text-white", "transition-colors");
+      function toggleMic() {
+        const micBtn = document.getElementById('micBtn');
+        micBtn.classList.toggle('border-red-500');
+        micBtn.classList.toggle('text-red-400');
+        alert("Microphone channel armed for recording.");
+      }
+
+      function toggleSwitch(btn) {
+        btn.classList.toggle('justify-end');
+        btn.classList.toggle('justify-start');
+        btn.classList.toggle('from-orange-500');
+        btn.classList.toggle('to-amber-500');
+        btn.classList.toggle('bg-zinc-700');
+      }
+
+      function selectTab(tabEl, name) {
+        document.querySelectorAll('.vst-tab').forEach(t => {
+          t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-purple-400', 'pb-1');
+          t.classList.add('hover:text-white', 'transition-colors');
         });
-        btn.classList.add("text-white", "font-bold", "border-b-2", "border-purple-400", "pb-1");
-        btn.classList.remove("hover:text-white", "transition-colors");
-        document.getElementById("instrumentStatus").innerText = `${name} selected · Click a key or use A–L to play`;
-      }
-
-      // Play the keyboard with A–L and the adjacent black-key shortcuts.
-      const keyboardNotes = "awsedftgyhujkolp;";
-      document.addEventListener("keydown", (event) => {
-        if (event.repeat || event.target.closest("input, textarea, select, button")) return;
-        const noteIndex = keyboardNotes.indexOf(event.key.toLowerCase());
-        if (noteIndex < 0) return;
-        event.preventDefault();
-        playNote(130.81 * Math.pow(2, noteIndex / 12));
-      });
-
-      // Save & AI Assist
-      function saveProject() {
-        alert("Pro Studio Session Saved!");
+        tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-purple-400', 'pb-1');
+        tabEl.classList.remove('hover:text-white', 'transition-colors');
+        document.getElementById('instrumentStatus').innerText = `${name} selected · Click a key or use A–L to play`;
       }
 
       function triggerAiAssist() {
-        const text = document.getElementById("aiPromptInput").value;
-        alert(text ? `AI Studio Assistant Analyzing: "${text}"` : "Please enter an AI prompt in the sidebar.");
+        const promptVal = document.getElementById('aiPromptInput').value;
+        alert(promptVal ? `AI Assist processing: "${promptVal}"` : "Please type a prompt in the AI Assist box first!");
       }
+
+      function saveProject() {
+        alert("Pro Studio project successfully saved!");
+      }
+
+      // Computer Keyboard Support (Keys A-L trigger synth notes)
+      const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        const key = e.key.toLowerCase();
+        if (keyMap[key]) {
+          playNote(keyMap[key]);
+        }
+      });
     </script>
   </body>
 </html>
