@@ -1,394 +1,375 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magical Flow - Beginner Output</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #05010c;
-            color: #ffffff;
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #05010c;
+        color: #ffffff;
+      }
 
-        /* Glassmorphism Outer Panel Borders & Glow */
-        .glass-panel {
-            background: linear-gradient(165deg, rgba(20, 9, 40, 0.8) 0%, rgba(7, 2, 18, 0.95) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            box-shadow: 0 0 30px rgba(91, 33, 182, 0.15);
-        }
+      /* Main Container Panels matching exact screenshot layout */
+      .main-output-card {
+        background: linear-gradient(180deg, #101625 0%, #0a0d18 100%);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.8);
+      }
 
-        .inner-card {
-            background: rgba(18, 7, 36, 0.85);
-            border: 1px solid rgba(139, 92, 246, 0.25);
-        }
+      .overdub-sidebar {
+        background: linear-gradient(180deg, #091a18 0%, #040e0d 100%);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+      }
 
-        /* Active Pill Styles */
-        .pill-badge {
-            background: rgba(20, 8, 42, 0.9);
-            border: 1px solid rgba(147, 51, 234, 0.4);
-            color: #d8b4fe;
-        }
+      /* Badge Pill */
+      .aurora-badge {
+        background: rgba(10, 35, 28, 0.9);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+      }
+
+      /* Waveform Deck Box */
+      .waveform-deck {
+        background: linear-gradient(180deg, #1c0838 0%, #110426 100%);
+        border: 1px solid rgba(168, 85, 247, 0.35);
+      }
+
+      /* Transport Control Buttons */
+      .transport-btn {
+        background: rgba(45, 12, 60, 0.8);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #c4b5fd;
+        transition: all 0.15s ease;
+      }
+      .transport-btn:hover {
+        background: rgba(75, 20, 100, 0.9);
+        border-color: rgba(192, 132, 252, 0.8);
+        color: #ffffff;
+      }
+
+      /* Export Pill Buttons */
+      .export-btn {
+        background: rgba(22, 10, 48, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.6);
+        color: #ffffff;
+        font-weight: 700;
+        transition: all 0.2s ease;
+      }
+      .export-btn:hover {
+        background: rgba(45, 15, 80, 0.9);
+        border-color: rgba(192, 132, 252, 0.9);
+      }
+
+      /* Save to My Music Button */
+      .save-btn {
+        background: rgba(20, 8, 42, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      .save-btn:hover {
+        background: rgba(40, 15, 80, 0.9);
+      }
+
+      /* OverDub Recording Toggle Button */
+      .rec-toggle-btn {
+        background: rgba(10, 30, 25, 0.9);
+        border: 1px solid rgba(16, 185, 129, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      .rec-toggle-btn:hover {
+        background: rgba(20, 50, 40, 0.9);
+        border-color: rgba(52, 211, 153, 0.9);
+      }
     </style>
-</head>
-<body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
-
+  </head>
+  <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
+    
     <!-- Top Navigation Header -->
     <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
-        <!-- Logo & Title -->
-        <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
-                <div class="w-full h-full bg-[#05010c] rounded-full flex items-center justify-center">
-                    <span class="text-xs">🎵</span>
-                </div>
-            </div>
-            <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
-        </a>
+      <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
+          <div class="w-full h-full bg-[#05010c] rounded-full flex items-center justify-center">
+            <span class="text-xs">🎵</span>
+          </div>
+        </div>
+        <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
+      </a>
 
-        <!-- Navigation Links -->
-        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
-            <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
-            <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
-            <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
-            <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
-            <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-300 transition-colors">Beginner</a>
-            <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-300 transition-colors">Pro Studio</a>
-            <a href="{{ url_for('beginner_output') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Beginner output</a>
-            <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
-            <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
-        </nav>
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
+        <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
+        <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
+        <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
+        <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
+        <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-300 transition-colors">Beginner</a>
+        <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-300 transition-colors">Pro Studio</a>
+        <a href="{{ url_for('beginner_output') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Beginner output</a>
+        <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
+        <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
+      </nav>
 
-        <!-- Profile Avatar -->
-        <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-        </a>
+      <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </a>
     </header>
 
-    <!-- Main Workspace Area -->
-    <main class="flex-grow p-4 md:p-6 max-w-[1200px] w-full mx-auto space-y-6">
+    <!-- Main Workspace Dashboard Grid -->
+    <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- LEFT MAIN CONTENT CARD (lg:col-span-9) -->
+      <div class="lg:col-span-9 main-output-card rounded-2xl p-6 md:p-8 flex flex-col justify-between space-y-8">
+        
+        <!-- Header Section: Badge, Title & Details -->
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full aurora-badge">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">AURORA CREATION</span>
+            <span class="text-[10px] text-zinc-300 ml-1">AI imagination, fully formed</span>
+          </div>
 
-        <!-- Top Title & Success Indicator -->
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-xl font-extrabold text-white">Your Generated Track</h1>
-                <p class="text-xs text-zinc-400 mt-0.5">AI Mastered composition ready for playback and export</p>
-            </div>
-            <span class="text-xs font-semibold tracking-wider bg-purple-950/60 text-purple-200 border border-purple-500/30 px-3.5 py-1.5 rounded-full flex items-center gap-2">
-                <span id="liveDot" class="w-2 h-2 rounded-full bg-blue-400"></span> MOONLIT AI Synthesis Complete
-            </span>
+          <div>
+            <span class="text-xs text-zinc-400 block mb-1">Generated Track</span>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+              {{ prompt if prompt else "Late Night Lo-Fi" }}
+            </h1>
+            <p class="text-xs font-mono text-zinc-400 mt-1">
+              {{ bpm if bpm else "90" }} BPM . {{ key if key else "C Min" }} . {{ duration if duration else "3:24" }}
+            </p>
+          </div>
         </div>
 
-        <!-- Track Parameters & Generation Details -->
-        <div class="glass-panel rounded-2xl p-5 space-y-4">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-purple-300">Track Generation Parameters</h2>
-            
-            <div class="inner-card rounded-xl p-4 space-y-3">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <span class="text-[10px] uppercase font-bold text-zinc-400 block">AI Prompt</span>
-                        <p id="outputPrompt" class="text-sm font-semibold text-white mt-0.5">
-                            {{ prompt if prompt else "Late night lo-fi with warm keys and chill vibes" }}
-                        </p>
-                    </div>
-                    <a href="{{ url_for('beginner_mode') }}" class="text-xs font-semibold text-purple-400 hover:text-purple-300 transition-colors">
-                        Edit Prompt ✏️
-                    </a>
-                </div>
+        <!-- Master Waveform Deck -->
+        <div class="waveform-deck rounded-2xl p-5 space-y-4">
+          <!-- Blue Waveform Visualizer Bars -->
+          <div id="waveform" class="h-16 flex items-center justify-between gap-1.5 px-2">
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-16 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-7 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-16 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-13 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-12 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-15 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-9 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-13 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-7 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-500 rounded-full transition-all"></div>
+          </div>
 
-                <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-purple-900/30 text-xs">
-                    <span class="pill-badge px-3 py-1 rounded-full font-medium">Genre: {{ genre if genre else "Lo-Fi" }}</span>
-                    <span class="pill-badge px-3 py-1 rounded-full font-medium">Mood: {{ mood if mood else "Chill" }}</span>
-                    <span class="pill-badge px-3 py-1 rounded-full font-medium">BPM: {{ bpm if bpm else "90" }}</span>
-                    <span class="pill-badge px-3 py-1 rounded-full font-medium">Duration: {{ duration if duration else "3" }} min</span>
-                    <span class="pill-badge px-3 py-1 rounded-full font-medium">Instruments: Piano, Bass, Drums</span>
-                </div>
+          <!-- Player Transport Controls & Digital Clock -->
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerTapeAction('REW', 330)" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" onclick="togglePlayback()" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-purple-300">▶</button>
+              <button type="button" onclick="triggerTapeAction('FF', 880)" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" onclick="stopPlayback()" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
             </div>
+            <span id="timecode" class="text-xs font-mono text-zinc-300">0:00 / 3:24</span>
+          </div>
         </div>
 
-        <!-- Master Waveform Audio Player -->
-        <div class="glass-panel rounded-2xl p-6 space-y-5">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-base font-extrabold text-white">Master Audio Preview</h2>
-                    <p class="text-xs text-zinc-400">320kbps High Quality Audio Output</p>
-                </div>
-                <span id="timerDisplay" class="text-xs font-mono text-purple-300 bg-purple-950/80 px-3 py-1 rounded-lg border border-purple-800/40">
-                    0:00 / 3:24
-                </span>
+        <!-- Layer Breakdown Section (Multi-Color Progress Meters) -->
+        <div class="space-y-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Layer Breakdown</span>
+
+          <div class="space-y-4 text-xs font-semibold">
+            <!-- Melody - Lo-Fi Piano (Sky Blue) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Melody - Lo-Fi Piano</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-blue-900/30">
+                <div class="h-full bg-sky-400 rounded-l-full w-[68%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[32%]"></div>
+              </div>
             </div>
 
-            <!-- Waveform Bar Visualization -->
-            <div id="waveformContainer" class="h-24 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5">
-                <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-12 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-8 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-                <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <!-- Bass - Warm Sub (Neon Magenta/Pink) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Bass - Warm Sub</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-pink-900/30">
+                <div class="h-full bg-fuchsia-500 rounded-l-full w-[56%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[44%]"></div>
+              </div>
             </div>
 
-            <!-- Tape Recorder Transport Controls -->
-            <div class="flex items-center justify-between pt-2">
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="resetPlayer()" class="w-9 h-9 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-sm hover:bg-purple-800">⏮</button>
-                    <button type="button" id="mainPlayBtn" onclick="togglePlay()" class="w-10 h-10 rounded-lg bg-purple-800 border border-purple-500/40 flex items-center justify-center text-white text-base shadow-md hover:bg-purple-700">▶</button>
-                    <button type="button" onclick="fastForward()" class="w-9 h-9 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-sm hover:bg-purple-800">⏭</button>
-                    <button type="button" onclick="stopPlayer()" class="w-9 h-9 rounded-lg bg-[#251248] border border-purple-600/30 flex items-center justify-center text-purple-300 text-sm hover:bg-purple-800">⏹</button>
-                </div>
-
-                <!-- Export & Action Buttons -->
-                <div class="flex items-center gap-3">
-                    <button type="button" onclick="downloadAudio('mp3')" class="px-4 py-2 bg-[#1d0a3d] border border-purple-600/40 hover:bg-purple-900 rounded-xl text-xs font-bold text-white transition-colors">
-                        ⬇️ Download MP3
-                    </button>
-                    <button type="button" onclick="downloadAudio('wav')" class="px-4 py-2 bg-[#1d0a3d] border border-purple-600/40 hover:bg-purple-900 rounded-xl text-xs font-bold text-white transition-colors">
-                        ⬇️ Download WAV
-                    </button>
-                    <a href="{{ url_for('pro_studio_mode') }}" class="px-4 py-2 bg-gradient-to-r from-purple-900 to-indigo-900 hover:from-purple-800 hover:to-indigo-800 rounded-xl text-xs font-extrabold text-white border border-purple-500/40 shadow-lg transition-all">
-                        🎛 Open in Pro Studio
-                    </a>
-                </div>
+            <!-- Drums - Vinyl Kit (Emerald Green) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Drums - Vinyl Kit</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-emerald-900/30">
+                <div class="h-full bg-emerald-400 rounded-l-full w-[78%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[22%]"></div>
+              </div>
             </div>
+
+            <!-- Atmosphere - Pad (Warm Yellow) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Atmosphere - Pad</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-yellow-900/30">
+                <div class="h-full bg-yellow-300 rounded-l-full w-[82%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[18%]"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Isolated Stem Tracks Section -->
-        <div class="glass-panel rounded-2xl p-5 space-y-4">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-purple-300">Isolated Stem Previews</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Stem 1 -->
-                <div class="inner-card rounded-xl p-3.5 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Melody & Keys Stem</h4>
-                        <span class="text-[10px] font-mono text-zinc-400">Audio Track • Wav</span>
-                    </div>
-                    <button type="button" onclick="playStemTone(261.63)" class="w-7 h-7 rounded-md bg-purple-900 text-white text-xs flex items-center justify-center">▶</button>
-                </div>
-                <!-- Stem 2 -->
-                <div class="inner-card rounded-xl p-3.5 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Bassline Stem</h4>
-                        <span class="text-[10px] font-mono text-zinc-400">Audio Track • Wav</span>
-                    </div>
-                    <button type="button" onclick="playStemTone(130.81)" class="w-7 h-7 rounded-md bg-purple-900 text-white text-xs flex items-center justify-center">▶</button>
-                </div>
-                <!-- Stem 3 -->
-                <div class="inner-card rounded-xl p-3.5 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Drum Beat Stem</h4>
-                        <span class="text-[10px] font-mono text-zinc-400">Audio Track • Wav</span>
-                    </div>
-                    <button type="button" onclick="playStemTone(180.00)" class="w-7 h-7 rounded-md bg-purple-900 text-white text-xs flex items-center justify-center">▶</button>
-                </div>
-                <!-- Stem 4 -->
-                <div class="inner-card rounded-xl p-3.5 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-xs font-bold text-white">Vocals & FX Stem</h4>
-                        <span class="text-[10px] font-mono text-zinc-400">Audio Track • Wav</span>
-                    </div>
-                    <button type="button" onclick="playStemTone(440.00)" class="w-7 h-7 rounded-md bg-purple-900 text-white text-xs flex items-center justify-center">▶</button>
-                </div>
-            </div>
+        <!-- Export Buttons Section -->
+        <div class="space-y-3 pt-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Export</span>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="downloadFile('Track_Export.mp3')" class="px-6 py-2.5 rounded-xl export-btn text-xs">MP3</button>
+            <button type="button" onclick="downloadFile('Track_Export.wav')" class="px-6 py-2.5 rounded-xl export-btn text-xs">WAV</button>
+            <button type="button" onclick="downloadFile('Track_Stems.zip')" class="px-6 py-2.5 rounded-xl export-btn text-xs">STEMS</button>
+          </div>
         </div>
+
+        <!-- Save to My Music Action Button -->
+        <div>
+          <button type="button" onclick="alert('Track saved to My Music!')" class="py-3 px-8 rounded-xl save-btn text-xs uppercase tracking-wider">
+            Save to My Music
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RIGHT OVERDUB SIDEBAR (lg:col-span-3) -->
+      <div class="lg:col-span-3 overdub-sidebar rounded-2xl p-6 flex flex-col items-center justify-between text-center space-y-6">
+        <div class="space-y-5 w-full pt-2">
+          <h3 class="text-sm font-extrabold uppercase tracking-widest text-white">OverDub</h3>
+          
+          <!-- Microphone Box Card -->
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-[#092620] border border-emerald-500/40 flex items-center justify-center text-3xl shadow-inner">
+            🎙️
+          </div>
+
+          <p class="text-xs text-zinc-300 leading-relaxed px-2">
+            Record your Voice or instrument on top of this track
+          </p>
+        </div>
+
+        <div class="w-full pb-4">
+          <button type="button" onclick="toggleRecording(this)" id="recBtn" class="w-full py-3 rounded-full rec-toggle-btn text-xs uppercase tracking-wider">
+            Start Recording
+          </button>
+        </div>
+
+        <!-- Headphone Audio Indicator at Bottom -->
+        <div class="w-full pt-4 border-t border-emerald-950 flex justify-end">
+          <span class="text-xl">🎧</span>
+        </div>
+      </div>
 
     </main>
 
-    <!-- Floating Artist Support Widget -->
-    <a href="{{ url_for('artist_support') }}" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 bg-[#2a1052] border border-purple-400/50 rounded-full shadow-lg shadow-purple-950 hover:scale-110 transition-transform" title="Artist Support">
-        <span class="text-lg">🎧</span>
-    </a>
-
-    <!-- Tape Recorder Web Audio Synth Mechanism -->
+    <!-- Web Audio & Player Logic -->
     <script>
-        let audioCtx = null;
-        let isPlaying = false;
-        let isFastForwarding = false;
-        let isRewinding = false;
-        let timerSeconds = 0;
-        let timerInterval = null;
-        let synthInterval = null;
-        let tapeWindInterval = null;
+      let audioCtx = null;
+      let isPlaying = false;
+      let playbackTimer = null;
+      let seconds = 0;
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function initAudio() {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      function playTone(notes) {
+        initAudio();
+        notes.forEach(f => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 1.2);
+        });
+      }
+
+      function togglePlayback() {
+        initAudio();
+        if (!isPlaying) {
+          isPlaying = true;
+          playTone([261.63, 311.13, 392.00]);
+          playbackTimer = setInterval(() => {
+            if (isPlaying) {
+              playTone([261.63, 311.13, 392.00]);
+              animateWaveform();
+              seconds++;
+              let m = Math.floor(seconds / 60);
+              let s = seconds % 60;
+              document.getElementById('timecode').innerText = `${m}:${s < 10 ? '0' : ''}${s} / 3:24`;
             }
+          }, 1200);
+        } else {
+          stopPlayback();
         }
+      }
 
-        function playTapeWindSound(isForward) {
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(isForward ? 880 : 330, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+      function stopPlayback() {
+        isPlaying = false;
+        clearInterval(playbackTimer);
+        const bars = document.querySelectorAll('#waveform div');
+        bars.forEach(b => b.style.height = '16px');
+      }
+
+      function triggerTapeAction(type, freq) {
+        stopPlayback();
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.15);
+      }
+
+      function animateWaveform() {
+        const bars = document.querySelectorAll('#waveform div');
+        bars.forEach(b => {
+          b.style.height = `${Math.floor(Math.random() * 50) + 12}px`;
+        });
+      }
+
+      function downloadFile(filename) {
+        alert("Downloading " + filename + "...");
+      }
+
+      function toggleRecording(btn) {
+        if (btn.innerText === "START RECORDING") {
+          btn.innerText = "STOP RECORDING";
+          btn.style.borderColor = "#ef4444";
+          btn.style.color = "#ef4444";
+        } else {
+          btn.innerText = "START RECORDING";
+          btn.style.borderColor = "rgba(16, 185, 129, 0.6)";
+          btn.style.color = "#ffffff";
         }
-
-        function playChord(notes = [261.63, 311.13, 392.00]) {
-            initAudio();
-            notes.forEach(freq => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 1.2);
-            });
-        }
-
-        function playStemTone(freq) {
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.8);
-        }
-
-        function togglePlay() {
-            initAudio();
-            stopWinding();
-            const playBtn = document.getElementById('mainPlayBtn');
-            const liveDot = document.getElementById('liveDot');
-
-            if (!isPlaying) {
-                isPlaying = true;
-                if (playBtn) playBtn.innerText = '⏸';
-                if (liveDot) liveDot.classList.add('animate-pulse');
-
-                playChord();
-                synthInterval = setInterval(() => {
-                    if (isPlaying) {
-                        playChord();
-                        animateWaveform(true);
-                    }
-                }, 1200);
-
-                startTimer(1);
-            } else {
-                stopPlayer();
-            }
-        }
-
-        function stopPlayer() {
-            isPlaying = false;
-            stopWinding();
-            const playBtn = document.getElementById('mainPlayBtn');
-            const liveDot = document.getElementById('liveDot');
-            
-            if (playBtn) playBtn.innerText = '▶';
-            if (liveDot) liveDot.classList.remove('animate-pulse');
-
-            clearInterval(timerInterval);
-            clearInterval(synthInterval);
-            animateWaveform(false);
-        }
-
-        function resetPlayer() {
-            stopPlayer();
-            isRewinding = true;
-            
-            tapeWindInterval = setInterval(() => {
-                if (timerSeconds > 0) {
-                    timerSeconds = Math.max(0, timerSeconds - 2);
-                    updateTimerDisplay();
-                    playTapeWindSound(false);
-                    animateWaveform(true);
-                } else {
-                    stopWinding();
-                    animateWaveform(false);
-                }
-            }, 150);
-        }
-
-        function fastForward() {
-            stopPlayer();
-            isFastForwarding = true;
-
-            tapeWindInterval = setInterval(() => {
-                if (timerSeconds < 204) {
-                    timerSeconds = Math.min(204, timerSeconds + 2);
-                    updateTimerDisplay();
-                    playTapeWindSound(true);
-                    animateWaveform(true);
-                } else {
-                    stopWinding();
-                    animateWaveform(false);
-                }
-            }, 150);
-        }
-
-        function stopWinding() {
-            isFastForwarding = false;
-            isRewinding = false;
-            clearInterval(tapeWindInterval);
-        }
-
-        function startTimer(direction = 1) {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timerSeconds += direction;
-                if (timerSeconds >= 204) {
-                    stopPlayer();
-                } else if (timerSeconds <= 0) {
-                    timerSeconds = 0;
-                    stopPlayer();
-                }
-                updateTimerDisplay();
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const mins = Math.floor(timerSeconds / 60);
-            const secs = (timerSeconds % 60).toString().padStart(2, '0');
-            const display = document.getElementById('timerDisplay');
-            if (display) display.innerText = `${mins}:${secs} / 3:24`;
-        }
-
-        function animateWaveform(active) {
-            const bars = document.querySelectorAll('#waveformContainer div');
-            bars.forEach(bar => {
-                bar.style.height = active ? `${Math.floor(Math.random() * 50) + 15}px` : '30px';
-            });
-        }
-
-        function downloadAudio(format) {
-            alert(`Preparing ${format.toUpperCase()} audio render for download...`);
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
