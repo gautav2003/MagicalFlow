@@ -643,22 +643,22 @@ def generated_audio(audio_id):
 @app.route('/pro-studio-mode')
 @login_required
 def pro_studio_mode():
-    return render_template('ProStudioMode.html')
+    return render_template('prostudiomode.html')
 
-@app.route('/studio-output')
+@app.route('/pro-studio-output')
 @login_required
 def studio_output():
-    return render_template('StudioOutput.html')
+    return render_template('prostudiooutput.html')
 
 @app.route('/my-music')
 @login_required
 def my_music():
-    return render_template('MyMusic.html')
+    return render_template('mymusic.html')
 
 @app.route('/account')
 @login_required
 def account():
-    return render_template('Account.html')
+    return render_template('account.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
