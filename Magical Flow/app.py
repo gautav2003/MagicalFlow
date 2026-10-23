@@ -353,5 +353,52 @@ def logout():
 def account():
     return render_template('account.html')
 
+# ==================== STUDIO MODE ROUTES ====================
+@app.route('/select-mode')
+@login_required
+def select_mode():
+    return render_template('Selectmode.html')
+
+@app.route('/beginner-mode', methods=['GET', 'POST'])
+@login_required
+def beginner_mode():
+    if request.method == 'POST':
+        return render_template(
+            'Beginneroutput.html',
+            prompt=request.form.get('prompt', '').strip(),
+            bpm=request.form.get('bpm', ''),
+            key=request.form.get('genre', ''),
+            duration='',
+        )
+    return render_template('Beginnermode.html')
+
+@app.route('/beginner-output')
+@login_required
+def beginner_output():
+    return render_template('Beginneroutput.html')
+
+@app.route('/pro-studio-mode')
+@login_required
+def pro_studio_mode():
+    return render_template('Prostudiomode.html')
+
+@app.route('/pro-studio-output', methods=['GET', 'POST'])
+@login_required
+def studio_output():
+    if request.method == 'POST':
+        return render_template(
+            'Prostudiooutput.html',
+            prompt=request.form.get('prompt', ''),
+            bpm=request.form.get('bpm', ''),
+            key=request.form.get('key_scale', ''),
+            duration='',
+        )
+    return render_template('Prostudiooutput.html')
+
+@app.route('/my-music')
+@login_required
+def my_music():
+    return render_template('MyMusic.html')
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
