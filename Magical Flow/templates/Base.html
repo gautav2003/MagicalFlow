@@ -41,12 +41,6 @@
         <a href="{{ url_for('signin') }}" class="hover:text-purple-400 transition">Login</a>
         <a href="{{ url_for('register') }}" class="hover:text-purple-400 transition">Register</a>
         <a href="{{ url_for('home') }}" class="hover:text-purple-400 transition">Home</a>
-        <a href="{{ url_for('select_mode') }}" class="hover:text-purple-400 transition">Mode</a>
-        <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-400 transition">AI Compose</a>
-        <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-400 transition">Pro Studio</a>
-        <a href="{{ url_for('beginner_output') }}" class="hover:text-purple-400 transition">AI Output</a>
-        <a href="{{ url_for('studio_output') }}" class="hover:text-purple-400 transition">Pro Output</a>
-        <a href="{{ url_for('my_music') }}" class="hover:text-purple-400 transition">Library</a>
         <a href="{{ url_for('artist_support') }}" class="text-purple-300 font-semibold hover:text-purple-200 transition">Support</a>
     </nav>
 
@@ -99,7 +93,6 @@
             <!-- Quick Action Pills -->
             <div class="px-4 py-2 bg-[#0c0419] border-t border-purple-900/40 flex flex-wrap gap-1.5">
                 <button onclick="sendMayaPreset('Help me mix')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Help me mix</button>
-                <button onclick="sendMayaPreset('Write a song')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Write a song</button>
                 <button onclick="sendMayaPreset('Account help')" class="text-[10px] bg-[#1a0b33] hover:bg-purple-900/60 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-full transition">Account help</button>
             </div>
 

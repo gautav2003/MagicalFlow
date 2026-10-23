@@ -130,7 +130,7 @@ def register():
                     </div>
                     <h3 style="color: #ffffff;">Welcome to the flow, {username}!</h3>
                     <p style="color: #a1a1aa; font-size: 13px; line-height: 1.6;">
-                        Your Magical Flow account has been officially created and verified. You are now ready to compose, mix, and collaborate using our next-generation AI studio tools.
+                        Your Magical Flow account has been officially created and verified.
                     </p>
                 </div>
                 """
@@ -302,7 +302,7 @@ def google_callback():
 
     return redirect(url_for('signin'))
 
-# ==================== ARTIST SUPPORT & AI MAYA CHAT API (LOCKED) ====================
+# ==================== ARTIST SUPPORT & MAYA CHAT API ====================
 @app.route('/artist-support')
 @login_required
 def artist_support():
@@ -313,83 +313,8 @@ def support_chat():
     data = request.get_json() or {}
     query = data.get('query', '').strip()
     query_lower = query.lower()
-    
-    selected_genre = session.get('active_vocal_genre', 'Bollywood')
-
-    # 1. GENERATE SPECIFIC VOCAL STYLE (e.g., "magical", "male", "female", "romantic")
-    if any(k in query_lower for k in ['magical', 'romantic', 'classical', 'energetic', 'male', 'female']):
-        vibe = "Magical & Ethereal" if "magical" in query_lower else "Expressive & Soulful"
-        gender = "Female Vocalist" if "female" in query_lower else ("Male Vocalist" if "male" in query_lower else "Dual Male/Female Duet")
-        
-        reply = (
-            f"✨ **Maya's AI {selected_genre} Vocal Generator** ✨<br><br>"
-            f"🎉 **Generated Vocal Profile:** {selected_genre} {gender} ({vibe})<br><br>"
-            "🔹 **Tone & Texture:** Silky smooth classical runs, lush ambient hall reverb, subtle tape warmth, and expressive dynamic pitch bends.<br>"
-            "🔹 **Recommended Scale:** C# Minor / D Phrygian Dominant (for rich Eastern modal color).<br>"
-            "🔹 **FX Chain Preset:** High-pass filter @ 100Hz -> Optical Compressor -> Shimmer Reverb (2.8s decay) -> Analog Delay (1/8th note triplet sync).<br><br>"
-            "🎧 **Studio Preview Action:** Your custom vocal track has been synthesized and synced to your current BPM! Would you like to load this directly into **Pro Studio Mode** track 1?"
-        )
-
-    # 2. INTERACTIVE GENRE CHOICE (e.g., "bollywood", "punjabi", "hollywood", "pop")
-    elif any(g in query_lower for g in ['bollywood', 'punjabi', 'hollywood', 'kpop', 'k-pop', 'classical']):
-        matched_genre = "Bollywood" if "bollywood" in query_lower else "Custom Genre"
-        session['active_vocal_genre'] = matched_genre
-        
-        reply = (
-            f"🎻 **Maya's AI Vocal Customizer ({matched_genre})** 🎻<br><br>"
-            f"Great choice! I am ready to generate custom **{matched_genre}** vocals for your music.<br><br>"
-            "To build the perfect vocal for your track, please tell me:<br>"
-            "1. Would you like a **Male**, **Female**, or **Duet** voice?<br>"
-            "2. How should the vocal sound like? (e.g., **Magical**, **Romantic**, **Classical**, or **Energetic**)?<br><br>"
-            "*(Simply type your preference below, e.g., 'Female and magical'!)*"
-        )
-
-    # 3. GENERAL VOCAL QUERY
-    elif any(k in query_lower for k in ['vocal', 'singing', 'singer', 'signing', 'voice', 'acapella', 'vocals']):
-        reply = (
-            "🎤 **Maya's AI Vocal & Singer Selection Studio** 🎤<br><br>"
-            "I can generate and process custom vocals for any style of music! Which genre are you working on?<br><br>"
-            "• **Bollywood** (e.g., Magical, Romantic, Sufi Classical)<br>"
-            "• **Punjabi Folk / Bhangra**<br>"
-            "• **Pop & Cyberpunk Synthwave**<br>"
-            "• **Hip-Hop / Melodic Trap**<br>"
-            "• **R&B & Soul**<br><br>"
-            "👉 *Type your genre (for example: 'Bollywood') to customize your singer!*"
-        )
-
-    # 4. WRITE A SONG INTENT
-    elif any(k in query_lower for k in ['write a song', 'lyrics', 'compose a track', 'write lyrics', 'make a song about']):
-        reply = (
-            "🎵 **Maya's Custom AI Songwriting Studio** 🎵<br><br>"
-            "Here is a custom song concept crafted just for your request:<br><br>"
-            "🔹 **Title:** Neon Horizons<br>"
-            "🔹 **Key & Tempo:** D Minor | 128 BPM<br>"
-            "🔹 **Vibe:** Melancholic yet driving, futuristic, energetic.<br><br>"
-            "**[Verse 1]**<br>"
-            "Digital shadows stretching on the wall,<br>"
-            "We're chasing echoes as the city lights fall.<br>"
-            "Static in the air, a pulse in the dark,<br>"
-            "Looking for a sign, a sudden spark.<br><br>"
-            "**[Chorus]**<br>"
-            "Ride the magical flow through the neon rain,<br>"
-            "Wash away the noise, leave behind the pain.<br>"
-            "In the synth and the bass, we come alive,<br>"
-            "This is the rhythm where our souls survive!<br><br>"
-            "💡 *Tip: Head over to Pro Studio Mode to lay down a pulsing synth bassline matching this 128 BPM groove!*"
-        )
-
-    # 5. SONG SUGGESTIONS & IDEAS INTENT
-    elif any(k in query_lower for k in ['suggest', 'what song', 'idea', 'inspiration', 'what should i create', 'recommend']):
-        reply = (
-            "✨ **Maya's Top Song Recommendations for Today** ✨<br><br>"
-            "Choose one of these unique directions to start your next session in Magical Flow:<br><br>"
-            "1. **Bollywood Fusion (105 BPM - C# Minor):** Warm acoustic sitar chords, punchy dholak groove, and sweeping magical vocal runs.<br><br>"
-            "2. **Cyberpunk Synthwave (125 BPM - A Minor):** Heavy distorted bass, punchy 808 drums, and arpeggiated lead synths.<br><br>"
-            "3. **Lo-Fi Chill Hop (85 BPM - C Major):** Dusty vinyl crackle, warm rhodes piano chords, and smooth saxophone.<br><br>"
-            "Which of these vibes would you like to build first?"
-        )
-
-    # 6. MIXING & MASTERING HELP INTENT
+    if any(k in query_lower for k in ['generate', 'write a song', 'lyrics', 'compose', 'create a song', 'vocals', 'singer']):
+        reply = "Music generation features are currently unavailable."
     elif any(k in query_lower for k in ['mix', 'master', 'eq', 'frequencies', 'volume', 'compression', 'balance']):
         reply = (
             "🎛️ **Maya's Pro Mixing & Mastering Guide** 🎛️<br><br>"
@@ -399,134 +324,29 @@ def support_chat():
             "3. **Compression:** Apply gentle compression on vocals and drums to glue dynamics.<br><br>"
             "4. **The Master Limiter:** Engage our **'Dragon Fire' master limiter** on output for maximum loudness without clipping!"
         )
-
-    # 7. HOW TO MAKE MUSIC / WORKFLOW INTENT
-    elif any(k in query_lower for k in ['how to make music', 'how do i start', 'start making music', 'workflow', 'beginner guide']):
-        reply = (
-            "🎹 **Step-by-Step Music Production Guide in Magical Flow** 🎹<br><br>"
-            "Here is how you can go from zero to a finished track in minutes:<br><br>"
-            "• **Step 1:** Select your mode from Home screen (Beginner Mode or Pro Studio Mode).<br><br>"
-            "• **Step 2:** Choose your Key and Tempo (e.g., 120 BPM in G Major).<br><br>"
-            "• **Step 3:** Lay down your core stems—drums, bassline, and chords.<br><br>"
-            "• **Step 4:** Mix your levels, add effects, and export your track in high-fidelity WAV format!"
-        )
-
-    # 8. ACCOUNT / 2FA / PASSWORD HELP
-    elif any(k in query_lower for k in ['2fa', 'code', 'verification', 'email', 'login', 'signin', 'password', 'reset', 'forgot']):
+    elif any(k in query_lower for k in ['account', '2fa', 'code', 'verification', 'email', 'login', 'signin', 'password', 'reset', 'forgot']):
         reply = (
             "🔒 **Security & Account Support** 🔒<br><br>"
             "• **Sign In & 2FA:** A 6-digit verification code is sent to your Gmail inbox (or displayed in your VS Code terminal as a backup).<br><br>"
             "• **Password Recovery:** Click 'Forgot Password' on the Sign In page to receive a recovery code."
         )
-
-    # 9. GREETINGS
     elif any(k in query_lower for k in ['hello', 'hi', 'hey', 'maya', 'help']):
         reply = (
             "👋 Hello! I'm **Maya**, your personal AI studio assistant in Magical Flow.<br><br>"
-            "I can generate custom vocals (Bollywood, Pop, R&B, Punjabi, etc.), write lyrics, recommend song concepts, and help you mix your tracks. What are we creating today?"
+            "I can help with account security and general mixing questions. Music generation features are currently unavailable."
         )
-
-    # 10. DEFAULT CATCH-ALL
     else:
         reply = (
-            f"🎵 I hear you loud and clear regarding '{query}'.<br><br>"
-            "Whether you need magical Bollywood vocals, custom song lyrics, chord suggestions, or mixing advice, I'm here to help. Tell me what genre or vibe you're aiming for, and let's create it!"
+            "I can help with account security and general mixing questions. Music generation features are currently unavailable."
         )
 
     return jsonify({'reply': reply})
 
-# ==================== NAVIGATION & STUDIO MODES ====================
+# ==================== NAVIGATION ====================
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('signin'))
-
-@app.route('/select-mode')
-@login_required
-def select_mode():
-    username = session.get('user', 'Artist')
-    return render_template('SelectMode.html', username=username)
-
-@app.route('/beginner-mode', methods=['GET', 'POST'])
-@login_required
-def beginner_mode():
-    if request.method == 'POST':
-        prompt = request.form.get('prompt', '').strip()
-        genre = request.form.get('genre', '')
-        mood = request.form.get('mood', '')
-        allowed_genres = {
-            'Lo-Fi', 'Hip-Hop', 'Jazz', 'Electronic', 'Western Pop', 'Folk',
-            'R&B', 'Classical', 'Punjabi Pop', 'Bhangra', 'Bollywood Romance',
-        }
-        allowed_moods = {'Chill', 'Energetic', 'Dark', 'Happy', 'Sad', 'Romantic', 'Focused'}
-        allowed_instruments = {
-            'Piano', 'Guitar', 'Bass', 'Drums', 'Synth', 'Strings',
-            'Brass', 'Pad', 'Arp', 'Vocals',
-        }
-        try:
-            bpm = int(request.form.get('bpm', '90'))
-            duration = int(request.form.get('duration', '2'))
-        except ValueError:
-            bpm, duration = 0, 0
-        instruments = request.form.getlist('instruments')
-        instruments = [instrument for instrument in instruments if instrument in allowed_instruments]
-        vocals = 'Generated vocals' if 'Vocals' in instruments else 'Instrumental'
-        composition = {
-            'prompt': prompt,
-            'genre': genre,
-            'mood': mood,
-            'tempo': f'{bpm} BPM',
-            'duration': duration,
-            'instruments': instruments,
-            'vocals': vocals,
-        }
-        if not prompt or len(prompt) > 500:
-            composition['generation_error'] = 'Enter a song description of 1 to 500 characters.'
-        elif genre not in allowed_genres or mood not in allowed_moods:
-            composition['generation_error'] = 'Choose a valid genre and mood before generating.'
-        elif not 60 <= bpm <= 180 or not 1 <= duration <= 3:
-            composition['generation_error'] = 'Choose a tempo from 60 to 180 BPM and a song length from 1 to 3 minutes.'
-        else:
-            composition['generation_notice'] = (
-                'AI song generation is not available in this version. '
-                'Return to Beginner Mode to hear the browser-synthesized preview.'
-            )
-        session['composition_data'] = composition
-        return redirect(url_for('beginner_output'))
-    return render_template('Beginnermode.html')
-
-@app.route('/beginner-output')
-@login_required
-def beginner_output():
-    composition = session.get('composition_data', {
-        'prompt': 'A magical melody under the stars',
-        'genre': 'Bollywood Romantic',
-        'mood': 'Magical & Dreamy',
-        'tempo': '120 BPM',
-        'vocals': 'Instrumental',
-        'generation_error': 'Describe a song idea in Beginner Mode to create your first song brief.',
-    })
-    if not composition.get('generation_error') and not composition.get('generation_notice'):
-        composition['generation_notice'] = (
-            'AI song generation is not available in this version. '
-            'Return to Beginner Mode to hear the browser-synthesized preview.'
-        )
-    return render_template('BeginnerGeneration.html', composition=composition)
-
-@app.route('/pro-studio-mode')
-@login_required
-def pro_studio_mode():
-    return render_template('prostudiomode.html')
-
-@app.route('/pro-studio-output')
-@login_required
-def studio_output():
-    return render_template('prostudiooutput.html')
-
-@app.route('/my-music')
-@login_required
-def my_music():
-    return render_template('mymusic.html')
 
 @app.route('/account')
 @login_required

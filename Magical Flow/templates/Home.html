@@ -17,69 +17,22 @@
         </h1>
         <!-- Subtitle: Fixed Blue with Exact Text (image_22.png) -->
         <div class="text-[10px] font-bold tracking-[0.2em] text-[#5e69e2] uppercase">
-            YOUR MUSIC. YOUR WAY.
+            ACCOUNT AND ARTIST SUPPORT
         </div>
         <!-- Description Text: Correct font size and color (image_19.png) -->
         <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed pt-1">
-            A next-generation music creation platform that blends AI composition with professional studio tools. Whether you are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.
+            Your home for account access and artist support.
         </p>
     </div>
 
-    <!-- Mode Pills Section (image_19.png) -->
-    <div class="flex flex-wrap items-center justify-center gap-3 py-1">
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-blue-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-blue-500 shadow-sm"></span>
-            <span>MOONLIGHT <span class="text-zinc-500">Create with clarity</span></span>
-        </div>
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-emerald-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-sm"></span>
-            <span>ANCIENT MUSIC <span class="text-zinc-500">Shape with wisdom</span></span>
-        </div>
-        <div class="inline-flex items-center space-x-1.5 bg-[#090314]/80 border border-orange-500/40 px-3.5 py-1.5 rounded-full text-[10px] text-zinc-300 font-medium shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-orange-500 shadow-sm"></span>
-            <span>DRAGON FIRE <span class="text-zinc-500">Finish with power</span></span>
-        </div>
-    </div>
-
-    <!-- Choose Your Experience Card (image_19.png) -->
+    <!-- Support Card -->
     <div class="studio-card rounded-2xl w-full max-w-xl mx-auto p-8 space-y-6 text-center shadow-xl border border-purple-500/40">
         <div class="text-[10px] text-purple-300 font-semibold uppercase tracking-widest">Get Started</div>
-        <h2 class="text-3xl font-extrabold text-white tracking-tight">Choose Your Experience</h2>
-        <p class="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">Beginner for instant results, or Pro Studio for full control.</p>
-        <a href="{{ url_for('select_mode') }}" class="inline-block bg-[#0c0419] hover:bg-purple-950/60 border border-purple-500/40 text-zinc-100 text-[11px] font-semibold py-2.5 px-6 rounded-lg transition shadow-md">
-            Choose Your Experience
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Artist Support</h2>
+        <p class="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed">Music creation features are unavailable while they are being rebuilt.</p>
+        <a href="{{ url_for('artist_support') }}" class="inline-block bg-[#0c0419] hover:bg-purple-950/60 border border-purple-500/40 text-zinc-100 text-[11px] font-semibold py-2.5 px-6 rounded-lg transition shadow-md">
+            Visit Artist Support
         </a>
-    </div>
-
-    <!-- Feature Cards: Icons and correct Accents (image_19.png) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 w-full border-t border-purple-900/40">
-        
-        <!-- AI Composition (Moonlight Blue Accent) -->
-        <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-blue-500 bg-[#070311]/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-blue-500 text-blue-400 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.3)]">
-                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
-            </div>
-            <h4 class="font-semibold text-white text-sm">AI Composition</h4>
-            <p class="text-[11px] text-zinc-400 leading-relaxed max-w-xs">Generate full tracks from a text prompt in seconds</p>
-        </div>
-
-        <!-- Pro DAW (Ancient Music Green Accent) -->
-        <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-emerald-500 bg-[#070311]/40 md:border-l border-purple-900/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-emerald-500 text-emerald-400 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.3)]">
-                <i class="fa-solid fa-table-cells text-lg"></i>
-            </div>
-            <h4 class="font-semibold text-white text-sm">Pro DAW</h4>
-            <p class="text-[11px] text-zinc-400 leading-relaxed max-w-xs">Full 8-track studio with MIDI, audio, and effects</p>
-        </div>
-
-        <!-- My Music (Dragon Fire Orange Accent) -->
-        <div class="flex flex-col items-center justify-center p-8 space-y-4 text-center border-t-2 border-orange-500 bg-[#070311]/40 md:border-l border-purple-900/40">
-            <div class="w-12 h-12 rounded-xl bg-[#090314] border-2 border-orange-500 text-orange-400 flex items-center justify-center shadow-[0_0_12px_rgba(249,115,22,0.3)]">
-                <i class="fa-solid fa-music text-lg"></i>
-            </div>
-            <h4 class="font-semibold text-white text-sm">My Music</h4>
-            <p class="text-[11px] text-zinc-400 leading-relaxed max-w-xs">All your music organized, tagged, and searchable</p>
-        </div>
     </div>
 
 </div>
