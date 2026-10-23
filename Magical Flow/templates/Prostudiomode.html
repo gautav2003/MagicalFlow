@@ -222,7 +222,7 @@
         <div class="flex items-center gap-6 mono-font text-xs font-semibold">
           <div class="text-center">
             <span class="block text-[9px] text-zinc-400 uppercase">BPM</span>
-            <span class="text-sm font-bold text-orange-300">96</span>
+            <input id="bpmInput" type="number" min="40" max="240" value="96" aria-label="Tempo in beats per minute" class="w-16 bg-transparent text-center text-sm font-bold text-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-400 rounded" />
           </div>
           <div class="text-center">
             <span class="block text-[9px] text-zinc-400 uppercase">SIG</span>
@@ -237,6 +237,7 @@
 
         <div class="flex items-center gap-3">
           <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-orange-950/80 border border-orange-600/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white transition-colors" title="Arm Mic">🎙</button>
+          <a id="micDownload" class="hidden text-[10px] text-orange-300 underline" download>Download mic take</a>
           <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
             <input type="hidden" name="bpm" value="96" />
             <input type="hidden" name="key_scale" value="D Min" />
@@ -244,6 +245,7 @@
             <button type="submit" class="px-4 py-1.5 bg-gradient-to-r from-orange-900 to-red-900 border border-orange-500/60 hover:from-orange-800 hover:to-red-800 rounded-lg text-xs font-bold text-white transition-all shadow-md shadow-orange-950">Export</button>
           </form>
           <button type="button" onclick="saveProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-600/60 hover:bg-purple-900 rounded-lg text-xs font-bold text-white transition-all">Save</button>
+          <button type="button" onclick="exportProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-600/60 hover:bg-purple-900 rounded-lg text-xs font-bold text-white transition-all">Export Project</button>
         </div>
       </div>
 
@@ -306,7 +308,10 @@
           </div>
 
           <div class="daw-card rounded-xl h-24 bg-[#1a071d]/80 border border-orange-500/30 flex items-center justify-center p-4">
-            <span id="dawStatusText" class="text-xs font-mono text-orange-300">🔥 Dragon Fire Studio Session • Active Instrument: Grand Piano</span>
+            <div class="text-center">
+              <span id="dawStatusText" class="block text-xs font-mono text-orange-300">🔥 Dragon Fire Studio Session • Active Instrument: Grand Piano</span>
+              <span id="projectStatus" class="block mt-1 text-[10px] font-mono text-zinc-400">Ready · Set tempo, program drums, and save your project</span>
+            </div>
           </div>
 
           <!-- Virtual VST Instrument Multi-Genre Library & Fixed Piano Keyboard Layout -->
@@ -337,6 +342,15 @@
               <button type="button" onclick="playDrum('closedHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Closed Hat <span class="opacity-70">D</span></button>
               <button type="button" onclick="playDrum('openHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Open Hat <span class="opacity-70">F</span></button>
               <button type="button" onclick="playDrum('tom')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tom <span class="opacity-70">G</span></button>
+            </div>
+            <div id="drumSequencer" class="hidden space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h3 class="text-xs font-bold text-orange-200">16-step drum sequencer</h3>
+                <label class="flex items-center gap-1 text-[10px] text-zinc-400"><input id="metronomeToggle" type="checkbox" class="accent-orange-500" /> Metronome</label>
+              </div>
+              <span class="text-[10px] text-zinc-400">Click steps, then press Play</span>
+              <div id="stepGrid" class="space-y-1.5 overflow-x-auto"></div>
+              <p class="text-[10px] text-zinc-500">Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-orange-300 underline">FluidR3 GM SoundFont via MIDI.js Soundfonts</a>, licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-orange-300 underline">CC BY 3.0</a>. Samples load online; synthesized sounds remain available offline.</p>
             </div>
 
             <!-- Correctly Layered Piano Keyboard (White Keys & Black Keys) -->
@@ -446,9 +460,36 @@
   let audioCtx = null;
   let isPlaying = false;
   let playbackInterval = null;
+  let micRecorder = null;
+  let micStream = null;
+  let micChunks = [];
+  let micRecordingUrl = null;
   let currentMeasure = 1;
   let secondsCount = 0;
+  let playbackElapsedMs = 0;
   let activeInstrument = 'Grand Piano';
+  let sequencerStep = 0;
+  let soundfontSampleCache = new Map();
+  let soundfontLoadPromises = new Map();
+  let projectPattern = {
+    kick: [0, 8],
+    snare: [4, 12],
+    closedHat: [0, 2, 4, 6, 8, 10, 12, 14],
+    openHat: []
+  };
+  const soundfontPrograms = {
+    'Grand Piano': 'acoustic_grand_piano',
+    'Acoustic Guitar': 'acoustic_guitar_steel',
+    'Electric Guitar': 'overdriven_guitar',
+    'Electric Bass': 'electric_bass_pick',
+    'Lead Synth': 'lead_2_sawtooth',
+    'Cinematic Strings': 'string_ensemble_1',
+    'Brass Section': 'brass_section',
+    'Ambient Pad': 'pad_2_warm',
+    'Sitar': 'sitar',
+    'Harmonium': 'reed_organ'
+  };
+  const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
 
   function initAudio() {
     if (!audioCtx) {
@@ -457,6 +498,72 @@
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
+  }
+
+  function loadSoundfont(instrument) {
+    const program = soundfontPrograms[instrument];
+    if (!program) return Promise.resolve(null);
+    if (window.MIDI?.Soundfont?.[program]) return Promise.resolve(window.MIDI.Soundfont[program]);
+    if (soundfontLoadPromises.has(program)) return soundfontLoadPromises.get(program);
+
+    const loadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+      script.async = true;
+      script.onload = () => {
+        const soundfont = window.MIDI?.Soundfont?.[program];
+        if (soundfont) resolve(soundfont);
+        else reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+      };
+      script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
+      document.head.appendChild(script);
+    });
+    soundfontLoadPromises.set(program, loadPromise);
+    loadPromise.catch(() => soundfontLoadPromises.delete(program));
+    return loadPromise;
+  }
+
+  function midiNoteNumber(noteName) {
+    const match = /^([A-G])(#?)(-?\d+)$/.exec(noteName);
+    if (!match) return null;
+    const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    return (Number(match[3]) + 1) * 12 + semitones[match[1]] + (match[2] ? 1 : 0);
+  }
+
+  async function playSampledNote(instrument, frequency) {
+    const soundfont = await loadSoundfont(instrument);
+    if (!soundfont) return false;
+
+    const targetMidi = Math.round(69 + 12 * Math.log2(frequency / 440));
+    const sampleName = Object.keys(soundfont)
+      .filter(name => midiNoteNumber(name) !== null)
+      .sort((a, b) => Math.abs(midiNoteNumber(a) - targetMidi) - Math.abs(midiNoteNumber(b) - targetMidi))[0];
+    if (!sampleName) throw new Error(`No playable samples were found for ${instrument}.`);
+
+    const program = soundfontPrograms[instrument];
+    const cacheKey = `${program}:${sampleName}`;
+    let bufferPromise = soundfontSampleCache.get(cacheKey);
+    if (!bufferPromise) {
+      bufferPromise = fetch(soundfont[sampleName])
+        .then(response => {
+          if (!response.ok) throw new Error(`Could not download the ${instrument} note sample.`);
+          return response.arrayBuffer();
+        })
+        .then(data => audioCtx.decodeAudioData(data));
+      soundfontSampleCache.set(cacheKey, bufferPromise);
+      bufferPromise.catch(() => soundfontSampleCache.delete(cacheKey));
+    }
+
+    const buffer = await bufferPromise;
+    const source = audioCtx.createBufferSource();
+    const gain = audioCtx.createGain();
+    source.buffer = buffer;
+    source.playbackRate.setValueAtTime(frequency / (440 * Math.pow(2, (midiNoteNumber(sampleName) - 69) / 12)), audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    source.start();
+    return true;
   }
 
   function makeDistortionCurve(amount) {
@@ -569,6 +676,23 @@
   }
 
   function playActiveInstrument(freq) {
+    initAudio();
+    const instrument = activeInstrument;
+    if (!soundfontPrograms[instrument]) {
+      playSynthInstrument(freq);
+      return;
+    }
+
+    playSampledNote(instrument, freq).catch(error => {
+      console.error(error);
+      if (activeInstrument === instrument) {
+        document.getElementById('instrumentStatus').innerText = `${instrument} sample unavailable; playing the built-in sound instead.`;
+        playSynthInstrument(freq);
+      }
+    });
+  }
+
+  function playSynthInstrument(freq) {
     initAudio();
     const now = audioCtx.currentTime;
 
@@ -896,9 +1020,112 @@
     }
   }
 
+  const drumTrackNames = {
+    kick: 'Kick',
+    snare: 'Snare',
+    closedHat: 'Closed hat',
+    openHat: 'Open hat'
+  };
+
+  function renderDrumSequencer() {
+    const stepGrid = document.getElementById('stepGrid');
+    stepGrid.innerHTML = Object.entries(drumTrackNames).map(([track, label]) => {
+      const steps = Array.from({ length: 16 }, (_, step) => {
+        const enabled = projectPattern[track].includes(step);
+        const beatMarker = step % 4 === 0 ? ' ring-1 ring-orange-500/40' : '';
+        return `<button type="button" data-step="${step}" aria-label="${label} step ${step + 1}" aria-pressed="${enabled}" onclick="toggleDrumStep('${track}', ${step})" class="h-7 min-w-6 flex-1 rounded ${enabled ? 'bg-orange-500' : 'bg-purple-950'}${beatMarker} hover:bg-orange-400 transition-colors"></button>`;
+      }).join('');
+      return `<div class="flex min-w-[510px] items-center gap-2"><span class="w-20 shrink-0 text-[10px] text-zinc-300">${label}</span><div class="flex flex-1 gap-1">${steps}</div></div>`;
+    }).join('');
+  }
+
+  function toggleDrumStep(track, step) {
+    const steps = new Set(projectPattern[track]);
+    if (steps.has(step)) steps.delete(step);
+    else steps.add(step);
+    projectPattern[track] = [...steps].sort((a, b) => a - b);
+    renderDrumSequencer();
+  }
+
+  function setTempo(value) {
+    const tempoInput = document.getElementById('bpmInput');
+    const tempo = Math.max(40, Math.min(240, Math.round(Number(value) || 96)));
+    tempoInput.value = tempo;
+    document.querySelector('#studioForm input[name="bpm"]').value = tempo;
+    document.getElementById('transportSeek').max = Math.ceil(17 * 240 / tempo);
+    if (isPlaying) {
+      clearInterval(playbackInterval);
+      playbackInterval = setInterval(playbackTick, 60000 / tempo / 4);
+    }
+  }
+
+  function getTempo() {
+    const value = Number(document.getElementById('bpmInput').value);
+    return Math.max(40, Math.min(240, Math.round(Number.isFinite(value) && value > 0 ? value : 96)));
+  }
+
+  function playSequencerStep() {
+    const step = sequencerStep;
+    Object.keys(drumTrackNames).forEach(track => {
+      if (projectPattern[track].includes(step)) playDrum(track);
+    });
+
+    if (document.getElementById('metronomeToggle').checked && step % 4 === 0) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const now = audioCtx.currentTime;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(step === 0 ? 1100 : 780, now);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    }
+
+    document.querySelectorAll('#stepGrid button').forEach(button => {
+      const isCurrentStep = Number(button.dataset.step) === step;
+      button.classList.toggle('ring-2', isCurrentStep);
+      button.classList.toggle('ring-white', isCurrentStep);
+    });
+    sequencerStep = (sequencerStep + 1) % 16;
+    if (sequencerStep === 0) {
+      currentMeasure = currentMeasure >= 17 ? 1 : currentMeasure + 1;
+      document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    }
+  }
+
+  function playbackTick() {
+    if (!isPlaying) return;
+    const stepMilliseconds = 60000 / getTempo() / 4;
+    playSequencerStep();
+    playbackElapsedMs += stepMilliseconds;
+    secondsCount = Math.floor(playbackElapsedMs / 1000);
+    const minutes = Math.floor(secondsCount / 60);
+    const seconds = secondsCount % 60;
+    document.getElementById('transportTime').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    document.getElementById('transportSeek').value = Math.min(Number(document.getElementById('transportSeek').max), secondsCount);
+  }
+
+  function seekTransport(seconds) {
+    const seek = document.getElementById('transportSeek');
+    const position = Math.max(0, Math.min(Number(seconds) || 0, Number(seek.max)));
+    const secondsPerBar = 240 / getTempo();
+    const secondsIntoBar = position % secondsPerBar;
+    playbackElapsedMs = position * 1000;
+    secondsCount = Math.floor(position);
+    currentMeasure = Math.min(17, Math.floor(position / secondsPerBar) + 1);
+    sequencerStep = Math.floor(secondsIntoBar / (secondsPerBar / 16)) % 16;
+    seek.value = position;
+    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    document.getElementById('transportTime').innerText = `${String(Math.floor(secondsCount / 60)).padStart(2, '0')}:${String(secondsCount % 60).padStart(2, '0')}`;
+  }
+
   function selectInstrument(tabEl, name) {
     activeInstrument = name;
     const drumPads = document.getElementById('drumPads');
+    const drumSequencer = document.getElementById('drumSequencer');
     document.querySelectorAll('.vst-tab').forEach(t => {
       t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
       t.classList.add('hover:text-white', 'transition-colors');
@@ -906,9 +1133,24 @@
     tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
     tabEl.classList.remove('hover:text-white', 'transition-colors');
     drumPads.classList.toggle('hidden', name !== 'Trap Drums');
-    document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
-      ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
-      : `${name} selected · Click keys or use A–L to play`;
+    drumSequencer.classList.toggle('hidden', name !== 'Trap Drums');
+    if (soundfontPrograms[name]) {
+      document.getElementById('instrumentStatus').innerText = `${name} selected · Loading realistic instrument samples…`;
+      loadSoundfont(name).then(() => {
+        if (activeInstrument === name) {
+          document.getElementById('instrumentStatus').innerText = `${name} samples ready · Click keys or use A–L to play`;
+        }
+      }).catch(error => {
+        console.error(error);
+        if (activeInstrument === name) {
+          document.getElementById('instrumentStatus').innerText = `${name} samples unavailable; built-in sound remains available offline.`;
+        }
+      });
+    } else {
+      document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
+        ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
+        : `${name} selected · Click keys or use A–L to play`;
+    }
     document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
   }
 
@@ -929,21 +1171,12 @@
       leftReel.classList.add('spinning');
       rightReel.classList.add('spinning');
 
-      playActiveInstrument(261.63);
-      playbackInterval = setInterval(() => {
-        if (isPlaying) {
-          secondsCount++;
-          let m = Math.floor(secondsCount / 60);
-          let s = secondsCount % 60;
-          document.getElementById('transportTime').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-          if (secondsCount % 4 === 0 && currentMeasure < 17) {
-            currentMeasure++;
-            document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-            document.getElementById('transportSeek').value = currentMeasure * 7;
-          }
-          playActiveInstrument(329.63);
-        }
-      }, 1000);
+      const tempo = getTempo();
+      document.getElementById('bpmInput').value = tempo;
+      document.querySelector('#studioForm input[name="bpm"]').value = tempo;
+      const stepMilliseconds = 60000 / tempo / 4;
+      playSequencerStep();
+      playbackInterval = setInterval(playbackTick, stepMilliseconds);
     } else {
       stopTransport();
     }
@@ -961,21 +1194,19 @@
     document.getElementById('rightTapeReel').classList.remove('spinning');
     currentMeasure = 1;
     secondsCount = 0;
+    playbackElapsedMs = 0;
+    sequencerStep = 0;
     document.getElementById('measureCounter').innerText = 'BAR 001';
     document.getElementById('transportTime').innerText = '00:00';
     document.getElementById('transportSeek').value = 0;
   }
 
   function rewindTransport() {
-    currentMeasure = Math.max(1, currentMeasure - 4);
-    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-    playActiveInstrument(220.00);
+    seekTransport(playbackElapsedMs / 1000 - (4 * 240 / getTempo()));
   }
 
   function fastForward() {
-    currentMeasure = Math.min(17, currentMeasure + 4);
-    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-    playActiveInstrument(440.00);
+    seekTransport(playbackElapsedMs / 1000 + (4 * 240 / getTempo()));
   }
 
   function toggleMute(btn) {
@@ -990,8 +1221,66 @@
     }
   }
 
-  function toggleMic() {
-    alert("🔥 Dragon Fire Microphone channel armed for recording.");
+  async function toggleMic() {
+    const micButton = document.getElementById('micBtn');
+    if (micRecorder?.state === 'recording') {
+      micRecorder.stop();
+      micButton.title = 'Start microphone recording';
+      micButton.classList.remove('bg-red-950', 'border-red-600');
+      micButton.classList.add('bg-orange-950/80', 'border-orange-600/40');
+      document.getElementById('projectStatus').innerText = 'Finishing microphone recording…';
+      return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      document.getElementById('projectStatus').innerText = 'Microphone recording is not supported by this browser.';
+      alert('Microphone recording requires a supported browser and a secure connection (localhost or HTTPS).');
+      return;
+    }
+
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus']
+        .find(type => MediaRecorder.isTypeSupported(type));
+      micRecorder = mimeType
+        ? new MediaRecorder(micStream, { mimeType })
+        : new MediaRecorder(micStream);
+      micChunks = [];
+      micRecorder.ondataavailable = event => {
+        if (event.data.size > 0) micChunks.push(event.data);
+      };
+      micRecorder.onerror = event => {
+        console.error('Microphone recording failed.', event.error);
+        document.getElementById('projectStatus').innerText = 'Microphone recording failed. Check browser microphone permissions.';
+      };
+      micRecorder.onstop = () => {
+        const recording = new Blob(micChunks, { type: micRecorder.mimeType || 'audio/webm' });
+        micStream?.getTracks().forEach(track => track.stop());
+        micStream = null;
+        if (recording.size === 0) {
+          document.getElementById('projectStatus').innerText = 'The microphone recording was empty.';
+          return;
+        }
+        if (micRecordingUrl) URL.revokeObjectURL(micRecordingUrl);
+        micRecordingUrl = URL.createObjectURL(recording);
+        const download = document.getElementById('micDownload');
+        download.href = micRecordingUrl;
+        download.download = `magical-flow-mic-take.${recording.type.includes('ogg') ? 'ogg' : 'webm'}`;
+        download.classList.remove('hidden');
+        document.getElementById('projectStatus').innerText = 'Microphone take ready to download.';
+      };
+      micRecorder.start();
+      micButton.title = 'Stop microphone recording';
+      micButton.classList.remove('bg-orange-950/80', 'border-orange-600/40');
+      micButton.classList.add('bg-red-950', 'border-red-600');
+      document.getElementById('projectStatus').innerText = 'Recording from your microphone…';
+    } catch (error) {
+      console.error('Could not start microphone recording.', error);
+      micStream?.getTracks().forEach(track => track.stop());
+      micStream = null;
+      document.getElementById('projectStatus').innerText = 'Microphone access was denied or unavailable.';
+      alert('Could not start microphone recording. Allow microphone access in your browser and try again.');
+    }
   }
 
   function toggleSwitch(btn) {
@@ -1004,8 +1293,68 @@
     alert(promptVal ? `AI Assist processing: "${promptVal}"` : "Please type a prompt in the AI Assist box first!");
   }
 
+  function createProjectData() {
+    return {
+      version: 1,
+      bpm: getTempo(),
+      instrument: activeInstrument,
+      pattern: projectPattern,
+      metronome: document.getElementById('metronomeToggle').checked
+    };
+  }
+
   function saveProject() {
-    alert("🔥 Dragon Fire Studio project successfully saved!");
+    try {
+      localStorage.setItem('magicalFlowProStudioProject', JSON.stringify(createProjectData()));
+      document.getElementById('projectStatus').innerText = 'Project saved in this browser.';
+    } catch (error) {
+      console.error('Could not save the studio project.', error);
+      document.getElementById('projectStatus').innerText = 'Save failed. Check browser storage permissions.';
+      alert('The project could not be saved in this browser. Please check its storage settings.');
+    }
+  }
+
+  function exportProject() {
+    const file = new Blob([JSON.stringify(createProjectData(), null, 2)], { type: 'application/json' });
+    const downloadUrl = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'magical-flow-pro-studio-project.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    document.getElementById('projectStatus').innerText = 'Project settings exported as JSON.';
+  }
+
+  function loadSavedProject() {
+    try {
+      const saved = localStorage.getItem('magicalFlowProStudioProject');
+      if (!saved) return;
+      const project = JSON.parse(saved);
+      if (project.version !== 1 || !Number.isFinite(Number(project.bpm))) {
+        throw new Error('The saved project has an unsupported or invalid format.');
+      }
+
+      setTempo(project.bpm);
+      if (project.pattern && typeof project.pattern === 'object') {
+        Object.keys(drumTrackNames).forEach(track => {
+          const steps = project.pattern[track];
+          if (Array.isArray(steps)) {
+            projectPattern[track] = [...new Set(steps.filter(step => Number.isInteger(step) && step >= 0 && step < 16))];
+          }
+        });
+      }
+      document.getElementById('metronomeToggle').checked = project.metronome === true;
+      renderDrumSequencer();
+
+      if (typeof project.instrument === 'string') {
+        const tab = [...document.querySelectorAll('.vst-tab')].find(item => item.textContent.trim() === project.instrument);
+        if (tab) selectInstrument(tab, project.instrument);
+      }
+      document.getElementById('projectStatus').innerText = 'Saved project restored from this browser.';
+    } catch (error) {
+      console.error('Could not restore the saved studio project.', error);
+      document.getElementById('projectStatus').innerText = 'Saved project could not be restored; use Export Project to keep a backup.';
+    }
   }
 
   const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
@@ -1021,6 +1370,12 @@
       playActiveInstrument(keyMap[key]);
     }
   });
+
+  renderDrumSequencer();
+  setTempo(getTempo());
+  loadSavedProject();
+  document.getElementById('bpmInput').addEventListener('change', event => setTempo(event.target.value));
+  document.getElementById('transportSeek').addEventListener('input', event => seekTransport(event.target.value));
 </script>
   </body>
 </html>
