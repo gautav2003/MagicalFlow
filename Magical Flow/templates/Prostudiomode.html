@@ -436,172 +436,484 @@
 
     <!-- Fully Workable Web Audio & Multi-Genre Sound Library Engine -->
     <script>
-      let audioCtx = null;
-      let isPlaying = false;
-      let playbackInterval = null;
-      let currentMeasure = 1;
-      let secondsCount = 0;
-      let activeInstrument = 'Grand Piano';
+  let audioCtx = null;
+  let isPlaying = false;
+  let playbackInterval = null;
+  let currentMeasure = 1;
+  let secondsCount = 0;
+  let activeInstrument = 'Grand Piano';
 
-      function initAudio() {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  // Realistic Multi-Oscillator & Filter Synthesis Engine
+  function playActiveInstrument(freq) {
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    // Helper for White Noise Generation (Realistic Drums & Percussion)
+    function playNoise(duration, filterFreq) {
+      const bufferSize = audioCtx.sampleRate * duration;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.setValueAtTime(filterFreq, now);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      noise.start(now);
+      noise.stop(now + duration);
+    }
+
+    // Instrument Synthesizer Patches
+    switch(activeInstrument) {
+
+      case 'Grand Piano': {
+        // Dual harmonic oscillator with rich decay filter
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 2, now); // 2nd Harmonic
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(300, now + 1.2);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.2); osc2.stop(now + 1.2);
+        break;
       }
 
-      function playActiveInstrument(freq) {
-        initAudio();
+      case 'Acoustic Guitar': {
+        // Plucked String with fast attack and body resonance
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1500, now);
+        filter.Q.value = 3;
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.8);
+        break;
+      }
+
+      case 'Electric Bass': {
+        // Deep sub bass with warm sawtooth low-pass filter
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq / 2, now); // Sub Octave
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 1.0);
+        break;
+      }
+
+      case '808 Sub': {
+        // Pitch-dropping sine sub bass
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
-        let oscType = 'sine';
-        let duration = 1.0;
-        let gainVal = 0.08;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq / 2, now);
+        osc.frequency.exponentialRampToValueAtTime(35, now + 0.5);
 
-        switch(activeInstrument) {
-          case 'Grand Piano': oscType = 'sine'; gainVal = 0.09; duration = 1.1; break;
-          case 'Acoustic Guitar': oscType = 'triangle'; gainVal = 0.06; duration = 0.7; break;
-          case 'Electric Bass': oscType = 'sawtooth'; freq = freq / 2; gainVal = 0.1; duration = 1.2; break;
-          case '808 Sub': oscType = 'sine'; freq = freq / 3; gainVal = 0.15; duration = 1.5; break;
-          case 'Trap Drums': oscType = 'square'; gainVal = 0.12; duration = 0.25; break;
-          case 'Lead Synth': oscType = 'sawtooth'; gainVal = 0.07; duration = 0.8; break;
-          case 'Supersaw': oscType = 'sawtooth'; gainVal = 0.05; duration = 1.0; break;
-          case 'Cinematic Strings': oscType = 'triangle'; gainVal = 0.07; duration = 1.8; break;
-          case 'Brass Section': oscType = 'sawtooth'; gainVal = 0.08; duration = 0.9; break;
-          case 'Ambient Pad': oscType = 'sine'; gainVal = 0.06; duration = 2.0; break;
-          case 'Sitar': oscType = 'sawtooth'; gainVal = 0.06; duration = 0.8; break;
-          case 'Harmonium': oscType = 'square'; gainVal = 0.07; duration = 1.2; break;
-          case 'Arp Sequence': oscType = 'triangle'; gainVal = 0.08; duration = 0.4; break;
-        }
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
 
-        osc.type = oscType;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
         osc.connect(gain);
-
-        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-        
         gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
+
+        osc.start(now);
+        osc.stop(now + 1.4);
+        break;
       }
 
-      function selectInstrument(tabEl, name) {
-        activeInstrument = name;
-        document.querySelectorAll('.vst-tab').forEach(t => {
-          t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
-          t.classList.add('hover:text-white', 'transition-colors');
+      case 'Trap Drums': {
+        if (freq < 200) {
+          // Punchy Kick Drum
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.15);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.start(now); osc.stop(now + 0.2);
+        } else {
+          // Snare / Hi-Hat Noise Burst
+          playNoise(0.2, 1000);
+        }
+        break;
+      }
+
+      case 'Lead Synth': {
+        // Bright synth lead with fast lowpass sweep
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2500, now);
+        filter.frequency.exponentialRampToValueAtTime(600, now + 0.6);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.7);
+        break;
+      }
+
+      case 'Supersaw': {
+        // Multi-saw oscillator layer for massive EDM chords
+        [-10, 0, 10].forEach(detune => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.detune.setValueAtTime(detune, now);
+
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now); osc.stop(now + 0.9);
         });
-        tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
-        tabEl.classList.remove('hover:text-white', 'transition-colors');
-        document.getElementById('instrumentStatus').innerText = `${name} selected · Click keys or use A–L to play`;
-        document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
+        break;
       }
 
-      function togglePlay() {
-        initAudio();
-        const playBtn = document.getElementById('playBtn');
-        const stateEl = document.getElementById('transportState');
-        const led = document.getElementById('transportLed');
-        const leftReel = document.getElementById('leftTapeReel');
-        const rightReel = document.getElementById('rightTapeReel');
+      case 'Cinematic Strings': {
+        // Warm ensemble pad with gentle swell (Attack) and vibrato
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const lfo = audioCtx.createOscillator(); // Vibrato
+        const lfoGain = audioCtx.createGain();
+        const gain = audioCtx.createGain();
 
-        if (!isPlaying) {
-          isPlaying = true;
-          playBtn.innerText = '⏸';
-          stateEl.innerText = 'PLAY';
-          led.classList.remove('bg-orange-400');
-          led.classList.add('bg-orange-500', 'animate-pulse');
-          leftReel.classList.add('spinning');
-          rightReel.classList.add('spinning');
+        osc1.type = 'sawtooth';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 1.002, now);
 
-          playActiveInstrument(261.63);
-          playbackInterval = setInterval(() => {
-            if (isPlaying) {
-              secondsCount++;
-              let m = Math.floor(secondsCount / 60);
-              let s = secondsCount % 60;
-              document.getElementById('transportTime').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
-              if (secondsCount % 4 === 0 && currentMeasure < 17) {
-                currentMeasure++;
-                document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-                document.getElementById('transportSeek').value = currentMeasure * 7;
-              }
-              playActiveInstrument(329.63);
-            }
-          }, 1000);
-        } else {
-          stopTransport();
+        lfo.frequency.setValueAtTime(5, now); // 5Hz Vibrato
+        lfoGain.gain.setValueAtTime(3, now);
+        lfo.connect(osc1.frequency);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.3); // Soft attack
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0); // Long sustain decay
+
+        osc1.connect(gain); osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        lfo.start(now); osc1.start(now); osc2.start(now);
+        lfo.stop(now + 2.0); osc1.stop(now + 2.0); osc2.stop(now + 2.0);
+        break;
+      }
+
+      case 'Brass Section': {
+        // Punchy brass section with sudden filter swell
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(300, now);
+        filter.frequency.linearRampToValueAtTime(3000, now + 0.1);
+        filter.frequency.exponentialRampToValueAtTime(800, now + 0.8);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.8);
+        break;
+      }
+
+      case 'Ambient Pad': {
+        // Airy sine wave with long 2.5 second tail
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 2.5);
+        break;
+      }
+
+      case 'Sitar': {
+        // Metallic buzzing timbre using high Q bandpass filter
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(freq * 3, now);
+        filter.Q.value = 8; // Metallic buzz effect
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.9);
+        break;
+      }
+
+      case 'Harmonium': {
+        // Reed organ sound using dual square waves
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'square';
+        osc2.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 2, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, now);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+        osc1.connect(filter); osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.2); osc2.stop(now + 1.2);
+        break;
+      }
+
+      case 'Arp Sequence': {
+        // Fast repeating synth notes
+        [0, 0.1, 0.2].forEach((delay, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * (1 + idx * 0.25), now + delay);
+
+          gain.gain.setValueAtTime(0.15, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.15);
+        });
+        break;
+      }
+    }
+  }
+
+  function selectInstrument(tabEl, name) {
+    activeInstrument = name;
+    document.querySelectorAll('.vst-tab').forEach(t => {
+      t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
+      t.classList.add('hover:text-white', 'transition-colors');
+    });
+    tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
+    tabEl.classList.remove('hover:text-white', 'transition-colors');
+    document.getElementById('instrumentStatus').innerText = `${name} selected · Click keys or use A–L to play`;
+    document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
+  }
+
+  function togglePlay() {
+    initAudio();
+    const playBtn = document.getElementById('playBtn');
+    const stateEl = document.getElementById('transportState');
+    const led = document.getElementById('transportLed');
+    const leftReel = document.getElementById('leftTapeReel');
+    const rightReel = document.getElementById('rightTapeReel');
+
+    if (!isPlaying) {
+      isPlaying = true;
+      playBtn.innerText = '⏸';
+      stateEl.innerText = 'PLAY';
+      led.classList.remove('bg-orange-400');
+      led.classList.add('bg-orange-500', 'animate-pulse');
+      leftReel.classList.add('spinning');
+      rightReel.classList.add('spinning');
+
+      playActiveInstrument(261.63);
+      playbackInterval = setInterval(() => {
+        if (isPlaying) {
+          secondsCount++;
+          let m = Math.floor(secondsCount / 60);
+          let s = secondsCount % 60;
+          document.getElementById('transportTime').innerText = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+          if (secondsCount % 4 === 0 && currentMeasure < 17) {
+            currentMeasure++;
+            document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+            document.getElementById('transportSeek').value = currentMeasure * 7;
+          }
+          playActiveInstrument(329.63);
         }
-      }
+      }, 1000);
+    } else {
+      stopTransport();
+    }
+  }
 
-      function stopTransport() {
-        isPlaying = false;
-        clearInterval(playbackInterval);
-        document.getElementById('playBtn').innerText = '▶';
-        document.getElementById('transportState').innerText = 'STOP';
-        const led = document.getElementById('transportLed');
-        led.classList.remove('bg-orange-500', 'animate-pulse');
-        led.classList.add('bg-orange-400');
-        document.getElementById('leftTapeReel').classList.remove('spinning');
-        document.getElementById('rightTapeReel').classList.remove('spinning');
-        currentMeasure = 1;
-        secondsCount = 0;
-        document.getElementById('measureCounter').innerText = 'BAR 001';
-        document.getElementById('transportTime').innerText = '00:00';
-        document.getElementById('transportSeek').value = 0;
-      }
+  function stopTransport() {
+    isPlaying = false;
+    clearInterval(playbackInterval);
+    document.getElementById('playBtn').innerText = '▶';
+    document.getElementById('transportState').innerText = 'STOP';
+    const led = document.getElementById('transportLed');
+    led.classList.remove('bg-orange-500', 'animate-pulse');
+    led.classList.add('bg-orange-400');
+    document.getElementById('leftTapeReel').classList.remove('spinning');
+    document.getElementById('rightTapeReel').classList.remove('spinning');
+    currentMeasure = 1;
+    secondsCount = 0;
+    document.getElementById('measureCounter').innerText = 'BAR 001';
+    document.getElementById('transportTime').innerText = '00:00';
+    document.getElementById('transportSeek').value = 0;
+  }
 
-      function rewindTransport() {
-        currentMeasure = Math.max(1, currentMeasure - 4);
-        document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-        playActiveInstrument(220.00);
-      }
+  function rewindTransport() {
+    currentMeasure = Math.max(1, currentMeasure - 4);
+    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    playActiveInstrument(220.00);
+  }
 
-      function fastForward() {
-        currentMeasure = Math.min(17, currentMeasure + 4);
-        document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
-        playActiveInstrument(440.00);
-      }
+  function fastForward() {
+    currentMeasure = Math.min(17, currentMeasure + 4);
+    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    playActiveInstrument(440.00);
+  }
 
-      function toggleMute(btn) {
-        const isMuted = btn.getAttribute('aria-pressed') === 'true';
-        btn.setAttribute('aria-pressed', !isMuted);
-        if (!isMuted) {
-          btn.classList.add('bg-red-950', 'border-red-600', 'text-red-300');
-          btn.classList.remove('bg-purple-950', 'text-purple-300');
-        } else {
-          btn.classList.remove('bg-red-950', 'border-red-600', 'text-red-300');
-          btn.classList.add('bg-purple-950', 'text-purple-300');
-        }
-      }
+  function toggleMute(btn) {
+    const isMuted = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', !isMuted);
+    if (!isMuted) {
+      btn.classList.add('bg-red-950', 'border-red-600', 'text-red-300');
+      btn.classList.remove('bg-purple-950', 'text-purple-300');
+    } else {
+      btn.classList.remove('bg-red-950', 'border-red-600', 'text-red-300');
+      btn.classList.add('bg-purple-950', 'text-purple-300');
+    }
+  }
 
-      function toggleMic() {
-        alert("🔥 Dragon Fire Microphone channel armed for recording.");
-      }
+  function toggleMic() {
+    alert("🔥 Dragon Fire Microphone channel armed for recording.");
+  }
 
-      function toggleSwitch(btn) {
-        btn.classList.toggle('justify-end');
-        btn.classList.toggle('justify-start');
-      }
+  function toggleSwitch(btn) {
+    btn.classList.toggle('justify-end');
+    btn.classList.toggle('justify-start');
+  }
 
-      function triggerAiAssist() {
-        const promptVal = document.getElementById('aiPromptInput').value;
-        alert(promptVal ? `AI Assist processing: "${promptVal}"` : "Please type a prompt in the AI Assist box first!");
-      }
+  function triggerAiAssist() {
+    const promptVal = document.getElementById('aiPromptInput').value;
+    alert(promptVal ? `AI Assist processing: "${promptVal}"` : "Please type a prompt in the AI Assist box first!");
+  }
 
-      function saveProject() {
-        alert("🔥 Dragon Fire Studio project successfully saved!");
-      }
+  function saveProject() {
+    alert("🔥 Dragon Fire Studio project successfully saved!");
+  }
 
-      const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
-      window.addEventListener('keydown', (e) => {
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        const key = e.key.toLowerCase();
-        if (keyMap[key]) {
-          playActiveInstrument(keyMap[key]);
-        }
-      });
+  const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toLowerCase();
+    if (keyMap[key]) {
+      playActiveInstrument(keyMap[key]);
+    }
+  });
     </script>
   </body>
 </html>
