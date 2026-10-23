@@ -179,11 +179,11 @@
 
     <!-- Main Workspace Dashboard Grid -->
     <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- LEFT COLUMN: AI Music Form Sidebar (Full Functionality) -->
-      <form id="songGenerationForm" method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
-        <!-- AI Prompt Input -->
+      <!-- LEFT COLUMN: Song idea form -->
+      <form id="songIdeaForm" method="POST" action="{{ url_for('beginner_mode') }}" class="lg:col-span-4 glass-panel rounded-2xl p-5 flex flex-col space-y-5 custom-scroll overflow-y-auto max-h-[85vh]">
+        <!-- Song idea input -->
         <div>
-          <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">AI Prompt</label>
+          <label class="block text-center text-[11px] font-bold uppercase tracking-wider text-white mb-2">Song idea</label>
           <textarea
             id="promptArea"
             name="prompt"
@@ -239,7 +239,7 @@
         <!-- Instruments Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
-          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics, or leave it unchecked for an instrumental.</p>
+          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Choose instruments for the browser-synthesized preview. It does not create sung vocals.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
@@ -274,14 +274,14 @@
           </div>
         </div>
 
-        <!-- Submit Generation Button -->
-        <p class="text-[10px] leading-4 text-zinc-400">Your prompt is sent to Google for music generation. Usage may incur charges if free credits or quotas are unavailable or exhausted; avoid entering private information.</p>
+        <!-- Save song idea button -->
+        <p class="text-[10px] leading-4 text-zinc-400">Song ideas are saved in this app. Use the browser preview to hear a locally synthesized demo; no AI-generated audio or lyrics are created.</p>
         <button
-          id="generateTrackButton"
+          id="saveSongIdeaButton"
           type="submit"
           class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2 cursor-pointer"
         >
-          Generate Full Song
+          Save Song Idea
         </button>
       </form>
 
@@ -607,10 +607,10 @@
         });
       });
 
-      document.getElementById("songGenerationForm").addEventListener("submit", () => {
-        const button = document.getElementById("generateTrackButton");
+      document.getElementById("songIdeaForm").addEventListener("submit", () => {
+        const button = document.getElementById("saveSongIdeaButton");
         button.disabled = true;
-        button.innerText = "Generating your song...";
+        button.innerText = "Saving your song idea...";
       });
 
       async function togglePlay(trackName) {
