@@ -315,6 +315,7 @@
               <div class="flex items-center gap-3 text-xs font-semibold text-zinc-300 overflow-x-auto py-1">
                 <button type="button" onclick="selectInstrument(this, 'Grand Piano')" class="vst-tab text-white font-bold border-b-2 border-orange-400 pb-1 px-1 whitespace-nowrap">Grand Piano</button>
                 <button type="button" onclick="selectInstrument(this, 'Acoustic Guitar')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Acoustic Guitar</button>
+                <button type="button" onclick="selectInstrument(this, 'Electric Guitar')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Guitar</button>
                 <button type="button" onclick="selectInstrument(this, 'Electric Bass')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Bass</button>
                 <button type="button" onclick="selectInstrument(this, '808 Sub')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">808 Sub</button>
                 <button type="button" onclick="selectInstrument(this, 'Trap Drums')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Trap Drums</button>
@@ -330,6 +331,13 @@
               <button type="button" onclick="triggerAiAssist()" class="px-3 py-1 bg-gradient-to-r from-orange-900 to-purple-900 border border-orange-500/50 rounded-full text-xs text-orange-200 font-semibold hover:from-orange-800 hover:to-purple-800 whitespace-nowrap ml-2">AI Assist</button>
             </div>
             <p id="instrumentStatus" class="text-[10px] text-orange-300">Grand Piano selected · Click white/black keys or use A–L to play</p>
+            <div id="drumPads" class="hidden flex-wrap gap-2" aria-label="Drum pads">
+              <button type="button" onclick="playDrum('kick')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Kick <span class="opacity-70">A</span></button>
+              <button type="button" onclick="playDrum('snare')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Snare <span class="opacity-70">S</span></button>
+              <button type="button" onclick="playDrum('closedHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Closed Hat <span class="opacity-70">D</span></button>
+              <button type="button" onclick="playDrum('openHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Open Hat <span class="opacity-70">F</span></button>
+              <button type="button" onclick="playDrum('tom')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tom <span class="opacity-70">G</span></button>
+            </div>
 
             <!-- Correctly Layered Piano Keyboard (White Keys & Black Keys) -->
             <div class="piano-container overflow-x-auto">
@@ -434,7 +442,6 @@
       </div>
     </main>
 
-    <!-- Fully Workable Web Audio & Multi-Genre Sound Library Engine -->
     <script>
   let audioCtx = null;
   let isPlaying = false;
@@ -452,43 +459,155 @@
     }
   }
 
-  // Realistic Multi-Oscillator & Filter Synthesis Engine
-  function playActiveInstrument(freq) {
+  function makeDistortionCurve(amount) {
+    const k = typeof amount === 'number' ? amount : 50;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI / 180;
+    for (let i = 0; i < n_samples; ++i) {
+      const x = (i * 2) / n_samples - 1;
+      curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
+  function playDrum(drum) {
     initAudio();
     const now = audioCtx.currentTime;
 
-    // Helper for White Noise Generation (Realistic Drums & Percussion)
-    function playNoise(duration, filterFreq) {
-      const bufferSize = audioCtx.sampleRate * duration;
+    function playNoise(duration, filterType, filterFreq, gainLevel, q = 1) {
+      const bufferSize = Math.floor(audioCtx.sampleRate * duration);
       const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
       for (let i = 0; i < bufferSize; i++) {
         data[i] = Math.random() * 2 - 1;
       }
+
       const noise = audioCtx.createBufferSource();
-      noise.buffer = buffer;
-
       const filter = audioCtx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.setValueAtTime(filterFreq, now);
-
       const gain = audioCtx.createGain();
-      gain.gain.setValueAtTime(0.2, now);
+      noise.buffer = buffer;
+      filter.type = filterType;
+      filter.frequency.setValueAtTime(filterFreq, now);
+      filter.Q.setValueAtTime(q, now);
+      gain.gain.setValueAtTime(gainLevel, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(audioCtx.destination);
-
       noise.start(now);
       noise.stop(now + duration);
     }
 
-    // Instrument Synthesizer Patches
+    if (drum === 'kick') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(155, now);
+      osc.frequency.exponentialRampToValueAtTime(42, now + 0.16);
+      gain.gain.setValueAtTime(0.9, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.48);
+      playNoise(0.025, 'highpass', 2500, 0.12);
+      return;
+    }
+
+    if (drum === 'snare') {
+      const osc = audioCtx.createOscillator();
+      const bodyGain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(190, now);
+      osc.frequency.exponentialRampToValueAtTime(115, now + 0.11);
+      bodyGain.gain.setValueAtTime(0.28, now);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.connect(bodyGain);
+      bodyGain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.2);
+      playNoise(0.22, 'bandpass', 1900, 0.5, 0.8);
+      return;
+    }
+
+    if (drum === 'closedHat' || drum === 'openHat') {
+      const duration = drum === 'openHat' ? 0.48 : 0.075;
+      playNoise(duration, 'highpass', 7000, drum === 'openHat' ? 0.24 : 0.3, 0.7);
+      [4100, 5700, 7300].forEach((frequency, index) => {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(frequency, now);
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(6000, now);
+        gain.gain.setValueAtTime(0.018 / (index + 1), now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      });
+      return;
+    }
+
+    if (drum === 'tom') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(95, now + 0.24);
+      gain.gain.setValueAtTime(0.55, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.42);
+    }
+  }
+
+  function playActiveInstrument(freq) {
+    initAudio();
+    const now = audioCtx.currentTime;
+
     switch(activeInstrument) {
 
+      case 'Electric Guitar': {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const dist = audioCtx.createWaveShaper();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 1.005, now);
+
+        dist.curve = makeDistortionCurve(45);
+        dist.oversample = '4x';
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(3200, now);
+        filter.frequency.exponentialRampToValueAtTime(800, now + 0.9);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+
+        osc1.connect(dist);
+        osc2.connect(dist);
+        dist.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.1); osc2.stop(now + 1.1);
+        break;
+      }
+
       case 'Grand Piano': {
-        // Dual harmonic oscillator with rich decay filter
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
@@ -497,7 +616,7 @@
         osc1.type = 'sine';
         osc2.type = 'triangle';
         osc1.frequency.setValueAtTime(freq, now);
-        osc2.frequency.setValueAtTime(freq * 2, now); // 2nd Harmonic
+        osc2.frequency.setValueAtTime(freq * 2, now);
 
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(1200, now);
@@ -506,8 +625,7 @@
         gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
 
-        osc1.connect(filter);
-        osc2.connect(filter);
+        osc1.connect(filter); osc2.connect(filter);
         filter.connect(gain);
         gain.connect(audioCtx.destination);
 
@@ -517,7 +635,6 @@
       }
 
       case 'Acoustic Guitar': {
-        // Plucked String with fast attack and body resonance
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const gain = audioCtx.createGain();
@@ -542,13 +659,12 @@
       }
 
       case 'Electric Bass': {
-        // Deep sub bass with warm sawtooth low-pass filter
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const gain = audioCtx.createGain();
 
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq / 2, now); // Sub Octave
+        osc.frequency.setValueAtTime(freq / 2, now);
 
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(450, now);
@@ -566,7 +682,6 @@
       }
 
       case '808 Sub': {
-        // Pitch-dropping sine sub bass
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
@@ -586,26 +701,16 @@
       }
 
       case 'Trap Drums': {
-        if (freq < 200) {
-          // Punchy Kick Drum
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(150, now);
-          osc.frequency.exponentialRampToValueAtTime(30, now + 0.15);
-          gain.gain.setValueAtTime(0.5, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.start(now); osc.stop(now + 0.2);
-        } else {
-          // Snare / Hi-Hat Noise Burst
-          playNoise(0.2, 1000);
-        }
+        const drum = freq < 160 ? 'kick'
+          : freq < 250 ? 'snare'
+            : freq < 400 ? 'closedHat'
+              : freq < 600 ? 'openHat'
+                : 'tom';
+        playDrum(drum);
         break;
       }
 
       case 'Lead Synth': {
-        // Bright synth lead with fast lowpass sweep
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const gain = audioCtx.createGain();
@@ -630,7 +735,6 @@
       }
 
       case 'Supersaw': {
-        // Multi-saw oscillator layer for massive EDM chords
         [-10, 0, 10].forEach(detune => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -650,10 +754,9 @@
       }
 
       case 'Cinematic Strings': {
-        // Warm ensemble pad with gentle swell (Attack) and vibrato
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
-        const lfo = audioCtx.createOscillator(); // Vibrato
+        const lfo = audioCtx.createOscillator();
         const lfoGain = audioCtx.createGain();
         const gain = audioCtx.createGain();
 
@@ -662,13 +765,13 @@
         osc1.frequency.setValueAtTime(freq, now);
         osc2.frequency.setValueAtTime(freq * 1.002, now);
 
-        lfo.frequency.setValueAtTime(5, now); // 5Hz Vibrato
+        lfo.frequency.setValueAtTime(5, now);
         lfoGain.gain.setValueAtTime(3, now);
         lfo.connect(osc1.frequency);
 
         gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(0.2, now + 0.3); // Soft attack
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0); // Long sustain decay
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
 
         osc1.connect(gain); osc2.connect(gain);
         gain.connect(audioCtx.destination);
@@ -679,7 +782,6 @@
       }
 
       case 'Brass Section': {
-        // Punchy brass section with sudden filter swell
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const gain = audioCtx.createGain();
@@ -705,7 +807,6 @@
       }
 
       case 'Ambient Pad': {
-        // Airy sine wave with long 2.5 second tail
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
@@ -725,7 +826,6 @@
       }
 
       case 'Sitar': {
-        // Metallic buzzing timbre using high Q bandpass filter
         const osc = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
         const gain = audioCtx.createGain();
@@ -735,7 +835,7 @@
 
         filter.type = 'bandpass';
         filter.frequency.setValueAtTime(freq * 3, now);
-        filter.Q.value = 8; // Metallic buzz effect
+        filter.Q.value = 8;
 
         gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
@@ -750,7 +850,6 @@
       }
 
       case 'Harmonium': {
-        // Reed organ sound using dual square waves
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const filter = audioCtx.createBiquadFilter();
@@ -777,7 +876,6 @@
       }
 
       case 'Arp Sequence': {
-        // Fast repeating synth notes
         [0, 0.1, 0.2].forEach((delay, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -800,13 +898,17 @@
 
   function selectInstrument(tabEl, name) {
     activeInstrument = name;
+    const drumPads = document.getElementById('drumPads');
     document.querySelectorAll('.vst-tab').forEach(t => {
       t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
       t.classList.add('hover:text-white', 'transition-colors');
     });
     tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
     tabEl.classList.remove('hover:text-white', 'transition-colors');
-    document.getElementById('instrumentStatus').innerText = `${name} selected · Click keys or use A–L to play`;
+    drumPads.classList.toggle('hidden', name !== 'Trap Drums');
+    document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
+      ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
+      : `${name} selected · Click keys or use A–L to play`;
     document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
   }
 
@@ -907,13 +1009,18 @@
   }
 
   const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
+  const drumKeyMap = { 'a': 'kick', 's': 'snare', 'd': 'closedHat', 'f': 'openHat', 'g': 'tom' };
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     const key = e.key.toLowerCase();
+    if (activeInstrument === 'Trap Drums' && drumKeyMap[key]) {
+      playDrum(drumKeyMap[key]);
+      return;
+    }
     if (keyMap[key]) {
       playActiveInstrument(keyMap[key]);
     }
   });
-    </script>
+</script>
   </body>
 </html>
