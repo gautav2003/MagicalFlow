@@ -6,41 +6,58 @@
     <title>Magical Flow - Home</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet" />
     <style>
       body {
         font-family: "Inter", sans-serif;
-        background-color: #030008;
+        background-color: #070210;
         color: #ffffff;
       }
 
-      .cursive-title {
+      .logo-script {
         font-family: "Playfair Display", serif;
       }
 
-      /* Custom Glassmorphic Cards */
+      /* Hero Card Glassmorphism & Neon Border */
       .hero-card {
-        background: linear-gradient(180deg, rgba(38, 12, 70, 0.9) 0%, rgba(15, 3, 30, 0.95) 100%);
-        border: 1px solid rgba(168, 85, 247, 0.45);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        background: linear-gradient(180deg, rgba(30, 8, 56, 0.95) 0%, rgba(12, 3, 24, 0.98) 100%);
+        border: 1px solid rgba(168, 85, 247, 0.5);
+        box-shadow: 0 0 25px rgba(139, 92, 246, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
       }
 
-      .feature-card {
-        background: linear-gradient(180deg, rgba(20, 6, 38, 0.95) 0%, rgba(8, 2, 18, 0.98) 100%);
-        transition: all 0.25s ease-in-out;
+      /* Pill Badge Glows */
+      .badge-moonlight {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(96, 165, 250, 0.6);
       }
-      .feature-card:hover {
-        background: linear-gradient(180deg, rgba(32, 10, 58, 0.95) 0%, rgba(12, 3, 26, 0.98) 100%);
-        box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.2);
+      .badge-ancient {
+        background: rgba(6, 30, 20, 0.8);
+        border: 1px solid rgba(52, 211, 153, 0.6);
+      }
+      .badge-dragon {
+        background: rgba(30, 15, 8, 0.8);
+        border: 1px solid rgba(251, 146, 60, 0.6);
       }
 
-      /* Custom Scrollbar */
+      /* Bottom Feature Section & Cards */
+      .feature-section {
+        border-top: 1px solid rgba(249, 115, 22, 0.3);
+      }
+      .feature-col {
+        background: linear-gradient(180deg, rgba(16, 5, 32, 0.95) 0%, rgba(6, 1, 14, 0.98) 100%);
+        transition: all 0.25s ease;
+      }
+      .feature-col:hover {
+        background: linear-gradient(180deg, rgba(28, 8, 52, 0.95) 0%, rgba(10, 2, 20, 0.98) 100%);
+      }
+
+      /* Scrollbar */
       ::-webkit-scrollbar {
         width: 6px;
         height: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #030008;
+        background: #070210;
       }
       ::-webkit-scrollbar-thumb {
         background: #4c1d95;
@@ -48,13 +65,13 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-[#030008] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
+  <body class="min-h-screen bg-[#070210] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
 
     <!-- Top Navigation Header -->
-    <header class="w-full bg-[#030008] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-30">
+    <header class="w-full bg-[#070210] border-b border-purple-950/40 px-6 py-3.5 flex items-center justify-between z-30">
       <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
-          <div class="w-full h-full bg-[#030008] rounded-full flex items-center justify-center">
+          <div class="w-full h-full bg-[#070210] rounded-full flex items-center justify-center">
             <span class="text-xs">🎵</span>
           </div>
         </div>
@@ -80,12 +97,12 @@
       </a>
     </header>
 
-    <!-- Main Workspace Container -->
-    <main class="flex-grow max-w-[1300px] w-full mx-auto px-6 py-10 flex flex-col items-center text-center space-y-8">
+    <!-- Main Content Workspace -->
+    <main class="flex-grow max-w-[1200px] w-full mx-auto px-6 py-8 flex flex-col items-center justify-center space-y-8">
       
-      <!-- Cursive Hero Heading & Taglines -->
-      <div class="space-y-3 max-w-2xl">
-        <h1 class="cursive-title text-5xl md:text-6xl font-normal tracking-wide bg-gradient-to-r from-white via-purple-200 to-pink-300 bg-clip-text text-transparent italic">
+      <!-- Cursive Logo Title & Description Section -->
+      <div class="w-full max-w-xl space-y-3 text-left">
+        <h1 class="logo-script text-5xl md:text-6xl font-normal tracking-wide bg-gradient-to-r from-white via-purple-100 to-pink-200 bg-clip-text text-transparent italic">
           Magical Flow
         </h1>
         
@@ -93,44 +110,44 @@
           Your Music . Your Way .
         </p>
 
-        <p class="text-xs md:text-sm text-zinc-300 leading-relaxed pt-2">
-          A next-generation music creation platform that blends AI composition with professional studio tools. Whether you are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.
+        <p class="text-xs text-zinc-300 leading-relaxed pt-2">
+          A next-generation music creation platform that blends AI composition with professional studio tools. Whether your are a curious beginner or seasoned producer, Magical Flow gracefully chooses you to be Defined.
         </p>
 
-        <!-- Three Thematic Badges (Moonlight, Ancient Music, Dragon Fire) -->
-        <div class="flex flex-wrap items-center justify-center gap-3 pt-3">
+        <!-- Three Pill Badges -->
+        <div class="flex flex-wrap items-center gap-2.5 pt-2">
           <!-- Moonlight Badge -->
-          <a href="{{ url_for('beginner_mode') }}" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121c38] border border-blue-500/60 text-[11px] hover:border-blue-400 transition-all shadow-md">
+          <a href="{{ url_for('beginner_mode') }}" class="badge-moonlight flex items-center gap-2 px-3 py-1 rounded-full text-[10px] hover:scale-105 transition-transform">
             <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-            <span class="font-extrabold text-blue-300">MOONLIGHT</span>
+            <span class="font-extrabold text-blue-300 uppercase">MOONLIGHT</span>
             <span class="text-zinc-400 font-normal">Create with clarity</span>
           </a>
 
           <!-- Ancient Music Badge -->
-          <a href="{{ url_for('select_mode') }}" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0d261e] border border-emerald-500/60 text-[11px] hover:border-emerald-400 transition-all shadow-md">
+          <a href="{{ url_for('select_mode') }}" class="badge-ancient flex items-center gap-2 px-3 py-1 rounded-full text-[10px] hover:scale-105 transition-transform">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span class="font-extrabold text-emerald-300">ANCIENT MUSIC</span>
+            <span class="font-extrabold text-emerald-300 uppercase">ANCIENT MUSIC</span>
             <span class="text-zinc-400 font-normal">Shape with wisdom</span>
           </a>
 
           <!-- Dragon Fire Badge -->
-          <a href="{{ url_for('pro_studio_mode') }}" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2e130b] border border-orange-500/60 text-[11px] hover:border-orange-400 transition-all shadow-md">
+          <a href="{{ url_for('pro_studio_mode') }}" class="badge-dragon flex items-center gap-2 px-3 py-1 rounded-full text-[10px] hover:scale-105 transition-transform">
             <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-            <span class="font-extrabold text-orange-300">DRAGON FIRE</span>
+            <span class="font-extrabold text-orange-300 uppercase">DRAGON FIRE</span>
             <span class="text-zinc-400 font-normal">Finish with power</span>
           </a>
         </div>
       </div>
 
-      <!-- Main "Choose Your Experience" Interactive Card -->
-      <div class="hero-card rounded-2xl p-8 max-w-xl w-full space-y-6 text-left relative overflow-hidden">
+      <!-- Hero "Get Started" Card -->
+      <div class="hero-card rounded-2xl p-7 max-w-xl w-full text-left space-y-5">
         <div>
           <span class="text-[10px] font-extrabold tracking-widest text-purple-300 uppercase">Get Started</span>
           <h2 class="text-2xl font-black text-white mt-1">Choose Your Experience</h2>
           <p class="text-xs text-zinc-300 mt-1">Beginner for instant results, or Pro Studio for full control.</p>
         </div>
 
-        <a href="{{ url_for('select_mode') }}" class="block w-full py-3.5 px-6 rounded-xl bg-[#230d43] border border-purple-500/60 text-xs font-bold text-white hover:bg-[#32135e] hover:border-purple-400 transition-all shadow-lg shadow-purple-950 text-center">
+        <a href="{{ url_for('select_mode') }}" class="block w-full py-3 px-6 rounded-xl bg-[#200a3e] border border-purple-500/70 text-xs font-bold text-white hover:bg-[#2c0d54] hover:border-purple-400 transition-all shadow-lg text-center">
           Choose Your Experience
         </a>
       </div>
@@ -138,41 +155,43 @@
     </main>
 
     <!-- Bottom 3 Feature Columns -->
-    <section class="w-full border-t border-purple-900/40 bg-[#020005]">
+    <section class="w-full feature-section bg-[#03000a]">
       <div class="max-w-[1400px] w-full mx-auto grid grid-cols-1 md:grid-cols-3">
         
         <!-- Column 1: AI Composition -->
-        <a href="{{ url_for('beginner_mode') }}" class="feature-card p-8 flex flex-col items-center text-center space-y-3 border-r border-purple-950/40">
-          <div class="w-12 h-12 rounded-2xl bg-purple-950/80 border border-purple-500/50 flex items-center justify-center text-purple-300 shadow-md">
+        <a href="{{ url_for('beginner_mode') }}" class="feature-col p-8 flex flex-col items-center text-center space-y-3 border-r border-purple-950/40">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#241044] to-[#120524] border border-purple-500/60 flex items-center justify-center text-blue-300 shadow-md">
             <!-- Diamond Icon -->
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l8 8-8 8-8-8 8-8z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7l3 3-3 3-3-3 3-3z"/></svg>
           </div>
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">AI Composition</h3>
-          <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">Generate full tracks from a text prompt in seconds</p>
+          <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">AI Composition</h3>
+          <p class="text-[11px] text-zinc-400 max-w-xs leading-relaxed">Generate full tracks from a text prompt in seconds</p>
         </a>
 
         <!-- Column 2: Pro DAW -->
-        <a href="{{ url_for('pro_studio_mode') }}" class="feature-card p-8 flex flex-col items-center text-center space-y-3 border-r border-purple-950/40">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-950/80 border border-emerald-500/50 flex items-center justify-center text-emerald-300 shadow-md">
-            <!-- Matrix Icon -->
+        <a href="{{ url_for('pro_studio_mode') }}" class="feature-col p-8 flex flex-col items-center text-center space-y-3 border-r border-purple-950/40">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#0f2d20] to-[#05140e] border border-emerald-500/60 flex items-center justify-center text-emerald-400 shadow-md">
+            <!-- Grid Matrix Icon -->
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4h6v6H4zm10 0h6v6h-6zM4 14h6v6H4zm10 0h6v6h-6z"/></svg>
           </div>
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">Pro DAW</h3>
-          <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">Full 8-track studio with MIDI, audio, and effects</p>
+          <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">Pro DAW</h3>
+          <p class="text-[11px] text-zinc-400 max-w-xs leading-relaxed">Full 8-track studio with MIDI, audio, and effects</p>
         </a>
 
         <!-- Column 3: My Music -->
-        <a href="{{ url_for('my_music') }}" class="feature-card p-8 flex flex-col items-center text-center space-y-3 relative">
-          <div class="w-12 h-12 rounded-2xl bg-orange-950/80 border border-orange-500/50 flex items-center justify-center text-orange-300 shadow-md">
-            <!-- Note Icon -->
+        <a href="{{ url_for('my_music') }}" class="feature-col p-8 flex flex-col items-center text-center space-y-3 relative">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-b from-[#38160c] to-[#170803] border border-orange-500/60 flex items-center justify-center text-orange-400 shadow-md">
+            <!-- Eighth Note Icon -->
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
           </div>
-          <h3 class="text-sm font-bold text-white uppercase tracking-wider">My Music</h3>
-          <p class="text-xs text-zinc-400 max-w-xs leading-relaxed">All your music organized, tagged, and searchable</p>
+          <h3 class="text-xs font-extrabold text-white uppercase tracking-wider">My Music</h3>
+          <p class="text-[11px] text-zinc-400 max-w-xs leading-relaxed">All your music organized, tagged, and searchable</p>
           
-          <!-- Headphone Badge on Bottom Right -->
-          <div class="absolute bottom-4 right-6 text-2xl filter drop-shadow-md" title="Headphone Monitor Ready">
-            🎧
+          <!-- Headphone Icon Illustration (Bottom Right) -->
+          <div class="absolute bottom-3 right-6" title="Headphones Ready">
+            <svg class="w-9 h-9 text-blue-400/80 filter drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 3a9 9 0 00-9 9v7c0 1.1.9 2 2 2h3a1 1 0 001-1v-6a1 1 0 00-1-1H5v-1a7 7 0 0114 0v1h-2a1 1 0 00-1 1v6a1 1 0 001 1h3a2 2 0 002-2v-7a9 9 0 00-9-9z"/>
+            </svg>
           </div>
         </a>
 
