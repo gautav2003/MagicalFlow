@@ -204,20 +204,21 @@
         </div>
       </div>
 
+      {% set default_tracks = [
+        {'title': 'Late Night Lo-Fi', 'genre': 'Lo-Fi', 'bpm': '90', 'key': 'C Minor', 'duration': '3:24', 'type': 'AI', 'date': 'Aug 28', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
+        {'title': 'Midnight Session', 'genre': 'Electronic', 'bpm': '128', 'key': 'A Minor', 'duration': '4:12', 'type': 'Studio', 'date': 'Aug 28', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Jazzy Morning Vibe', 'genre': 'JAZZ', 'bpm': '110', 'key': 'F Major', 'duration': '2:58', 'type': 'AI', 'date': 'Aug 26', 'fav': true, 'color': 'from-purple-500 to-pink-600'},
+        {'title': 'Basement Funk', 'genre': 'Funk', 'bpm': '112', 'key': 'G Major', 'duration': '5:08', 'type': 'Studio', 'date': 'Aug 8', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Guitar Study No. 4', 'genre': 'Classical', 'bpm': '80', 'key': 'D Minor', 'duration': '5:08', 'type': 'Recordings', 'date': 'Aug 22', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Hip-Hop Cypher Beat', 'genre': 'JAZZ', 'bpm': '110', 'key': 'Bb Major', 'duration': '4:44', 'type': 'AI', 'date': 'Aug 16', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Strings in the Rain', 'genre': 'Classical', 'bpm': '88', 'key': 'G Minor', 'duration': '7:22', 'type': 'Studio', 'date': 'Aug 14', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Vocal Harmony Take', 'genre': 'R&B', 'bpm': '92', 'key': 'D Major', 'duration': '2:10', 'type': 'Recordings', 'date': 'Aug 12', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
+      ] %}
+      {% set display_tracks = tracks if tracks else default_tracks %}
+
       <!-- TRACKS CONTAINER (LIST VIEW MODE) -->
       <div id="listViewContainer" class="space-y-3">
-        {% set default_tracks = [
-          {'title': 'Late Night Lo-Fi', 'genre': 'Lo-Fi', 'bpm': '90', 'key': 'C Minor', 'duration': '3:24', 'type': 'AI', 'date': 'Aug 28', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
-          {'title': 'Midnight Session', 'genre': 'Electronic', 'bpm': '128', 'key': 'A Minor', 'duration': '4:12', 'type': 'Studio', 'date': 'Aug 28', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-          {'title': 'Jazzy Morning Vibe', 'genre': 'JAZZ', 'bpm': '110', 'key': 'F Major', 'duration': '2:58', 'type': 'AI', 'date': 'Aug 26', 'fav': true, 'color': 'from-purple-500 to-pink-600'},
-          {'title': 'Basement Funk', 'genre': 'Funk', 'bpm': '112', 'key': 'G Major', 'duration': '5:08', 'type': 'Studio', 'date': 'Aug 8', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
-          {'title': 'Guitar Study No. 4', 'genre': 'Classical', 'bpm': '80', 'key': 'D Minor', 'duration': '5:08', 'type': 'Recordings', 'date': 'Aug 22', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-          {'title': 'Hip-Hop Cypher Beat', 'genre': 'JAZZ', 'bpm': '110', 'key': 'Bb Major', 'duration': '4:44', 'type': 'AI', 'date': 'Aug 16', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
-          {'title': 'Strings in the Rain', 'genre': 'Classical', 'bpm': '88', 'key': 'G Minor', 'duration': '7:22', 'type': 'Studio', 'date': 'Aug 14', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-          {'title': 'Vocal Harmony Take', 'genre': 'R&B', 'bpm': '92', 'key': 'D Major', 'duration': '2:10', 'type': 'Recordings', 'date': 'Aug 12', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
-        ] %}
-
-        {% for item in tracks if tracks else default_tracks %}
+        {% for item in display_tracks %}
         <div class="track-row music-card rounded-xl p-3 flex items-center justify-between gap-4 cursor-pointer" 
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
              onclick="loadAndPlay('{{ item.title }}', '{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}', '{{ item.duration }}')">
@@ -267,7 +268,7 @@
 
       <!-- TRACKS CONTAINER (GRID VIEW MODE - INITIALLY HIDDEN) -->
       <div id="gridViewContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {% for item in tracks if tracks else default_tracks %}
+        {% for item in display_tracks %}
         <div class="track-card music-card rounded-xl p-4 flex flex-col justify-between h-44 cursor-pointer"
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
              onclick="loadAndPlay('{{ item.title }}', '{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}', '{{ item.duration }}')">
@@ -411,7 +412,6 @@
         document.getElementById('playerMeta').innerText = meta;
         document.getElementById('maxTime').innerText = durationStr;
 
-        // Parse Duration into seconds
         const parts = durationStr.split(':');
         totalSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
         currentSeconds = 0;
