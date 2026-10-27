@@ -418,9 +418,9 @@
             <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
           </div>
           <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
-          <p class="text-[10px] text-zinc-500">
-            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>,
-            licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Samples require an internet connection.
+          <p class="text-[10px] leading-4 text-zinc-500">
+            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Samples require an internet connection.
           </p>
         </div>
 
@@ -504,8 +504,10 @@
       let genreWasCustomized = false;
       let previewMasterGain = null;
       let previewCompressor = null;
+      let liveDholBufferPromise = null;
       let playbackRequestId = 0;
       const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+      const liveDholUrl = "https://upload.wikimedia.org/wikipedia/commons/0/09/DHOL_BEAT.wav";
       const soundfontPrograms = {
         piano: "acoustic_grand_piano",
         guitar: "acoustic_guitar_steel",
@@ -693,7 +695,10 @@
         const requestId = ++playbackRequestId;
         const button = document.getElementById("mainPlayBtn");
         button.disabled = true;
-        document.getElementById("previewStatus").innerText = "Loading sampled instruments...";
+        document.getElementById("previewStatus").innerText =
+          getPreviewSettings().style === "punjabi"
+            ? "Loading live dhol recording and sampled instruments..."
+            : "Loading sampled instruments...";
 
         try {
           await startPreviewAudio();
@@ -704,6 +709,8 @@
           syncPlayer();
           startTimer();
           startAudioSequence();
+          await startLiveDholBacking(getPreviewSettings());
+          if (requestId !== playbackRequestId || !isPlaying) return;
           document.getElementById("previewStatus").innerText =
             "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
@@ -869,11 +876,54 @@
           });
         }
 
-        await Promise.all(
-          selectedInstruments.flatMap((instrument) =>
-            [...targetNotes].map((note) => loadPreviewSample(instrument, note))
-          )
+        const sampleLoads = selectedInstruments.flatMap((instrument) =>
+          [...targetNotes].map((note) => loadPreviewSample(instrument, note))
         );
+        if (track.style === "punjabi") {
+          sampleLoads.push(loadLiveDholRecording());
+        }
+
+        await Promise.all(sampleLoads);
+      }
+
+      function loadLiveDholRecording() {
+        if (!liveDholBufferPromise) {
+          liveDholBufferPromise = fetch(liveDholUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Could not download the live dhol recording (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then((data) => previewAudioContext.decodeAudioData(data))
+            .catch((error) => {
+              liveDholBufferPromise = null;
+              throw error;
+            });
+        }
+        return liveDholBufferPromise;
+      }
+
+      async function startLiveDholBacking(track) {
+        if (track.style !== "punjabi") return;
+
+        const buffer = await loadLiveDholRecording();
+        if (!isPlaying) return;
+
+        const source = previewAudioContext.createBufferSource();
+        const gain = previewAudioContext.createGain();
+        const playbackRate = track.bpm / 96;
+        source.buffer = buffer;
+        source.loop = true;
+        source.playbackRate.value = playbackRate;
+        gain.gain.setValueAtTime(0.0001, previewAudioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0.3, previewAudioContext.currentTime + 0.08);
+        source.connect(gain);
+        gain.connect(previewMasterGain);
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        const offset = (timerSeconds * playbackRate) % buffer.duration;
+        source.start(0, offset);
       }
 
       function playPreviewDrum(frequency, duration, volume, scheduledTime) {
@@ -1109,13 +1159,13 @@
           const kickSteps = drumPatterns[track.style] || [0, 8];
           if (track.style === "punjabi") {
             if ([0, 8].includes(phraseStep)) {
-              playPreviewTone(62, 0.2, "sine", isHook ? 0.09 : 0.07, "drums", scheduledTime);
+              playPreviewTone(62, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
             }
-            if ([3, 11].includes(phraseStep) || (isHook && [6, 14].includes(phraseStep))) {
-              playPreviewTone(190, 0.13, "triangle", isHook ? 0.07 : 0.055, "drums", scheduledTime);
+            if ([4, 12].includes(phraseStep)) {
+              playPreviewTone(2400, 0.075, "triangle", isHook ? 0.024 : 0.018, "drums", scheduledTime);
             }
-            if ([2, 6, 10, 14].includes(phraseStep)) {
-              playPreviewTone(340, 0.075, "triangle", 0.035, "drums", scheduledTime);
+            if (isHook && phraseStep % 2 === 1) {
+              playPreviewTone(6200, 0.03, "square", 0.007, "drums", scheduledTime);
             }
           } else if (track.style === "bollywood") {
             if ([0, 8].includes(phraseStep)) {
