@@ -109,8 +109,8 @@
       <!-- Two Column Layout: Profile & Multi-Factor Authentication -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- LEFT COLUMN: Artist Profile Card -->
-        <div class="account-card rounded-2xl p-6 space-y-6">
+        <!-- LEFT COLUMN: Artist Profile Card with Password Fields -->
+        <div class="account-card rounded-2xl p-6 space-y-5">
           <span class="text-xs font-bold text-zinc-300">Artist Profile</span>
 
           <!-- Avatar & Name Header -->
@@ -120,23 +120,35 @@
             </div>
             <div>
               <h3 class="text-base font-bold text-white">Gautav Sharma</h3>
-              <p class="text-xs text-zinc-400 mt-0.5">Email address</p>
+              <p class="text-xs text-zinc-400 mt-0.5">Email address & Credentials</p>
             </div>
           </div>
 
           <!-- Form Fields -->
-          <form action="#" method="POST" class="space-y-4">
-            <div class="space-y-1.5">
+          <form id="profileForm" onsubmit="event.preventDefault(); validateAndUpdateProfile();" class="space-y-3.5">
+            <div class="space-y-1">
               <label class="block text-xs font-semibold text-zinc-300">Artist Name</label>
-              <input type="text" value="Gautav Sharma" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400" />
+              <input type="text" id="artistName" value="Gautav Sharma" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-400" required />
             </div>
 
-            <div class="space-y-1.5">
+            <div class="space-y-1">
               <label class="block text-xs font-semibold text-zinc-300">Email</label>
-              <input type="email" value="Gautavsharma11@gmail.com" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400" />
+              <input type="email" id="artistEmail" value="Gautavsharma11@gmail.com" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-400" required />
             </div>
 
-            <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-950 border border-purple-500/60 text-xs font-bold text-white hover:bg-purple-900 transition-colors shadow-md">
+            <!-- New Password Field -->
+            <div class="space-y-1">
+              <label class="block text-xs font-semibold text-zinc-300">New Password</label>
+              <input type="password" id="newPassword" placeholder="••••••••" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-purple-400" />
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="space-y-1">
+              <label class="block text-xs font-semibold text-zinc-300">Confirm Password</label>
+              <input type="password" id="confirmPassword" placeholder="••••••••" class="w-full bg-[#0d031c] border border-purple-800/60 rounded-xl px-4 py-2 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-purple-400" />
+            </div>
+
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-950 border border-purple-500/60 text-xs font-bold text-white hover:bg-purple-900 transition-colors shadow-md mt-2">
               Save profile
             </button>
           </form>
@@ -152,7 +164,7 @@
                 <h4 class="text-lg font-black text-white mt-0.5">A second layer of magic</h4>
               </div>
               <!-- Toggle Switch ON -->
-              <div class="w-12 h-6 bg-purple-600 rounded-full p-1 flex items-center justify-end cursor-pointer shadow-inner">
+              <div onclick="toggleMfaSwitch(this)" class="w-12 h-6 bg-purple-600 rounded-full p-1 flex items-center justify-end cursor-pointer shadow-inner">
                 <div class="w-4 h-4 bg-white rounded-full shadow-md"></div>
               </div>
             </div>
@@ -186,7 +198,7 @@
           </div>
 
           <!-- Update Security Button -->
-          <button type="button" onclick="alert('Security settings updated successfully!')" class="w-full py-2.5 rounded-xl bg-purple-950/80 border border-purple-500/60 text-xs font-bold text-white hover:bg-purple-900 transition-colors shadow-md mt-6">
+          <button type="button" onclick="alert('Multi-Factor Authentication preferences updated!')" class="w-full py-2.5 rounded-xl bg-purple-950/80 border border-purple-500/60 text-xs font-bold text-white hover:bg-purple-900 transition-colors shadow-md mt-6">
             Update Security
           </button>
         </div>
@@ -256,6 +268,39 @@
         🎧
       </div>
     </footer>
+
+    <!-- Form Validation Script -->
+    <script>
+      function validateAndUpdateProfile() {
+        const pass = document.getElementById('newPassword').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+
+        if (pass || confirmPass) {
+          if (pass !== confirmPass) {
+            alert("⚠️ Passwords do not match! Please check both password fields.");
+            return;
+          }
+          if (pass.length < 6) {
+            alert("⚠️ Password must be at least 6 characters long.");
+            return;
+          }
+        }
+
+        alert("✨ Profile and password credentials updated successfully!");
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      }
+
+      function toggleMfaSwitch(el) {
+        if (el.classList.contains('bg-purple-600')) {
+          el.classList.remove('bg-purple-600', 'justify-end');
+          el.classList.add('bg-zinc-800', 'justify-start');
+        } else {
+          el.classList.remove('bg-zinc-800', 'justify-start');
+          el.classList.add('bg-purple-600', 'justify-end');
+        }
+      }
+    </script>
 
   </body>
 </html>
