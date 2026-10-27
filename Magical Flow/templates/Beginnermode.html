@@ -239,7 +239,7 @@
         <!-- Instruments Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
-          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics, or leave it unchecked for an instrumental.</p>
+          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Demo tracks use their own curated arrangements.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
@@ -298,70 +298,58 @@
           </div>
 
           <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-          <!-- Track Card 1: Late Night Lo-Fi -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
+            <!-- Track Card 1: Late Night Lo-Fi -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
+              </div>
+              <button type="button" aria-label="Play or pause Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-          </div>
 
-          <!-- Track Card 2: Morning Jazz -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
+            <!-- Track Card 2: Morning Jazz -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
+              </div>
+              <button type="button" aria-label="Play or pause Morning Jazz" onclick="togglePlay('Morning Jazz')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause Morning Jazz" onclick="togglePlay('Morning Jazz')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-          </div>
 
-          <!-- Track Card 3: Dark Ambient -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
+            <!-- Track Card 3: Dark Ambient -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
+              </div>
+              <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-          </div>
 
-          <!-- Original Western Hip-Hop Demo -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
+            <!-- Original Western Hip-Hop Demo -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
+              </div>
+              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-          </div>
 
-          <!-- Original Punjabi Hip-Hop Demo -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Original Punjabi hip-hop demo</p>
+            <!-- Original Punjabi Hip-Hop Demo -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Punjabi hip-hop with dhol groove</p>
+              </div>
+              <button type="button" aria-label="Play or pause Midnight Dhol Cypher" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause Midnight Dhol Cypher" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-          </div>
 
-          <!-- Original 1990s-Inspired Bollywood Romance Demo -->
-          <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-            <div>
-              <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-              <p class="text-[11px] font-mono text-zinc-400 mt-1">88 BPM · A Min · Original 90s-inspired synth demo</p>
-            </div>
-            <div class="flex shrink-0 items-center">
-              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
+            <!-- Original 1990s-Inspired Bollywood Romance Demo -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · A Min · Original 90s-inspired Bollywood arrangement</p>
+              </div>
+              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
           </div>
         </div>
@@ -481,8 +469,28 @@
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
         "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
         "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
-        "Midnight Dhol Cypher": { duration: 196, bpm: 96, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "triangle", style: "punjabi", melody: [0, 3, 4, 2, 6, 4, 3, 1] },
-        "Moonlit Bollywood Romance": { duration: 220, bpm: 88, root: 220, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sine", style: "bollywood", melody: [0, 2, 4, 5, 4, 2, 1, 3] },
+        "Midnight Dhol Cypher": {
+          duration: 196,
+          bpm: 96,
+          root: 146.83,
+          scale: [0, 2, 3, 7, 9, 12, 14, 15],
+          chord: [0, 3, 7],
+          wave: "triangle",
+          style: "punjabi",
+          melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
+          arrangement: ["Sitar", "Bass", "Drums", "Pad"],
+        },
+        "Moonlit Bollywood Romance": {
+          duration: 220,
+          bpm: 92,
+          root: 220,
+          scale: [0, 2, 3, 7, 9, 12, 14, 15],
+          chord: [0, 3, 7],
+          wave: "sine",
+          style: "bollywood",
+          melody: [0, 2, 4, 5, 4, 2, 1, 3, 4, 5, 6, 5, 4, 2, 1, 2],
+          arrangement: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
+        },
       };
       let previewAudioContext = null;
       let isPlaying = false;
@@ -504,6 +512,8 @@
         bass: "electric_bass_pick",
         synth: "lead_2_sawtooth",
         strings: "string_ensemble_1",
+        flute: "flute",
+        sitar: "sitar",
         brass: "brass_section",
         pad: "pad_2_warm",
         arp: "vibraphone",
@@ -550,9 +560,21 @@
         const preset = tracks[selectedTrack];
         const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
         const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
-        const instruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
+        const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
         const style = genreWasCustomized ? genreStyles[genre] : preset.style;
-        const minorMood = ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood);
+        const styleArrangements = {
+          bollywood: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
+          punjabi: ["Sitar", "Bass", "Drums", "Pad"],
+        };
+        const instruments = styleArrangements[style]
+          ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
+          : genreWasCustomized
+            ? selectedInstruments
+            : preset.arrangement || selectedInstruments;
+        const minorMood =
+          ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
+          style === "bollywood" ||
+          style === "punjabi";
         const scale = style === "jazz" ? scales.blues : minorMood ? scales.minor : scales.major;
         const chord = mood === "Romantic" ? [0, 4, 7, 11] : minorMood ? [0, 3, 7] : [0, 4, 7];
         const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
@@ -856,6 +878,52 @@
 
       function playPreviewDrum(frequency, duration, volume, scheduledTime) {
         const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const style = getPreviewSettings().style;
+        if (
+          (style === "punjabi" || style === "bollywood") &&
+          frequency >= 120 &&
+          frequency < 1000
+        ) {
+          const isDhol = style === "punjabi";
+          const fundamental = previewAudioContext.createOscillator();
+          const overtone = previewAudioContext.createOscillator();
+          const fundamentalGain = previewAudioContext.createGain();
+          const overtoneGain = previewAudioContext.createGain();
+          const hitDuration = Math.max(duration, isDhol ? 0.09 : 0.12);
+          const startFrequency = frequency * (isDhol ? 1.35 : 1.2);
+          fundamental.type = "sine";
+          overtone.type = "triangle";
+          fundamental.frequency.setValueAtTime(startFrequency, now);
+          fundamental.frequency.exponentialRampToValueAtTime(
+            frequency * (isDhol ? 0.72 : 0.84),
+            now + hitDuration
+          );
+          overtone.frequency.setValueAtTime(startFrequency * 2.01, now);
+          overtone.frequency.exponentialRampToValueAtTime(
+            frequency * (isDhol ? 1.45 : 1.65),
+            now + hitDuration * 0.7
+          );
+          fundamentalGain.gain.setValueAtTime(0.0001, now);
+          fundamentalGain.gain.linearRampToValueAtTime(volume, now + 0.004);
+          fundamentalGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration);
+          overtoneGain.gain.setValueAtTime(0.0001, now);
+          overtoneGain.gain.linearRampToValueAtTime(volume * (isDhol ? 0.42 : 0.28), now + 0.003);
+          overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration * 0.55);
+          fundamental.connect(fundamentalGain);
+          overtone.connect(overtoneGain);
+          fundamentalGain.connect(previewMasterGain);
+          overtoneGain.connect(previewMasterGain);
+          activeSources.add(fundamental);
+          activeSources.add(overtone);
+          fundamental.onended = () => activeSources.delete(fundamental);
+          overtone.onended = () => activeSources.delete(overtone);
+          fundamental.start(now);
+          overtone.start(now);
+          fundamental.stop(now + hitDuration);
+          overtone.stop(now + hitDuration * 0.55);
+          return;
+        }
+
         if (frequency < 120) {
           const oscillator = previewAudioContext.createOscillator();
           const gain = previewAudioContext.createGain();
@@ -1019,22 +1087,56 @@
         if (instruments.includes("Vocals") && step % melodyEvery === 0) {
           playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018, "vocals", scheduledTime);
         }
+        if (instruments.includes("Flute") && track.style === "bollywood" && step % (isHook ? 1 : 2) === 0) {
+          const fluteNote = melodyFrequency * 2;
+          playPreviewTone(fluteNote, halfBeatSeconds * (isHook ? 0.82 : 0.68), "sine", isHook ? 0.038 : 0.03, "flute", scheduledTime);
+          if ([7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+            const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12) * 2;
+            playPreviewTone(graceNote, halfBeatSeconds * 0.22, "sine", 0.019, "flute", scheduledTime + halfBeatSeconds * 0.12);
+          }
+        }
+        if (instruments.includes("Sitar") && (track.style === "punjabi" || track.style === "bollywood")) {
+          const sitarStep = track.style === "punjabi" ? [2, 6, 10, 14].includes(phraseStep) : [3, 7, 11, 15].includes(phraseStep);
+          if (sitarStep && !isIntro && !isOutro) {
+            playPreviewTone(melodyFrequency, halfBeatSeconds * 0.38, "triangle", track.style === "punjabi" ? 0.036 : 0.022, "sitar", scheduledTime);
+          }
+        }
 
         if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
           playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05, "bass", scheduledTime);
         }
         if (instruments.includes("Drums") && !isIntro && !isOutro) {
           const kickSteps = drumPatterns[track.style] || [0, 8];
-          if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0 || track.style === "punjabi")) {
+          if (track.style === "punjabi") {
+            if ([0, 8].includes(phraseStep)) {
+              playPreviewTone(62, 0.2, "sine", isHook ? 0.09 : 0.07, "drums", scheduledTime);
+            }
+            if ([3, 11].includes(phraseStep) || (isHook && [6, 14].includes(phraseStep))) {
+              playPreviewTone(190, 0.13, "triangle", isHook ? 0.07 : 0.055, "drums", scheduledTime);
+            }
+            if ([2, 6, 10, 14].includes(phraseStep)) {
+              playPreviewTone(340, 0.075, "triangle", 0.035, "drums", scheduledTime);
+            }
+          } else if (track.style === "bollywood") {
+            if ([0, 8].includes(phraseStep)) {
+              playPreviewTone(78, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
+            }
+            if ([4, 12].includes(phraseStep)) {
+              playPreviewTone(245, 0.12, "triangle", 0.045, "drums", scheduledTime);
+            }
+            if ([3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
+              playPreviewTone(390, 0.075, "triangle", 0.026, "drums", scheduledTime);
+            }
+          } else if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0)) {
             playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07, "drums", scheduledTime);
           }
-          if (([4, 12].includes(phraseStep) || (track.style === "punjabi" && phraseStep === 4)) && !isBuild) {
-            playPreviewTone(track.style === "jazz" ? 210 : track.style === "bollywood" ? 230 : 185, 0.09, "triangle", 0.035, "drums", scheduledTime);
+          if (track.style !== "punjabi" && track.style !== "bollywood" && [4, 12].includes(phraseStep)) {
+            playPreviewTone(track.style === "jazz" ? 210 : 185, 0.09, "triangle", 0.035, "drums", scheduledTime);
           }
-          if ((track.style === "punjabi" || track.style === "hiphop") && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook || track.style === "punjabi")) {
-            playPreviewTone(220, 0.075, "triangle", track.style === "punjabi" ? 0.035 : 0.025, "drums", scheduledTime);
+          if (track.style === "hiphop" && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook)) {
+            playPreviewTone(220, 0.075, "triangle", 0.025, "drums", scheduledTime);
           }
-          if ((track.style === "dance" || track.style === "hiphop" || track.style === "punjabi") && phraseStep % 2 === 1 && (isBuild || isHook)) {
+          if ((track.style === "dance" || track.style === "hiphop") && phraseStep % 2 === 1 && (isBuild || isHook)) {
             playPreviewTone(6200, 0.035, "square", 0.009, "drums", scheduledTime);
           }
         }
@@ -1050,7 +1152,9 @@
           );
         }
         if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 1.7, "sine", isHook ? 0.025 : 0.018, "strings", scheduledTime);
+          harmony.chordFrequencies.forEach((frequency) =>
+            playPreviewTone(frequency, halfBeatSeconds * 3, "sine", isHook ? 0.018 : 0.014, "strings", scheduledTime)
+          );
         }
         if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
           harmony.chordFrequencies.forEach((frequency) =>
@@ -1062,9 +1166,6 @@
           playPreviewTone(chordTone, halfBeatSeconds * 0.45, "triangle", 0.022, "arp", scheduledTime);
         }
 
-        if (track.style === "bollywood" && instruments.includes("Drums") && [3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
-          playPreviewTone(220 + (phraseStep % 3) * 35, 0.075, "triangle", 0.025, "drums", scheduledTime);
-        }
         if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
           const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
           playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022, "piano", scheduledTime);
