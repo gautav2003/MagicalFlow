@@ -138,8 +138,8 @@
 
           <div>
             <span class="text-xs text-zinc-400 block mb-1">Session Output</span>
-            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">Midnight Session</h1>
-            <p class="text-xs font-mono text-zinc-400 mt-1">128 BPM . A Minor . 4:14 . Pro Studio</p>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">{{ prompt or 'Midnight Session' }}</h1>
+            <p class="text-xs font-mono text-zinc-400 mt-1">{{ bpm or 128 }} BPM . {{ key or 'A Minor' }} . 4:14 . Pro Studio</p>
           </div>
         </div>
 
@@ -156,15 +156,15 @@
             <div class="w-1.5 h-12 bg-amber-500 rounded-full transition-all"></div>
             <div class="w-1.5 h-16 bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-6 bg-amber-500 rounded-full transition-all"></div>
-            <div class="w-1.5 h-13 bg-amber-600 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.25rem] bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-10 bg-amber-500 rounded-full transition-all"></div>
             <div class="w-1.5 h-14 bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-8 bg-amber-500 rounded-full transition-all"></div>
             <div class="w-1.5 h-12 bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-5 bg-amber-500 rounded-full transition-all"></div>
-            <div class="w-1.5 h-15 bg-amber-600 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.75rem] bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-9 bg-amber-500 rounded-full transition-all"></div>
-            <div class="w-1.5 h-13 bg-amber-600 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.25rem] bg-amber-600 rounded-full transition-all"></div>
             <div class="w-1.5 h-7 bg-amber-500 rounded-full transition-all"></div>
             <div class="w-1.5 h-14 bg-amber-600 rounded-full transition-all"></div>
           </div>
@@ -172,14 +172,20 @@
           <!-- Transport Toolbar -->
           <div class="flex items-center justify-between pt-1">
             <div class="flex items-center gap-2">
-              <button type="button" onclick="triggerTapeAction('REW', 330)" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
-              <button type="button" onclick="togglePlayback()" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-amber-400">▶</button>
-              <button type="button" onclick="triggerTapeAction('FF', 880)" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
-              <button type="button" onclick="stopPlayback()" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <button type="button" onclick="seekPlayback(-5)" title="Back 5 seconds" aria-label="Back 5 seconds" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" id="playButton" onclick="togglePlayback()" title="Play" aria-label="Play" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-amber-400">▶</button>
+              <button type="button" onclick="seekPlayback(5)" title="Forward 5 seconds" aria-label="Forward 5 seconds" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" onclick="stopPlayback()" title="Stop" aria-label="Stop" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
               <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
             </div>
             <span id="timecode" class="text-xs font-mono text-zinc-300">0:00 / 4:14</span>
           </div>
+          <p id="playbackStatus" role="status" aria-live="polite" class="text-[9px] text-zinc-500">
+            Instrumental preview from session settings. Samples load online.
+          </p>
+          <p class="text-[8px] text-zinc-500">
+            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont via MIDI.js Soundfonts</a>, licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>.
+          </p>
         </div>
 
         <!-- Stems & Mastering Chain Section (2-Column split inside main box) -->
@@ -334,84 +340,468 @@
 
     </main>
 
+    <div
+      id="sessionSettings"
+      hidden
+      data-bpm="{{ bpm or 128 }}"
+      data-key="{{ key or 'A Minor' }}"
+    ></div>
+
     <!-- Web Audio & Interaction Script -->
     <script>
+      // Session settings and playback state
+      const sessionSettings = document.getElementById('sessionSettings').dataset;
+      const trackBpm = Math.max(40, Math.min(240, Number(sessionSettings.bpm) || 128));
+      const trackKey = sessionSettings.key || 'A Minor';
+      const durationSeconds = 254;
       let audioCtx = null;
+      let masterGain = null;
       let isPlaying = false;
+      let isLoading = false;
       let playbackTimer = null;
+      let beatTimer = null;
       let seconds = 0;
+      let playbackRequestId = 0;
+      let currentArrangement = [];
+      const activeSources = new Set();
 
+      // Instrument sample configuration
+      const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+      const instruments = {
+        piano: 'acoustic_grand_piano',
+        guitar: 'acoustic_guitar_steel',
+        bass: 'electric_bass_pick',
+        strings: 'string_ensemble_1'
+      };
+      const soundfontPromises = new Map();
+      const sampleBufferCache = new Map();
+      const noteSemitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+      // Audio setup and sample loading
       function initAudio() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.7;
+          masterGain.connect(audioCtx.destination);
         }
       }
 
-      function playSynthTone(notes) {
-        initAudio();
-        notes.forEach(f => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + 1.0);
+      function loadSoundfont(instrument) {
+        const program = instruments[instrument];
+        if (!program) {
+          return Promise.reject(new Error(`Unknown instrument: ${instrument}`));
+        }
+
+        if (window.MIDI?.Soundfont?.[program]) {
+          return Promise.resolve(window.MIDI.Soundfont[program]);
+        }
+        if (soundfontPromises.has(program)) {
+          return soundfontPromises.get(program);
+        }
+
+        const loadPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+          script.async = true;
+          script.onload = () => {
+            const soundfont = window.MIDI?.Soundfont?.[program];
+            if (soundfont) {
+              resolve(soundfont);
+            } else {
+              reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+            }
+          };
+          script.onerror = () => {
+            reject(new Error(`Could not download the ${instrument} sample bank.`));
+          };
+          document.head.appendChild(script);
+        });
+
+        soundfontPromises.set(program, loadPromise);
+        loadPromise.catch(() => soundfontPromises.delete(program));
+        return loadPromise;
+      }
+
+      function midiNoteNumber(noteName) {
+        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(noteName);
+        if (!match) return null;
+
+        const accidental = match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0;
+        return (Number(match[3]) + 1) * 12 + noteSemitones[match[1]] + accidental;
+      }
+
+      async function loadInstrumentSample(instrument, targetNote) {
+        const soundfont = await loadSoundfont(instrument);
+        const sampleName = Object.keys(soundfont)
+          .filter(name => midiNoteNumber(name) !== null)
+          .sort((a, b) => {
+            const distanceA = Math.abs(midiNoteNumber(a) - targetNote);
+            const distanceB = Math.abs(midiNoteNumber(b) - targetNote);
+            return distanceA - distanceB;
+          })[0];
+
+        if (!sampleName) {
+          throw new Error(`No playable samples were found for ${instrument}.`);
+        }
+
+        const cacheKey = `${instruments[instrument]}:${sampleName}`;
+        let bufferPromise = sampleBufferCache.get(cacheKey);
+        if (!bufferPromise) {
+          bufferPromise = fetch(soundfont[sampleName])
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Could not download a ${instrument} note sample (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then(data => audioCtx.decodeAudioData(data));
+
+          sampleBufferCache.set(cacheKey, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
+        }
+
+        return {
+          buffer: await bufferPromise,
+          sampleNote: midiNoteNumber(sampleName)
+        };
+      }
+
+      // Chord progression and instrumental arrangement
+      function getKeyScale() {
+        const match = /^([A-G])([#b]?)(?:\s+(Major|Minor))?$/i.exec(trackKey.trim());
+        const accidental = match
+          ? match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0
+          : 0;
+        const root = match
+          ? 48 + noteSemitones[match[1].toUpperCase()] + accidental
+          : 48;
+        const isMinor = match ? match[3]?.toLowerCase() !== 'major' : true;
+
+        return {
+          root,
+          intervals: isMinor
+            ? [0, 2, 3, 5, 7, 8, 10]
+            : [0, 2, 4, 5, 7, 9, 11]
+        };
+      }
+
+      function getArrangement() {
+        const { root, intervals } = getKeyScale();
+        const progression = [0, 5, 3, 4];
+
+        return Array.from({ length: 32 }, (_, step) => {
+          const bar = Math.floor(step / 8);
+          const chordDegree = progression[bar];
+          const chord = [0, 2, 4].map(offset => {
+            const degree = chordDegree + offset;
+            return root + intervals[degree % 7] + 12 * Math.floor(degree / 7);
+          });
+          const beat = Math.floor((step % 8) / 2);
+
+          return {
+            bass: step % 2 === 0 ? chord[0] - 12 : null,
+            piano: step % 4 === 0 ? chord : [],
+            guitar: step % 2 === 1 ? chord[step % chord.length] + 12 : null,
+            strings: step % 8 === 0 ? chord.map(note => note + 12) : [],
+            kick: beat === 0 || beat === 2,
+            snare: beat === 1 || beat === 3,
+            hiHat: step % 2 === 0
+          };
         });
       }
 
-      function togglePlayback() {
-        initAudio();
-        if (!isPlaying) {
-          isPlaying = true;
-          playSynthTone([130.81, 196.00, 261.63, 329.63]);
-          playbackTimer = setInterval(() => {
-            if (isPlaying) {
-              playSynthTone([130.81, 196.00, 261.63, 329.63]);
-              animateWaveform();
-              seconds++;
-              let m = Math.floor(seconds / 60);
-              let s = seconds % 60;
-              document.getElementById('timecode').innerText = `${m}:${s < 10 ? '0' : ''}${s} / 4:14`;
+      async function prepareArrangement(arrangement) {
+        const notesByInstrument = {
+          piano: new Set(),
+          guitar: new Set(),
+          bass: new Set(),
+          strings: new Set()
+        };
+
+        arrangement.forEach(step => {
+          if (step.bass !== null) {
+            notesByInstrument.bass.add(step.bass);
+          }
+          step.piano.forEach(note => notesByInstrument.piano.add(note));
+          if (step.guitar !== null) {
+            notesByInstrument.guitar.add(step.guitar);
+          }
+          step.strings.forEach(note => notesByInstrument.strings.add(note));
+        });
+
+        await Promise.all(
+          Object.entries(notesByInstrument).flatMap(([instrument, notes]) =>
+            [...notes].map(note => loadInstrumentSample(instrument, note))
+          )
+        );
+      }
+
+      // Instrument and drum playback
+      function playSampledNote(instrument, note, velocity, duration, requestId) {
+        loadInstrumentSample(instrument, note)
+          .then(({ buffer, sampleNote }) => {
+            if (!isPlaying || requestId !== playbackRequestId) {
+              return;
             }
-          }, 1200);
-        } else {
-          stopPlayback();
+
+            const source = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(
+              Math.pow(2, (note - sampleNote) / 12),
+              audioCtx.currentTime
+            );
+            gain.gain.setValueAtTime(velocity, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+              0.001,
+              audioCtx.currentTime + duration
+            );
+            source.connect(gain);
+            gain.connect(masterGain);
+            activeSources.add(source);
+            source.onended = () => activeSources.delete(source);
+            source.start();
+            source.stop(audioCtx.currentTime + duration);
+          })
+          .catch(error => {
+            if (isPlaying && requestId === playbackRequestId) {
+              showPlaybackError(error);
+            }
+          });
+      }
+
+      function playKick(time) {
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(140, time);
+        oscillator.frequency.exponentialRampToValueAtTime(42, time + 0.16);
+        gain.gain.setValueAtTime(0.35, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.22);
+        oscillator.connect(gain);
+        gain.connect(masterGain);
+        oscillator.start(time);
+        oscillator.stop(time + 0.22);
+      }
+
+      function playSnare(time) {
+        const length = Math.floor(audioCtx.sampleRate * 0.16);
+        const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index++) {
+          data[index] = Math.random() * 2 - 1;
         }
+
+        const noise = audioCtx.createBufferSource();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        noise.buffer = buffer;
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2200, time);
+        gain.gain.setValueAtTime(0.16, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.16);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        noise.start(time);
+        noise.stop(time + 0.16);
+      }
+
+      function playHiHat(time) {
+        const length = Math.floor(audioCtx.sampleRate * 0.045);
+        const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index++) {
+          data[index] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        noise.buffer = buffer;
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(7000, time);
+        gain.gain.setValueAtTime(0.045, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.045);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        noise.start(time);
+        noise.stop(time + 0.045);
+      }
+
+      function playArrangementStep(stepIndex) {
+        const step = currentArrangement[stepIndex % currentArrangement.length];
+        const time = audioCtx.currentTime + 0.015;
+        const requestId = playbackRequestId;
+        const beatDuration = 60 / trackBpm;
+
+        if (step.bass !== null) {
+          playSampledNote('bass', step.bass, 0.42, beatDuration * 0.9, requestId);
+        }
+        step.piano.forEach(note => {
+          playSampledNote('piano', note, 0.2, beatDuration * 1.7, requestId);
+        });
+        if (step.guitar !== null) {
+          playSampledNote('guitar', step.guitar, 0.2, beatDuration * 0.75, requestId);
+        }
+        step.strings.forEach(note => {
+          playSampledNote('strings', note, 0.1, beatDuration * 3.8, requestId);
+        });
+        if (step.kick) {
+          playKick(time);
+        }
+        if (step.snare) {
+          playSnare(time);
+        }
+        if (step.hiHat) {
+          playHiHat(time);
+        }
+
+        animateWaveform();
+      }
+
+      // Transport controls and status
+      function updateTimecode() {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        document.getElementById('timecode').innerText =
+          `${mins}:${secs < 10 ? '0' : ''}${secs} / 4:14`;
+      }
+
+      function updatePlayButton(playing) {
+        const button = document.getElementById('playButton');
+        button.innerText = playing ? '⏸' : '▶';
+        button.title = playing ? 'Pause' : 'Play';
+        button.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+      }
+
+      function startBeatTimer() {
+        clearInterval(beatTimer);
+        const beatDuration = 60 / trackBpm;
+        const stepDuration = beatDuration / 2;
+        let stepIndex = Math.floor(seconds / stepDuration);
+
+        playArrangementStep(stepIndex++);
+        beatTimer = setInterval(() => {
+          playArrangementStep(stepIndex++);
+        }, stepDuration * 1000);
+      }
+
+      function startPlaybackTimer() {
+        clearInterval(playbackTimer);
+        playbackTimer = setInterval(() => {
+          seconds++;
+          updateTimecode();
+
+          if (seconds >= durationSeconds) {
+            pausePlayback();
+            document.getElementById('playbackStatus').innerText =
+              'Preview finished. Press Play to start again.';
+          }
+        }, 1000);
+      }
+
+      async function togglePlayback() {
+        if (isPlaying) {
+          pausePlayback();
+          return;
+        }
+        if (isLoading) {
+          return;
+        }
+
+        if (seconds >= durationSeconds) {
+          seconds = 0;
+          updateTimecode();
+        }
+
+        const requestId = ++playbackRequestId;
+        const status = document.getElementById('playbackStatus');
+        const button = document.getElementById('playButton');
+        isLoading = true;
+        button.disabled = true;
+        status.innerText = 'Loading sampled instruments...';
+
+        try {
+          initAudio();
+          if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+          }
+
+          currentArrangement = getArrangement();
+          await prepareArrangement(currentArrangement);
+          if (requestId !== playbackRequestId) {
+            return;
+          }
+
+          isLoading = false;
+          isPlaying = true;
+          button.disabled = false;
+          updatePlayButton(true);
+          status.innerText = 'Instrumental preview from session settings.';
+          startBeatTimer();
+          startPlaybackTimer();
+        } catch (error) {
+          if (requestId === playbackRequestId) {
+            isLoading = false;
+            button.disabled = false;
+            showPlaybackError(error);
+          }
+        }
+      }
+
+      function pausePlayback() {
+        playbackRequestId++;
+        isPlaying = false;
+        isLoading = false;
+        clearInterval(playbackTimer);
+        clearInterval(beatTimer);
+        activeSources.forEach(source => source.stop());
+        activeSources.clear();
+        document.getElementById('playButton').disabled = false;
+        updatePlayButton(false);
+        resetWaveform();
       }
 
       function stopPlayback() {
-        isPlaying = false;
-        clearInterval(playbackTimer);
-        const bars = document.querySelectorAll('#waveformBars div');
-        bars.forEach(b => b.style.height = '16px');
+        pausePlayback();
+        seconds = 0;
+        updateTimecode();
+        document.getElementById('playbackStatus').innerText =
+          'Instrumental preview from session settings. Samples load online.';
       }
 
-      function triggerTapeAction(type, freq) {
-        stopPlayback();
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.15);
+      function seekPlayback(offset) {
+        seconds = Math.max(0, Math.min(durationSeconds, seconds + offset));
+        updateTimecode();
+
+        if (isPlaying) {
+          startBeatTimer();
+        }
+      }
+
+      // Playback errors and waveform display
+      function showPlaybackError(error) {
+        pausePlayback();
+        document.getElementById('playbackStatus').innerText =
+          `Playback unavailable: ${error.message}`;
       }
 
       function animateWaveform() {
-        const bars = document.querySelectorAll('#waveformBars div');
-        bars.forEach(b => {
-          b.style.height = `${Math.floor(Math.random() * 55) + 12}px`;
+        document.querySelectorAll('#waveformBars div').forEach(bar => {
+          bar.style.height = `${Math.floor(Math.random() * 55) + 12}px`;
         });
       }
 
+      function resetWaveform() {
+        document.querySelectorAll('#waveformBars div').forEach(bar => {
+          bar.style.height = '16px';
+        });
+      }
+
+      // Export and recording actions
       function downloadFile(filename) {
         alert("Downloading " + filename + "...");
       }
