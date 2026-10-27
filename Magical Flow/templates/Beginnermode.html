@@ -478,7 +478,7 @@
           wave: "triangle",
           style: "punjabi",
           melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
-          arrangement: ["Sitar", "Bass", "Drums", "Pad"],
+          liveDholOnly: true,
         },
         "Moonlit Bollywood Romance": {
           duration: 220,
@@ -563,16 +563,22 @@
         const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
         const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
         const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
-        const style = genreWasCustomized ? genreStyles[genre] : preset.style;
+        const style = preset.liveDholOnly
+          ? preset.style
+          : genreWasCustomized
+            ? genreStyles[genre]
+            : preset.style;
         const styleArrangements = {
           bollywood: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
           punjabi: ["Sitar", "Bass", "Drums", "Pad"],
         };
-        const instruments = styleArrangements[style]
-          ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
-          : genreWasCustomized
-            ? selectedInstruments
-            : preset.arrangement || selectedInstruments;
+        const instruments = preset.liveDholOnly
+          ? []
+          : styleArrangements[style]
+            ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
+            : genreWasCustomized
+              ? selectedInstruments
+              : preset.arrangement || selectedInstruments;
         const minorMood =
           ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
           style === "bollywood" ||
@@ -602,7 +608,7 @@
           wave: waveforms[style] || preset.wave,
           bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
           duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
-          instruments: instruments.length ? instruments : ["Piano"],
+          instruments: preset.liveDholOnly ? [] : instruments.length ? instruments : ["Piano"],
         };
       }
 
@@ -695,8 +701,10 @@
         const requestId = ++playbackRequestId;
         const button = document.getElementById("mainPlayBtn");
         button.disabled = true;
-        document.getElementById("previewStatus").innerText =
-          getPreviewSettings().style === "punjabi"
+        const loadingTrack = getPreviewSettings();
+        document.getElementById("previewStatus").innerText = loadingTrack.liveDholOnly
+          ? "Loading Johnny Kalsi's live Dhol recording..."
+          : loadingTrack.style === "punjabi"
             ? "Loading live dhol recording and sampled instruments..."
             : "Loading sampled instruments...";
 
@@ -711,8 +719,9 @@
           startAudioSequence();
           await startLiveDholBacking(getPreviewSettings());
           if (requestId !== playbackRequestId || !isPlaying) return;
-          document.getElementById("previewStatus").innerText =
-            "Instrumental preview from sampled instruments · vocals are not sung";
+          document.getElementById("previewStatus").innerText = getPreviewSettings().liveDholOnly
+            ? "Live Dhol recording only · Johnny Kalsi / The Dhol Foundation"
+            : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
 
