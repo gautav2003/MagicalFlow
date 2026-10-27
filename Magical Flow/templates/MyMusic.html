@@ -221,7 +221,7 @@
         {% for item in display_tracks %}
         <div class="track-row music-card rounded-xl p-3 flex items-center justify-between gap-4 cursor-pointer" 
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
-             onclick="loadAndPlay('{{ item.title }}', '{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}', '{{ item.duration }}')">
+             onclick="loadAndPlay(this)">
           
           <!-- Track Left Meta (Icon & Title) -->
           <div class="flex items-center gap-3">
@@ -271,7 +271,7 @@
         {% for item in display_tracks %}
         <div class="track-card music-card rounded-xl p-4 flex flex-col justify-between h-44 cursor-pointer"
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
-             onclick="loadAndPlay('{{ item.title }}', '{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}', '{{ item.duration }}')">
+             onclick="loadAndPlay(this)">
           
           <!-- Top Row: Icon & Category Badge -->
           <div class="flex items-start justify-between">
@@ -341,6 +341,9 @@
             <input type="range" id="playerSeekbar" min="0" max="100" value="0" oninput="updateSeekPosition(this.value)" class="flex-grow h-1 bg-purple-950 rounded-lg accent-amber-400 cursor-pointer">
             <span id="maxTime">3:24</span>
           </div>
+          <p class="text-[8px] text-zinc-500">
+            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont via MIDI.js Soundfonts</a>, licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>.
+          </p>
         </div>
 
         <!-- Right Volume & Headphone Indicator -->
@@ -357,32 +360,367 @@
 
     <!-- Web Audio Engine & Interactive Page JS -->
     <script>
+      // Playback state
       let isPlaying = false;
-      let currentFilter = 'ALL';
       let playInterval = null;
+      let beatInterval = null;
       let currentSeconds = 0;
       let totalSeconds = 204; // 3:24 default
       let audioCtx = null;
+      let masterGain = null;
+      let currentTrack = { genre: 'Lo-Fi', bpm: 90, key: 'C Minor' };
+      let playbackRequestId = 0;
+      let soundfontLoadPromise = null;
 
+      // Audio sample configuration
+      const sampleBufferCache = new Map();
+      const soundfontProgram = 'acoustic_grand_piano';
+      const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+      const noteSemitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+      // Audio setup and sample loading
       function initAudio() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          masterGain = audioCtx.createGain();
+          masterGain.connect(audioCtx.destination);
+        }
+
+        const volume = Number(document.getElementById('volumeSlider').value) / 100;
+        masterGain.gain.setTargetAtTime(volume, audioCtx.currentTime, 0.02);
+      }
+
+      function loadPianoSoundfont() {
+        if (window.MIDI?.Soundfont?.[soundfontProgram]) {
+          return Promise.resolve(window.MIDI.Soundfont[soundfontProgram]);
+        }
+        if (soundfontLoadPromise) return soundfontLoadPromise;
+
+        soundfontLoadPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `${soundfontBaseUrl}${soundfontProgram}-mp3.js`;
+          script.async = true;
+          script.onload = () => {
+            const soundfont = window.MIDI?.Soundfont?.[soundfontProgram];
+            if (soundfont) resolve(soundfont);
+            else reject(new Error('The piano sample bank loaded without its instrument data.'));
+          };
+          script.onerror = () => {
+            reject(new Error('Could not download the piano sample bank.'));
+          };
+          document.head.appendChild(script);
+        }).catch(error => {
+          soundfontLoadPromise = null;
+          throw error;
+        });
+        return soundfontLoadPromise;
+      }
+
+      function noteNumberFromSampleName(name) {
+        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(name);
+        if (!match) return null;
+
+        const accidental = match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0;
+        return (Number(match[3]) + 1) * 12 + noteSemitones[match[1]] + accidental;
+      }
+
+      function noteFrequency(noteNumber) {
+        return 440 * Math.pow(2, (noteNumber - 69) / 12);
+      }
+
+      async function loadPianoSample(noteNumber, soundfont) {
+        const sampleName = Object.keys(soundfont)
+          .filter(name => noteNumberFromSampleName(name) !== null)
+          .sort((a, b) => {
+            const distanceA = Math.abs(noteNumberFromSampleName(a) - noteNumber);
+            const distanceB = Math.abs(noteNumberFromSampleName(b) - noteNumber);
+            return distanceA - distanceB;
+          })[0];
+
+        if (!sampleName) {
+          throw new Error('No playable piano samples were found.');
+        }
+
+        let bufferPromise = sampleBufferCache.get(sampleName);
+        if (!bufferPromise) {
+          bufferPromise = fetch(soundfont[sampleName])
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Could not download the piano sample (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then(data => audioCtx.decodeAudioData(data));
+
+          sampleBufferCache.set(sampleName, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(sampleName));
+        }
+
+        return {
+          buffer: await bufferPromise,
+          sampleNote: noteNumberFromSampleName(sampleName)
+        };
+      }
+
+      // Track arrangement
+      function keyScale() {
+        const keyPattern = /^([A-G])([#b]?)(?:\s+(Major|Minor))?$/i;
+        const match = keyPattern.exec(currentTrack.key.trim());
+        const accidental = match
+          ? match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0
+          : 0;
+        const root = match
+          ? 48 + noteSemitones[match[1].toUpperCase()] + accidental
+          : 48;
+        const minor = match ? match[3]?.toLowerCase() === 'minor' : true;
+        return {
+          root,
+          intervals: minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]
+        };
+      }
+
+      function getTrackArrangement() {
+        const { root, intervals } = keyScale();
+        const progression = [0, 3, 4, 0];
+        return Array.from({ length: 16 }, (_, beat) => {
+          const bar = Math.floor(beat / 4);
+          const chordRoot = root + intervals[progression[bar]];
+          const chord = [chordRoot, chordRoot + intervals[2], chordRoot + intervals[4]];
+          const melody = chordRoot + intervals[[0, 2, 4, 2][beat % 4]] + 12;
+
+          return {
+            bass: chordRoot - 12,
+            chord: beat % 2 === 0 ? chord : [],
+            melody: beat % 2 === 1 ? melody : null,
+            beat: beat % 4
+          };
+        });
+      }
+
+      function playDrum(beat, time) {
+        if (beat === 0 || (currentTrack.genre.toLowerCase().includes('hip') && beat === 2)) {
+          const kick = audioCtx.createOscillator();
+          const kickGain = audioCtx.createGain();
+          kick.type = 'sine';
+          kick.frequency.setValueAtTime(125, time);
+          kick.frequency.exponentialRampToValueAtTime(42, time + 0.16);
+          kickGain.gain.setValueAtTime(0.3, time);
+          kickGain.gain.exponentialRampToValueAtTime(
+            0.001,
+            time + 0.2
+          );
+          kick.connect(kickGain);
+          kickGain.connect(masterGain);
+          kick.start(time);
+          kick.stop(time + 0.2);
+        }
+
+        if (beat === 1 || beat === 3) {
+          const length = audioCtx.sampleRate * 0.12;
+          const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < length; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+
+          const noise = audioCtx.createBufferSource();
+          const filter = audioCtx.createBiquadFilter();
+          const gain = audioCtx.createGain();
+          noise.buffer = buffer;
+          filter.type = 'highpass';
+          filter.frequency.setValueAtTime(1800, time);
+          gain.gain.setValueAtTime(0.08, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(masterGain);
+          noise.start(time);
+          noise.stop(time + 0.12);
         }
       }
 
-      function playSynthTone() {
-        initAudio();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.8);
+      function playArrangementBeat(beatIndex, arrangement, beatDuration) {
+        const step = arrangement[beatIndex % arrangement.length];
+        const time = audioCtx.currentTime + 0.02;
+        const noteDuration = beatDuration * 0.82;
+
+        playPianoNote(step.bass, 0.28, noteDuration);
+        step.chord.forEach(note => playPianoNote(note, 0.13, noteDuration));
+        if (step.melody !== null) {
+          playPianoNote(step.melody, 0.2, noteDuration * 0.7);
+        }
+        playDrum(step.beat, time);
       }
+
+      async function prepareArrangement(arrangement) {
+        const soundfont = await loadPianoSoundfont();
+        const notes = new Set(
+          arrangement.flatMap(step => [
+            step.bass,
+            ...step.chord,
+            ...(step.melody === null ? [] : [step.melody])
+          ])
+        );
+
+        await Promise.all([...notes].map(note => loadPianoSample(note, soundfont)));
+      }
+
+      // Playback controls
+      function playPianoNote(noteNumber, velocity, duration) {
+        const requestId = playbackRequestId;
+        const soundfont = window.MIDI.Soundfont[soundfontProgram];
+
+        loadPianoSample(noteNumber, soundfont)
+          .then(({ buffer, sampleNote }) => {
+            if (!isPlaying || requestId !== playbackRequestId) return;
+
+            const source = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            const playbackRate = noteFrequency(noteNumber) / noteFrequency(sampleNote);
+
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(playbackRate, audioCtx.currentTime);
+            gain.gain.setValueAtTime(velocity, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+              0.001,
+              audioCtx.currentTime + duration
+            );
+            source.connect(gain);
+            gain.connect(masterGain);
+            source.start();
+            source.stop(audioCtx.currentTime + duration);
+          })
+          .catch(error => {
+            if (isPlaying && requestId === playbackRequestId) {
+              showPlaybackError(error);
+            }
+          });
+      }
+
+      function showPlaybackError(error) {
+        stopMainPlay();
+        document.getElementById('playerMeta').innerText = `Playback unavailable: ${error.message}`;
+      }
+
+      function loadAndPlay(card) {
+        stopMainPlay();
+        currentTrack = {
+          genre: card.dataset.genre,
+          bpm: Math.max(40, Math.min(240, Number(card.dataset.bpm) || 90)),
+          key: card.dataset.key || 'C Minor'
+        };
+        document.getElementById('playerTitle').innerText = card.dataset.title;
+        document.getElementById('playerMeta').innerText =
+          `${currentTrack.genre} . ${currentTrack.bpm} BPM . ${currentTrack.key}`;
+
+        const durationStr = card.dataset.duration || '3:24';
+        document.getElementById('maxTime').innerText = durationStr;
+        const parts = durationStr.split(':');
+        totalSeconds = (parseInt(parts[0], 10) || 0) * 60 + (parseInt(parts[1], 10) || 0);
+        if (totalSeconds <= 0) {
+          totalSeconds = 204;
+        }
+
+        currentSeconds = 0;
+        updatePlayerUI();
+        toggleMainPlay();
+      }
+
+      async function toggleMainPlay() {
+        initAudio();
+        const btn = document.getElementById('mainPlayBtn');
+        if (isPlaying) {
+          stopMainPlay();
+          return;
+        }
+
+        if (currentSeconds >= totalSeconds) {
+          currentSeconds = 0;
+          updatePlayerUI();
+        }
+
+        const requestId = ++playbackRequestId;
+        btn.disabled = true;
+        document.getElementById('playerMeta').innerText = 'Loading sampled piano instruments...';
+
+        try {
+          if (audioCtx.state === 'suspended') await audioCtx.resume();
+          const arrangement = getTrackArrangement();
+          await prepareArrangement(arrangement);
+          if (requestId !== playbackRequestId) {
+            return;
+          }
+
+          isPlaying = true;
+          btn.disabled = false;
+          btn.innerText = '⏸';
+          document.getElementById('playerMeta').innerText =
+            `${currentTrack.genre} . ${currentTrack.bpm} BPM . ${currentTrack.key}`;
+
+          const beatDuration = 60 / currentTrack.bpm;
+          let beatIndex = Math.floor(currentSeconds / beatDuration);
+          playArrangementBeat(beatIndex++, arrangement, beatDuration);
+          beatInterval = setInterval(() => {
+            playArrangementBeat(beatIndex++, arrangement, beatDuration);
+          }, beatDuration * 1000);
+          playInterval = setInterval(() => {
+            if (currentSeconds < totalSeconds) {
+              currentSeconds++;
+              updatePlayerUI();
+            } else {
+              stopMainPlay();
+            }
+          }, 1000);
+        } catch (error) {
+          if (requestId === playbackRequestId) {
+            btn.disabled = false;
+            showPlaybackError(error);
+          }
+        }
+      }
+
+      function stopMainPlay() {
+        playbackRequestId++;
+        isPlaying = false;
+        clearInterval(playInterval);
+        clearInterval(beatInterval);
+        document.getElementById('mainPlayBtn').innerText = '▶';
+        document.getElementById('mainPlayBtn').disabled = false;
+      }
+
+      function updatePlayerUI() {
+        const mins = Math.floor(currentSeconds / 60);
+        const secs = currentSeconds % 60;
+        document.getElementById('currentTime').innerText =
+          `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+        const pct = (currentSeconds / totalSeconds) * 100;
+        document.getElementById('playerSeekbar').value = pct;
+      }
+
+      function seekRelative(secs) {
+        currentSeconds = Math.max(0, Math.min(totalSeconds, currentSeconds + secs));
+        updatePlayerUI();
+
+        if (isPlaying) {
+          clearInterval(beatInterval);
+          const beatDuration = 60 / currentTrack.bpm;
+          let beatIndex = Math.floor(currentSeconds / beatDuration);
+          const arrangement = getTrackArrangement();
+          playArrangementBeat(beatIndex++, arrangement, beatDuration);
+          beatInterval = setInterval(() => {
+            playArrangementBeat(beatIndex++, arrangement, beatDuration);
+          }, beatDuration * 1000);
+        }
+      }
+
+      function updateSeekPosition(val) {
+        currentSeconds = Math.floor((val / 100) * totalSeconds);
+        updatePlayerUI();
+      }
+
+      // Archive view, filters, and actions
+      let currentFilter = 'ALL';
 
       function switchView(mode) {
         const listCont = document.getElementById('listViewContainer');
@@ -407,64 +745,6 @@
         }
       }
 
-      function loadAndPlay(title, meta, durationStr) {
-        document.getElementById('playerTitle').innerText = title;
-        document.getElementById('playerMeta').innerText = meta;
-        document.getElementById('maxTime').innerText = durationStr;
-
-        const parts = durationStr.split(':');
-        totalSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-        currentSeconds = 0;
-        
-        stopMainPlay();
-        toggleMainPlay();
-      }
-
-      function toggleMainPlay() {
-        initAudio();
-        const btn = document.getElementById('mainPlayBtn');
-        if (!isPlaying) {
-          isPlaying = true;
-          btn.innerText = '⏸';
-          playSynthTone();
-          playInterval = setInterval(() => {
-            if (currentSeconds < totalSeconds) {
-              currentSeconds++;
-              updatePlayerUI();
-            } else {
-              stopMainPlay();
-            }
-          }, 1000);
-        } else {
-          stopMainPlay();
-        }
-      }
-
-      function stopMainPlay() {
-        isPlaying = false;
-        clearInterval(playInterval);
-        document.getElementById('mainPlayBtn').innerText = '▶';
-      }
-
-      function seekRelative(secs) {
-        currentSeconds = Math.max(0, Math.min(totalSeconds, currentSeconds + secs));
-        updatePlayerUI();
-        if (isPlaying) playSynthTone();
-      }
-
-      function updateSeekPosition(val) {
-        currentSeconds = Math.floor((val / 100) * totalSeconds);
-        updatePlayerUI();
-      }
-
-      function updatePlayerUI() {
-        const mins = Math.floor(currentSeconds / 60);
-        const secs = currentSeconds % 60;
-        document.getElementById('currentTime').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        const pct = (currentSeconds / totalSeconds) * 100;
-        document.getElementById('playerSeekbar').value = pct;
-      }
-
       function setFilter(filter, el) {
         currentFilter = filter;
         document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
@@ -482,13 +762,12 @@
           const type = row.dataset.type;
           const isFav = row.dataset.fav === 'true';
 
-          let matchesFilter = (currentFilter === 'ALL') ||
-                              (currentFilter === 'AI' && type === 'AI') ||
-                              (currentFilter === 'Studio' && type === 'Studio') ||
-                              (currentFilter === 'Recordings' && type === 'Recordings') ||
-                              (currentFilter === 'Favorites' && isFav);
-
-          let matchesSearch = title.includes(query) || genre.includes(query);
+          const matchesFilter = currentFilter === 'ALL' ||
+            (currentFilter === 'AI' && type === 'AI') ||
+            (currentFilter === 'Studio' && type === 'Studio') ||
+            (currentFilter === 'Recordings' && type === 'Recordings') ||
+            (currentFilter === 'Favorites' && isFav);
+          const matchesSearch = title.includes(query) || genre.includes(query);
 
           if (matchesFilter && matchesSearch) {
             row.classList.remove('hidden');
@@ -499,7 +778,8 @@
       }
 
       function toggleFavorite(btn) {
-        const isFav = btn.innerText === '★' && btn.children[0].classList.contains('text-pink-500');
+        const isFav = btn.innerText === '★' &&
+          btn.children[0].classList.contains('text-pink-500');
         if (isFav) {
           btn.innerHTML = '<span class="text-zinc-600">★</span>';
         } else {
@@ -514,13 +794,21 @@
         }
       }
 
+      // Volume controls
       function adjustVolume(val) {
-        // Volume hook
+        if (masterGain) {
+          masterGain.gain.setTargetAtTime(
+            Number(val) / 100,
+            audioCtx.currentTime,
+            0.02
+          );
+        }
       }
 
       function toggleMuteVolume() {
         const v = document.getElementById('volumeSlider');
-        v.value = v.value == 0 ? 80 : 0;
+        v.value = Number(v.value) === 0 ? 80 : 0;
+        adjustVolume(v.value);
       }
     </script>
   </body>
