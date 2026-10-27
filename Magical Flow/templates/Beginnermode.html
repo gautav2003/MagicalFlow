@@ -390,7 +390,7 @@
           <div class="flex items-center justify-between">
             <div>
               <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Original browser synth · no recordings or sung vocals</span>
+              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Instrumental preview from sampled instruments · samples load online</span>
             </div>
             <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
           </div>
@@ -508,6 +508,23 @@
       let selectedTrack = "Late Night Lo-Fi";
       let bpmWasCustomized = false;
       let genreWasCustomized = false;
+      let previewMasterGain = null;
+      let playbackRequestId = 0;
+      const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+      const soundfontPrograms = {
+        piano: "acoustic_grand_piano",
+        guitar: "acoustic_guitar_steel",
+        bass: "electric_bass_pick",
+        synth: "lead_2_sawtooth",
+        strings: "string_ensemble_1",
+        brass: "brass_section",
+        pad: "pad_2_warm",
+        arp: "vibraphone",
+        vocals: "choir_aahs"
+      };
+      const soundfontPromises = new Map();
+      const sampleBufferCache = new Map();
+      const activeSources = new Set();
 
       const genreStyles = {
         "Lo-Fi": "lofi",
@@ -615,17 +632,24 @@
 
       async function togglePlay(trackName) {
         if (trackName && trackName !== selectedTrack) {
+          playbackRequestId++;
+          clearInterval(timerInterval);
+          clearInterval(sequenceInterval);
+          stopActiveSources();
           selectedTrack = trackName;
           timerSeconds = 0;
-          isPlaying = true;
           sequenceStep = 0;
           if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
+          isPlaying = true;
         } else {
           isPlaying = !isPlaying;
         }
         if (!isPlaying) {
+          playbackRequestId++;
           clearInterval(timerInterval);
           clearInterval(sequenceInterval);
+          stopActiveSources();
+          document.getElementById("mainPlayBtn").disabled = false;
           syncPlayer();
           document.getElementById("previewStatus").innerText = "Preview paused";
           return;
@@ -634,42 +658,262 @@
           timerSeconds = 0;
           sequenceStep = 0;
         }
+        const requestId = ++playbackRequestId;
+        const button = document.getElementById("mainPlayBtn");
+        button.disabled = true;
+        document.getElementById("previewStatus").innerText = "Loading sampled instruments...";
+
         try {
           await startPreviewAudio();
+          await preparePreviewSamples();
+          if (requestId !== playbackRequestId || !isPlaying) return;
+
+          button.disabled = false;
           syncPlayer();
           startTimer();
           startAudioSequence();
-          document.getElementById("previewStatus").innerText = "Playing an original browser-synthesized demo · no recordings or sung vocals";
+          document.getElementById("previewStatus").innerText =
+            "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
+          if (requestId !== playbackRequestId) return;
+
           isPlaying = false;
+          button.disabled = false;
           syncPlayer();
-          document.getElementById("previewStatus").innerText = "Audio playback is unavailable in this browser";
+          document.getElementById("previewStatus").innerText =
+            `Preview unavailable: ${error.message}`;
           console.error("Unable to start the browser audio preview:", error);
         }
       }
 
+      // Audio setup and online instrument samples
       async function startPreviewAudio() {
         const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
-        if (!previewAudioContext) previewAudioContext = new AudioContextConstructor();
+        if (!previewAudioContext) {
+          previewAudioContext = new AudioContextConstructor();
+          previewMasterGain = previewAudioContext.createGain();
+          previewMasterGain.gain.value = 0.7;
+          previewMasterGain.connect(previewAudioContext.destination);
+        }
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
       }
 
-      function playPreviewTone(frequency, duration, waveform = "triangle", volume = 0.08) {
-        const now = previewAudioContext.currentTime;
-        const oscillator = previewAudioContext.createOscillator();
-        const gain = previewAudioContext.createGain();
-        oscillator.type = waveform;
-        oscillator.frequency.setValueAtTime(frequency, now);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(volume, now + 0.015);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-        oscillator.connect(gain);
-        gain.connect(previewAudioContext.destination);
-        oscillator.start(now);
-        oscillator.stop(now + duration);
+      function loadPreviewSoundfont(instrument) {
+        const program = soundfontPrograms[instrument];
+        if (!program) {
+          return Promise.reject(new Error(`Unknown preview instrument: ${instrument}`));
+        }
+        if (window.MIDI?.Soundfont?.[program]) {
+          return Promise.resolve(window.MIDI.Soundfont[program]);
+        }
+        if (soundfontPromises.has(program)) {
+          return soundfontPromises.get(program);
+        }
+
+        const loadPromise = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+          script.async = true;
+          script.onload = () => {
+            const soundfont = window.MIDI?.Soundfont?.[program];
+            if (soundfont) {
+              resolve(soundfont);
+            } else {
+              reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+            }
+          };
+          script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
+          document.head.appendChild(script);
+        });
+
+        soundfontPromises.set(program, loadPromise);
+        loadPromise.catch(() => soundfontPromises.delete(program));
+        return loadPromise;
       }
 
+      function midiNoteNumber(noteName) {
+        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(noteName);
+        if (!match) return null;
+
+        const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+        const accidental = match[2] === "#" ? 1 : match[2] === "b" ? -1 : 0;
+        return (Number(match[3]) + 1) * 12 + semitones[match[1]] + accidental;
+      }
+
+      async function loadPreviewSample(instrument, targetNote) {
+        const soundfont = await loadPreviewSoundfont(instrument);
+        const sampleName = Object.keys(soundfont)
+          .filter((name) => midiNoteNumber(name) !== null)
+          .sort((a, b) => {
+            const distanceA = Math.abs(midiNoteNumber(a) - targetNote);
+            const distanceB = Math.abs(midiNoteNumber(b) - targetNote);
+            return distanceA - distanceB;
+          })[0];
+
+        if (!sampleName) {
+          throw new Error(`No playable samples were found for ${instrument}.`);
+        }
+
+        const cacheKey = `${soundfontPrograms[instrument]}:${sampleName}`;
+        let bufferPromise = sampleBufferCache.get(cacheKey);
+        if (!bufferPromise) {
+          bufferPromise = fetch(soundfont[sampleName])
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Could not download the ${instrument} sample (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then((data) => previewAudioContext.decodeAudioData(data));
+
+          sampleBufferCache.set(cacheKey, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
+        }
+
+        return {
+          buffer: await bufferPromise,
+          sampleNote: midiNoteNumber(sampleName)
+        };
+      }
+
+      function getSelectedSampleInstruments(track) {
+        return track.instruments
+          .map((instrument) => instrument.toLowerCase())
+          .filter((instrument) => soundfontPrograms[instrument]);
+      }
+
+      async function preparePreviewSamples() {
+        const track = getPreviewSettings();
+        const selectedInstruments = getSelectedSampleInstruments(track);
+        const targetNotes = new Set(
+          track.melody.map((noteIndex) =>
+            Math.round(69 + 12 * Math.log2(track.root * Math.pow(2, track.scale[noteIndex] / 12) / 440))
+          )
+        );
+        [...targetNotes].forEach((note) => {
+          targetNotes.add(note + 7);
+          targetNotes.add(note + 12);
+        });
+
+        track.chord.forEach((interval) => {
+          targetNotes.add(Math.round(69 + 12 * Math.log2(track.root * Math.pow(2, interval / 12) / 440)));
+          targetNotes.add(Math.round(69 + 12 * Math.log2(track.root * Math.pow(2, (interval + 12) / 12) / 440)));
+        });
+        targetNotes.add(Math.round(69 + 12 * Math.log2(track.root / 2 / 440)));
+
+        await Promise.all(
+          selectedInstruments.flatMap((instrument) =>
+            [...targetNotes].map((note) => loadPreviewSample(instrument, note))
+          )
+        );
+      }
+
+      function playPreviewDrum(frequency, duration, volume) {
+        const now = previewAudioContext.currentTime;
+        if (frequency < 120) {
+          const oscillator = previewAudioContext.createOscillator();
+          const gain = previewAudioContext.createGain();
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(140, now);
+          oscillator.frequency.exponentialRampToValueAtTime(42, now + duration);
+          gain.gain.setValueAtTime(volume, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          oscillator.connect(gain);
+          gain.connect(previewMasterGain);
+          activeSources.add(oscillator);
+          oscillator.onended = () => activeSources.delete(oscillator);
+          oscillator.start(now);
+          oscillator.stop(now + duration);
+          return;
+        }
+
+        const length = Math.max(1, Math.floor(previewAudioContext.sampleRate * duration));
+        const buffer = previewAudioContext.createBuffer(1, length, previewAudioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index++) {
+          data[index] = Math.random() * 2 - 1;
+        }
+
+        const source = previewAudioContext.createBufferSource();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+        source.buffer = buffer;
+        filter.type = frequency > 1000 ? "highpass" : "bandpass";
+        filter.frequency.setValueAtTime(frequency > 1000 ? 7000 : frequency, now);
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        source.start(now);
+        source.stop(now + duration);
+      }
+
+      function playPreviewTone(
+        frequency,
+        duration,
+        waveform = "triangle",
+        volume = 0.08,
+        instrument = "piano"
+      ) {
+        if (instrument === "drums") {
+          playPreviewDrum(frequency, duration, volume);
+          return;
+        }
+
+        const requestId = playbackRequestId;
+        const targetNote = Math.round(69 + 12 * Math.log2(frequency / 440));
+        loadPreviewSample(instrument, targetNote)
+          .then(({ buffer, sampleNote }) => {
+            if (!isPlaying || requestId !== playbackRequestId) return;
+
+            const source = previewAudioContext.createBufferSource();
+            const gain = previewAudioContext.createGain();
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(
+              Math.pow(2, (targetNote - sampleNote) / 12),
+              previewAudioContext.currentTime
+            );
+            gain.gain.setValueAtTime(volume, previewAudioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              previewAudioContext.currentTime + duration
+            );
+            source.connect(gain);
+            gain.connect(previewMasterGain);
+            activeSources.add(source);
+            source.onended = () => activeSources.delete(source);
+            source.start();
+            source.stop(previewAudioContext.currentTime + duration);
+          })
+          .catch((error) => {
+            if (isPlaying && requestId === playbackRequestId) {
+              showPreviewError(error);
+            }
+          });
+      }
+
+      function stopActiveSources() {
+        activeSources.forEach((source) => source.stop());
+        activeSources.clear();
+      }
+
+      function showPreviewError(error) {
+        isPlaying = false;
+        playbackRequestId++;
+        clearInterval(timerInterval);
+        clearInterval(sequenceInterval);
+        stopActiveSources();
+        syncPlayer();
+        document.getElementById("previewStatus").innerText =
+          `Preview unavailable: ${error.message}`;
+        console.error("Unable to play the sampled music preview:", error);
+      }
+
+      // Genre, mood, and instrument arrangement
       function playPreviewStep() {
         const track = getPreviewSettings();
         const noteIndex = track.melody[sequenceStep % track.melody.length];
@@ -687,65 +931,68 @@
         const phraseStep = step % 16;
 
         if (instruments.includes("Piano") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, isHook ? 0.065 : 0.045);
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, isHook ? 0.065 : 0.045, "piano");
         }
         if (instruments.includes("Guitar") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency * 1.5, halfBeatSeconds * 0.4, "square", 0.025);
+          playPreviewTone(melodyFrequency * 1.5, halfBeatSeconds * 0.4, "square", 0.025, "guitar");
         }
         if (instruments.includes("Synth") && step % (isHook ? 1 : 2) === 0) {
-          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.75, "sawtooth", 0.018);
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.75, "sawtooth", 0.018, "synth");
         }
         if (instruments.includes("Vocals") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018);
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018, "vocals");
         }
 
         if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
-          playPreviewTone(track.root / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05);
+          playPreviewTone(track.root / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05, "bass");
         }
         if (instruments.includes("Drums") && !isIntro && !isOutro) {
           const kickSteps = drumPatterns[track.style] || [0, 8];
           if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0 || track.style === "punjabi")) {
-            playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07);
+            playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07, "drums");
           }
           if (([4, 12].includes(phraseStep) || (track.style === "punjabi" && phraseStep === 4)) && !isBuild) {
-            playPreviewTone(track.style === "jazz" ? 210 : track.style === "bollywood" ? 230 : 185, 0.09, "triangle", 0.035);
+            playPreviewTone(track.style === "jazz" ? 210 : track.style === "bollywood" ? 230 : 185, 0.09, "triangle", 0.035, "drums");
           }
           if ((track.style === "punjabi" || track.style === "hiphop") && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook || track.style === "punjabi")) {
-            playPreviewTone(220, 0.075, "triangle", track.style === "punjabi" ? 0.035 : 0.025);
+            playPreviewTone(220, 0.075, "triangle", track.style === "punjabi" ? 0.035 : 0.025, "drums");
           }
           if ((track.style === "dance" || track.style === "hiphop" || track.style === "punjabi") && phraseStep % 2 === 1 && (isBuild || isHook)) {
-            playPreviewTone(6200, 0.035, "square", 0.009);
+            playPreviewTone(6200, 0.035, "square", 0.009, "drums");
           }
         }
 
         if (instruments.includes("Strings") && step % 4 === 0 && !isBuild) {
-          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, (interval + 12) / 12), halfBeatSeconds * 2, "sine", 0.014));
+          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, (interval + 12) / 12), halfBeatSeconds * 2, "sine", 0.014, "strings"));
+        }
+        if (instruments.includes("Brass") && step % 4 === 0 && !isIntro && !isOutro) {
+          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, (interval + 12) / 12), halfBeatSeconds * 1.2, "sawtooth", 0.025, "brass"));
         }
         if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 1.7, "sine", isHook ? 0.025 : 0.018);
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 1.7, "sine", isHook ? 0.025 : 0.018, "strings");
         }
         if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
-          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, interval / 12), halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018));
+          track.chord.forEach((interval) => playPreviewTone(track.root * Math.pow(2, interval / 12), halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018, "pad"));
         }
         if (instruments.includes("Arp") && (isBuild || isHook) && step % 2 === 0) {
           const chordTone = track.chord[(step / 2) % track.chord.length];
-          playPreviewTone(track.root * Math.pow(2, (chordTone + 12) / 12), halfBeatSeconds * 0.45, "triangle", 0.022);
+          playPreviewTone(track.root * Math.pow(2, (chordTone + 12) / 12), halfBeatSeconds * 0.45, "triangle", 0.022, "arp");
         }
 
         if (track.style === "bollywood" && instruments.includes("Drums") && [3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
-          playPreviewTone(220 + (phraseStep % 3) * 35, 0.075, "triangle", 0.025);
+          playPreviewTone(220 + (phraseStep % 3) * 35, 0.075, "triangle", 0.025, "drums");
         }
         if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
           const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
-          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022);
+          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022, "piano");
         }
 
         if ((isIntro || isOutro) && step % 8 === 0 && instruments.includes("Drums")) {
-          playPreviewTone(4200, 0.035, "square", 0.006);
+          playPreviewTone(4200, 0.035, "square", 0.006, "drums");
         }
 
         if (isOutro && step % 8 === 0 && instruments.includes("Pad")) {
-          playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012);
+          playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012, "pad");
         }
         sequenceStep = (sequenceStep + 1) % 16;
       }
@@ -765,9 +1012,12 @@
 
       // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
+        playbackRequestId++;
         isPlaying = false;
         clearInterval(timerInterval);
         clearInterval(sequenceInterval);
+        stopActiveSources();
+        document.getElementById("mainPlayBtn").disabled = false;
         timerSeconds = 0;
         sequenceStep = 0;
         syncPlayer();
