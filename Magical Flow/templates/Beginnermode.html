@@ -343,7 +343,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi hip-hop · Live Dhol, recorded Dholak and sampled sitar</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Raw Punjabi hip-hop · Dhol, Dholak, sitar &amp; 808-style sub</p>
               </div>
               <button type="button" aria-label="Play or pause Midnight Dhol Cypher" aria-pressed="false" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -510,6 +510,7 @@
       let previewMasterGain = null;
       let previewCompressor = null;
       let liveDholBufferPromise = null;
+      let liveDholGainNode = null;
       let playbackRequestId = 0;
       const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
       const liveDholUrl = "https://upload.wikimedia.org/wikipedia/commons/0/09/DHOL_BEAT.wav";
@@ -630,6 +631,23 @@
         return "outro";
       }
 
+      function getPunjabiMix(track, section) {
+        if (section === "intro") return { dhol: 0.07, dholak: 0.08, sitar: 0.035, sub: 0.14 };
+        if (section === "build") return { dhol: 0.16, dholak: 0.22, sitar: 0.065, sub: 0.22 };
+        if (section === "hook") return { dhol: 0.22, dholak: 0.31, sitar: 0.085, sub: 0.30 };
+        if (section === "bridge") return { dhol: 0.13, dholak: 0.19, sitar: 0.060, sub: 0.18 };
+        if (section === "outro") return { dhol: 0.06, dholak: 0.10, sitar: 0.030, sub: 0.12 };
+        return { dhol: 0.14, dholak: 0.20, sitar: 0.050, sub: 0.20 };
+      }
+
+      function updateLiveDholMix(track, section) {
+        if (!liveDholGainNode || liveDholGainNode.gain.value < 0.001) return;
+        const now = previewAudioContext.currentTime;
+        liveDholGainNode.gain.cancelScheduledValues(now);
+        liveDholGainNode.gain.setValueAtTime(Math.max(liveDholGainNode.gain.value, 0.0001), now);
+        liveDholGainNode.gain.linearRampToValueAtTime(getPunjabiMix(track, section).dhol, now + 0.55);
+      }
+
       function getHarmony(track, step) {
         const isMinor = track.chord[1] === 3;
         const scale = isMinor
@@ -711,7 +729,7 @@
         button.disabled = true;
         const loadingTrack = getPreviewSettings();
         document.getElementById("previewStatus").innerText = loadingTrack.punjabiArrangement
-          ? "Loading live Dhol, Dholak and sitar samples..."
+          ? "Mixing raw Dhol, Dholak, sitar and Punjabi hip-hop sub..."
           : loadingTrack.style === "punjabi"
             ? "Loading live dhol recording and sampled instruments..."
             : "Loading sampled instruments...";
@@ -728,7 +746,7 @@
           await startLiveDholBacking(getPreviewSettings());
           if (requestId !== playbackRequestId || !isPlaying) return;
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
-            ? "Live Dhol + recorded Dholak + sampled sitar + synthesized sub-bass. No recorded adlibs are included."
+            ? "Raw live Dhol + hand-played Dholak + sampled sitar + 808-style sub, smoothly arranged in one Punjabi hip-hop mix"
             : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -958,11 +976,16 @@
         source.loop = true;
         source.playbackRate.value = playbackRate;
         gain.gain.setValueAtTime(0.0001, previewAudioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(0.3, previewAudioContext.currentTime + 0.08);
+        gain.gain.linearRampToValueAtTime(0.04, previewAudioContext.currentTime + 1.2);
+        gain.gain.linearRampToValueAtTime(getPunjabiMix(track, getSongSection(track.duration)).dhol, previewAudioContext.currentTime + 2.8);
         source.connect(gain);
         gain.connect(previewMasterGain);
+        liveDholGainNode = gain;
         activeSources.add(source);
-        source.onended = () => activeSources.delete(source);
+        source.onended = () => {
+          activeSources.delete(source);
+          if (liveDholGainNode === gain) liveDholGainNode = null;
+        };
         const offset = (timerSeconds * playbackRate) % buffer.duration;
         source.start(0, offset);
       }
@@ -1143,15 +1166,40 @@
         const phraseStep = step % 16;
 
         if (track.punjabiArrangement) {
-          if ([0, 8].includes(phraseStep)) {
-            playPunjabiLayer("sub", 55, 0.42, scheduledTime);
+          updateLiveDholMix(track, section);
+          const mix = getPunjabiMix(track, section);
+          const dholakPattern = isBuild || isHook
+            ? [1, 3, 5, 7, 9, 11, 13, 15]
+            : section === "bridge"
+              ? [3, 7, 11, 15]
+              : [3, 7, 11, 15];
+
+          if (isHook || isBuild || section === "bridge" || section === "outro") {
+            if ([0, 8].includes(phraseStep)) playPunjabiLayer("sub", 55, mix.sub, scheduledTime);
+          } else if (phraseStep === 0 && section !== "intro") {
+            playPunjabiLayer("sub", 55, mix.sub * 0.82, scheduledTime);
+          } else if (section === "intro" && phraseStep === 0) {
+            playPunjabiLayer("sub", 55, mix.sub * 0.5, scheduledTime);
           }
-          if ([3, 7, 11, 15].includes(phraseStep)) {
-            playPunjabiLayer("dholak", phraseStep % 8 === 3 ? 185 : 132, 0.28, scheduledTime);
+
+          if (!isIntro && dholakPattern.includes(phraseStep)) {
+            const accent = isHook ? 1.08 : isBuild ? 0.96 : 0.86;
+            const hit = Math.floor(phraseStep / 2) % 2 === 0 ? 185 : 132;
+            playPunjabiLayer("dholak", hit, mix.dholak * accent, scheduledTime);
           }
-          if ([0, 2, 6, 8, 10, 14].includes(phraseStep)) {
-            const sitarNote = track.root * Math.pow(2, track.scale[noteIndex] / 12);
-            playPreviewTone(sitarNote, 0.24, "triangle", 0.12, "sitar", scheduledTime);
+
+          const sitarPattern = isIntro
+            ? [0, 8]
+            : isOutro
+              ? [0, 10]
+              : isBuild || isHook
+                ? [2, 6, 10, 14]
+                : [2, 10];
+          if (sitarPattern.includes(phraseStep)) {
+            const sitarOctave = isIntro ? 2 : isHook ? 1 : 0;
+            const sitarNote = track.root * Math.pow(2, (track.scale[noteIndex] + sitarOctave * 12) / 12);
+            const duration = isIntro || isOutro ? 0.42 : isBuild ? 0.30 : 0.38;
+            playPreviewTone(sitarNote, duration, "triangle", mix.sitar, "sitar", scheduledTime);
           }
           sequenceStep = (sequenceStep + 1) % 32;
           return;
@@ -1382,9 +1430,20 @@
           }
           const sample = previewAudioContext.createBufferSource();
           const sampleGain = previewAudioContext.createGain();
+          const skinFilter = previewAudioContext.createBiquadFilter();
+          const pan = previewAudioContext.createStereoPanner();
           sample.buffer = liveDholakBuffer;
-          sampleGain.gain.setValueAtTime(volume, startTime);
-          sample.connect(sampleGain);
+          sample.playbackRate.setValueAtTime(frequency > 150 ? 1.018 : 0.985, startTime);
+          skinFilter.type = "bandpass";
+          skinFilter.frequency.setValueAtTime(frequency > 150 ? 420 : 260, startTime);
+          skinFilter.Q.setValueAtTime(1.1, startTime);
+          pan.pan.setValueAtTime(frequency > 150 ? 0.12 : -0.12, startTime);
+          sampleGain.gain.setValueAtTime(0.0001, startTime);
+          sampleGain.gain.linearRampToValueAtTime(volume, startTime + 0.006);
+          sampleGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.23);
+          sample.connect(skinFilter);
+          skinFilter.connect(pan);
+          pan.connect(sampleGain);
           sampleGain.connect(previewMasterGain);
           activeSources.add(sample);
           sample.onended = () => activeSources.delete(sample);
