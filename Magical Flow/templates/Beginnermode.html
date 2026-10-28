@@ -547,7 +547,7 @@
       };
       const punjabiInstrumentProfiles = {
         sitar: { gain: 0.48, pan: -0.24, lowpass: 6500, highpass: 150 },
-        tumbi: { gain: 0.42, pan: 0.18, lowpass: 6200, highpass: 220 },
+        tumbi: { gain: 0.68, pan: 0.18, lowpass: 7800, highpass: 240 },
         algoza: { gain: 0.40, pan: 0.20, lowpass: 6200, highpass: 280 },
         harmonium: { gain: 0.34, pan: -0.08, lowpass: 3600, highpass: 140 },
         sarangi: { gain: 0.38, pan: -0.20, lowpass: 4400, highpass: 210 },
@@ -1197,7 +1197,7 @@
             }
             const layerVolume = volume * (profile?.gain || 1);
             gain.gain.setValueAtTime(0.0001, startTime);
-            gain.gain.linearRampToValueAtTime(layerVolume, startTime + 0.012);
+            gain.gain.linearRampToValueAtTime(layerVolume, startTime + (instrument === "tumbi" ? 0.003 : 0.012));
             gain.gain.setValueAtTime(layerVolume, startTime + noteDuration);
             gain.gain.exponentialRampToValueAtTime(
               0.0001,
@@ -1302,7 +1302,7 @@
           const tumbiPattern = isHook || isBuild ? [7, 15] : [7];
           if (!isIntro && !isOutro && tumbiPattern.includes(phraseStep)) {
             const tumbiNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + 12) / 12);
-            playPreviewTone(tumbiNote, 0.10, "triangle", isHook ? 0.022 : 0.016, "tumbi", scheduledTime);
+            playPreviewTone(tumbiNote, 0.085, "triangle", isHook ? 0.052 : 0.040, "tumbi", scheduledTime);
           }
 
           const algozaPattern = isIntro || isOutro ? [0] : section === "bridge" ? [5] : [];
