@@ -1315,25 +1315,20 @@
             playPreviewTone(sarangiNote, 0.22, "sine", 0.014, "sarangi", scheduledTime);
           }
 
-          if (
-            !isIntro &&
-            !isOutro &&
-            ([0, 8].includes(phraseStep) || (section !== "bridge" && [6, 14].includes(phraseStep)))
-          ) {
-            const bassNote = [0, 8].includes(phraseStep)
-              ? harmony.rootFrequency / 2
-              : harmony.rootFrequency * (phraseStep === 6 ? 0.75 : 0.667);
-            const bassAccent = [0, 8].includes(phraseStep) ? 0.068 : isHook ? 0.038 : 0.028;
-            playPreviewTone(bassNote, halfBeatSeconds * 0.68, "triangle", bassAccent, "bass", scheduledTime);
+          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
+            const bassAccent = isHook ? 0.074 : section === "bridge" ? 0.052 : 0.066;
+            playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 0.72, "triangle", bassAccent, "bass", scheduledTime);
           }
 
           const tablaSteps = section === "bridge" ? [2] : [2, 10];
           if (!isIntro && !isOutro && tablaSteps.includes(phraseStep)) {
-            playPunjabiLayer("tabla", 145, isHook ? 0.024 : 0.018, scheduledTime, phraseStep === 2 ? -0.10 : 0.10);
+            const tablaPitch = phraseStep === 2 ? 145 : 190;
+            const tablaAccent = isHook ? 0.024 : 0.018;
+            playPunjabiLayer("tabla", tablaPitch, tablaAccent, scheduledTime, phraseStep === 2 ? -0.10 : 0.10);
           }
 
           if (!isIntro && !isOutro && section !== "bridge" && [0, 8].includes(phraseStep)) {
-            const kickAccent = isHook ? 0.12 : 0.095;
+            const kickAccent = isHook ? 0.14 : isBuild ? 0.11 : 0.085;
             playPunjabiLayer("punjabi-kick", 55, kickAccent, scheduledTime);
           }
 
