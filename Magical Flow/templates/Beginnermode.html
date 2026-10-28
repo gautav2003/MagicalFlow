@@ -204,7 +204,7 @@
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
             <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
-            <button type="button" onclick="setPrompt('Midnight Punjabi hip-hop cypher with a deep 808, live dhol groove, dholak, punchy tumbi riffs, warm harmonium, expressive sarangi and bright algoza phrases')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Punjabi hip-hop cypher</button>
+            <button type="button" onclick="setPrompt('Midnight Punjabi hip-hop instrumental with a deep 808, live dhol groove, hand-played dholak, bright tumbi hooks, expressive sitar and a few airy algoza phrases')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
 
@@ -245,12 +245,13 @@
         <!-- Instruments Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
-          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Punjabi selections include Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
+          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Punjabi selections can include Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bass</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Dholak" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dholak</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Synth</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Brass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Brass</span></label>
@@ -346,13 +347,13 @@
               <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original Punjabi Hip-Hop Demo -->
+            <!-- Original Punjabi folk-meets-hip-hop instrumental -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
-                <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi hip-hop · Dhol, Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla &amp; Chimta</p>
+                <h3 class="font-bold text-sm text-white">Midnight Dholwave</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi folk-meets-hip-hop · Dhol, Dholak, Tumbi, Sitar &amp; deep 808</p>
               </div>
-              <button type="button" aria-label="Play or pause Midnight Dhol Cypher" aria-pressed="false" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
             <!-- Original 1990s-Inspired Bollywood Romance Demo -->
@@ -432,7 +433,7 @@
           <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
           <p class="text-[10px] leading-4 text-zinc-500">
             Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
-            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi-style plucks use its banjo patch, Algoza uses flute, Harmonium uses reed organ, and Sarangi uses violin patches under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla and Chimta accents are synthesized in-browser. Samples require an internet connection.
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi-style plucks use its dulcimer patch, Algoza uses flute, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla and Chimta accents are synthesized in-browser. Samples require an internet connection.
           </p>
         </div>
 
@@ -481,7 +482,7 @@
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
         "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
         "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
-        "Midnight Dhol Cypher": {
+        "Midnight Dholwave": {
           duration: 196,
           bpm: 96,
           root: 146.83,
@@ -525,7 +526,7 @@
       const soundfontPrograms = {
         piano: "acoustic_grand_piano",
         guitar: "acoustic_guitar_steel",
-        tumbi: "banjo",
+        tumbi: "dulcimer",
         bass: "electric_bass_pick",
         synth: "lead_2_sawtooth",
         strings: "string_ensemble_1",
@@ -538,6 +539,13 @@
         pad: "pad_2_warm",
         arp: "vibraphone",
         vocals: "choir_aahs"
+      };
+      const punjabiInstrumentProfiles = {
+        sitar: { gain: 0.48, pan: -0.24, lowpass: 6500, highpass: 150 },
+        tumbi: { gain: 0.42, pan: 0.18, lowpass: 6200, highpass: 220 },
+        algoza: { gain: 0.40, pan: 0.20, lowpass: 6200, highpass: 280 },
+        harmonium: { gain: 0.34, pan: -0.08, lowpass: 3600, highpass: 140 },
+        sarangi: { gain: 0.38, pan: -0.20, lowpass: 4400, highpass: 210 },
       };
       const soundfontPromises = new Map();
       const sampleBufferCache = new Map();
@@ -590,7 +598,7 @@
             : preset.style;
         const styleArrangements = {
           bollywood: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
-          punjabi: ["Sitar", "Tumbi", "Algoza", "Harmonium", "Sarangi", "Tabla", "Chimta", "Bass", "Drums", "Pad"],
+          punjabi: ["Dholak", "Sitar", "Tumbi", "Algoza", "Bass", "Drums"],
         };
         const instruments = preset.punjabiArrangement
           ? []
@@ -643,12 +651,12 @@
       }
 
       function getPunjabiMix(track, section) {
-        if (section === "intro") return { dhol: 0.07, dholak: 0.08, sitar: 0.035, sub: 0.14 };
-        if (section === "build") return { dhol: 0.16, dholak: 0.22, sitar: 0.065, sub: 0.22 };
-        if (section === "hook") return { dhol: 0.22, dholak: 0.31, sitar: 0.085, sub: 0.30 };
-        if (section === "bridge") return { dhol: 0.13, dholak: 0.19, sitar: 0.060, sub: 0.18 };
-        if (section === "outro") return { dhol: 0.06, dholak: 0.10, sitar: 0.030, sub: 0.12 };
-        return { dhol: 0.14, dholak: 0.20, sitar: 0.050, sub: 0.20 };
+        if (section === "intro") return { dhol: 0.035, dholak: 0.028, sitar: 0.018, sub: 0.060 };
+        if (section === "build") return { dhol: 0.070, dholak: 0.052, sitar: 0.028, sub: 0.085 };
+        if (section === "hook") return { dhol: 0.105, dholak: 0.070, sitar: 0.032, sub: 0.110 };
+        if (section === "bridge") return { dhol: 0.055, dholak: 0.040, sitar: 0.024, sub: 0.075 };
+        if (section === "outro") return { dhol: 0.030, dholak: 0.025, sitar: 0.016, sub: 0.050 };
+        return { dhol: 0.062, dholak: 0.045, sitar: 0.026, sub: 0.080 };
       }
 
       function updateLiveDholMix(track, section) {
@@ -696,7 +704,13 @@
 
       document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
         input.addEventListener("change", () => {
-          if (input.name === "genre") genreWasCustomized = true;
+          if (input.name === "genre") {
+            genreWasCustomized = true;
+            if (["Punjabi Pop", "Bhangra"].includes(input.value)) {
+              const piano = document.querySelector('input[name="instruments"][value="Piano"]');
+              if (piano) piano.checked = false;
+            }
+          }
           handlePreviewSettingChange();
         });
       });
@@ -740,7 +754,7 @@
         button.disabled = true;
         const loadingTrack = getPreviewSettings();
         document.getElementById("previewStatus").innerText = loadingTrack.punjabiArrangement
-          ? "Mixing live Dhol, Dholak, Tumbi, Algoza, Harmonium, Sarangi and Punjabi hip-hop sub..."
+          ? "Mixing Punjabi Dhol, Dholak, Tumbi, Sitar and a deep hip-hop sub..."
           : loadingTrack.style === "punjabi"
             ? "Loading live dhol recording and sampled instruments..."
             : "Loading sampled instruments...";
@@ -752,12 +766,12 @@
 
           button.disabled = false;
           syncPlayer();
-          startTimer();
-          startAudioSequence();
           await startLiveDholBacking(getPreviewSettings());
           if (requestId !== playbackRequestId || !isPlaying) return;
+          startTimer();
+          startAudioSequence();
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
-            ? "Live Dhol + sampled Dholak, Tumbi, Algoza, Harmonium and Sarangi + Tabla/Chimta accents + 808-style sub"
+            ? "Punjabi folk-meets-hip-hop: live Dhol, Dholak, Tumbi, Sitar, airy Algoza and a chord-tuned 808"
             : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -804,7 +818,7 @@
             }
           }
           reverb.buffer = impulse;
-          reverbGain.gain.value = 0.12;
+          reverbGain.gain.value = 0.085;
           previewMasterGain.connect(reverb);
           reverb.connect(reverbGain);
           reverbGain.connect(previewCompressor);
@@ -987,9 +1001,16 @@
         source.loop = true;
         source.playbackRate.value = playbackRate;
         gain.gain.setValueAtTime(0.0001, previewAudioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(0.04, previewAudioContext.currentTime + 1.2);
+        gain.gain.linearRampToValueAtTime(0.025, previewAudioContext.currentTime + 1.2);
         gain.gain.linearRampToValueAtTime(getPunjabiMix(track, getSongSection(track.duration)).dhol, previewAudioContext.currentTime + 2.8);
-        source.connect(gain);
+        const lowCut = previewAudioContext.createBiquadFilter();
+        const pan = previewAudioContext.createStereoPanner();
+        lowCut.type = "highpass";
+        lowCut.frequency.setValueAtTime(38, previewAudioContext.currentTime);
+        pan.pan.setValueAtTime(-0.08, previewAudioContext.currentTime);
+        source.connect(lowCut);
+        lowCut.connect(pan);
+        pan.connect(gain);
         gain.connect(previewMasterGain);
         liveDholGainNode = gain;
         activeSources.add(source);
@@ -1111,22 +1132,45 @@
 
             const source = previewAudioContext.createBufferSource();
             const gain = previewAudioContext.createGain();
+            const panner = previewAudioContext.createStereoPanner();
+            const filter = previewAudioContext.createBiquadFilter();
             const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
             const noteDuration = Math.max(duration, 0.02);
             const releaseDuration = 0.14;
+            const isPunjabiMix = tracks[selectedTrack].style === "punjabi" ||
+              (genreWasCustomized && ["Punjabi Pop", "Bhangra"].includes(
+                document.querySelector('input[name="genre"]:checked')?.value
+              ));
+            const profile = isPunjabiMix ? punjabiInstrumentProfiles[instrument] : null;
             source.buffer = buffer;
             source.playbackRate.setValueAtTime(
               Math.pow(2, (targetNote - sampleNote) / 12),
               startTime
             );
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(profile?.lowpass || 16000, startTime);
+            panner.pan.setValueAtTime(profile?.pan || 0, startTime);
+            const highpass = profile ? previewAudioContext.createBiquadFilter() : null;
+            if (highpass) {
+              highpass.type = "highpass";
+              highpass.frequency.setValueAtTime(profile.highpass, startTime);
+            }
+            const layerVolume = volume * (profile?.gain || 1);
             gain.gain.setValueAtTime(0.0001, startTime);
-            gain.gain.linearRampToValueAtTime(volume, startTime + 0.012);
-            gain.gain.setValueAtTime(volume, startTime + noteDuration);
+            gain.gain.linearRampToValueAtTime(layerVolume, startTime + 0.012);
+            gain.gain.setValueAtTime(layerVolume, startTime + noteDuration);
             gain.gain.exponentialRampToValueAtTime(
               0.0001,
               startTime + noteDuration + releaseDuration
             );
-            source.connect(gain);
+            source.connect(filter);
+            if (highpass) {
+              filter.connect(highpass);
+              highpass.connect(panner);
+            } else {
+              filter.connect(panner);
+            }
+            panner.connect(gain);
             gain.connect(previewMasterGain);
             activeSources.add(source);
             source.onended = () => activeSources.delete(source);
@@ -1179,80 +1223,82 @@
         if (track.punjabiArrangement) {
           updateLiveDholMix(track, section);
           const mix = getPunjabiMix(track, section);
-          const dholakPattern = isBuild || isHook
-            ? [1, 3, 5, 7, 9, 11, 13, 15]
-            : section === "bridge"
+          const dholakPattern = isHook
+            ? [1, 3, 9, 11, 15]
+            : isBuild
               ? [3, 7, 11, 15]
-              : [3, 7, 11, 15];
+              : section === "bridge"
+                ? [3, 11]
+                : [3, 11];
 
           if (isHook || isBuild || section === "bridge" || section === "outro") {
-            if ([0, 8].includes(phraseStep)) playPunjabiLayer("sub", 55, mix.sub, scheduledTime);
+            if ([0, 8].includes(phraseStep)) playPunjabiLayer("sub", harmony.rootFrequency / 2, mix.sub * 0.72, scheduledTime);
           } else if (phraseStep === 0 && section !== "intro") {
-            playPunjabiLayer("sub", 55, mix.sub * 0.82, scheduledTime);
+            playPunjabiLayer("sub", harmony.rootFrequency / 2, mix.sub * 0.60, scheduledTime);
           } else if (section === "intro" && phraseStep === 0) {
-            playPunjabiLayer("sub", 55, mix.sub * 0.5, scheduledTime);
+            playPunjabiLayer("sub", harmony.rootFrequency / 2, mix.sub * 0.45, scheduledTime);
           }
 
           if (!isIntro && dholakPattern.includes(phraseStep)) {
-            const accent = isHook ? 1.08 : isBuild ? 0.96 : 0.86;
+            const accent = isHook ? 0.82 : isBuild ? 0.72 : 0.60;
             const hit = Math.floor(phraseStep / 2) % 2 === 0 ? 185 : 132;
-            playPunjabiLayer("dholak", hit, mix.dholak * accent, scheduledTime);
+            playPunjabiLayer("dholak", hit, mix.dholak * accent, scheduledTime, phraseStep % 4 === 3 ? 0.12 : -0.12);
           }
 
           const sitarPattern = isIntro
-            ? [0, 8]
+            ? [0]
             : isOutro
-              ? [0, 10]
+              ? [0]
               : isBuild || isHook
-                ? [2, 6, 10, 14]
-                : [2, 10];
+                ? [2, 10]
+                : [2];
           if (sitarPattern.includes(phraseStep)) {
             const sitarOctave = isIntro ? 2 : isHook ? 1 : 0;
-            const sitarNote = track.root * Math.pow(2, (track.scale[noteIndex] + sitarOctave * 12) / 12);
-            const duration = isIntro || isOutro ? 0.42 : isBuild ? 0.30 : 0.38;
-            playPreviewTone(sitarNote, duration, "triangle", mix.sitar, "sitar", scheduledTime);
+            const sitarNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + sitarOctave * 12) / 12);
+            const duration = isIntro || isOutro ? 0.26 : 0.18;
+            playPreviewTone(sitarNote, duration, "triangle", mix.sitar * 0.78, "sitar", scheduledTime);
           }
 
-          const tumbiPattern = isHook || isBuild ? [1, 3, 5, 9, 11, 13, 15] : [1, 5, 9, 13];
-          if (tumbiPattern.includes(phraseStep)) {
-            const tumbiNote = track.root * Math.pow(2, (track.scale[noteIndex] + 12) / 12);
-            playPreviewTone(tumbiNote, 0.16, "triangle", isHook ? 0.045 : 0.032, "tumbi", scheduledTime);
+          const tumbiPattern = isHook || isBuild ? [5, 13] : [5];
+          if (!isIntro && !isOutro && tumbiPattern.includes(phraseStep)) {
+            const tumbiNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(tumbiNote, 0.10, "triangle", isHook ? 0.022 : 0.016, "tumbi", scheduledTime);
           }
 
-          const algozaPattern = isIntro || isOutro ? [0, 8] : [0, 4, 8, 12];
+          const algozaPattern = isIntro || isOutro ? [0] : isHook ? [0, 8] : section === "bridge" ? [4] : [];
           if (algozaPattern.includes(phraseStep)) {
-            const algozaNote = track.root * Math.pow(2, (track.scale[noteIndex] + 12) / 12);
-            playPreviewTone(algozaNote, isHook ? 0.42 : 0.30, "sine", isHook ? 0.026 : 0.018, "algoza", scheduledTime);
+            const algozaOctave = isIntro || isOutro ? 1 : 0;
+            const algozaNote = melodyFrequency * Math.pow(2, algozaOctave);
+            playPreviewTone(algozaNote, isHook ? 0.22 : 0.18, "sine", isHook ? 0.014 : 0.010, "algoza", scheduledTime);
           }
 
-          if ([0, 8].includes(phraseStep) && !isBuild && !isOutro) {
+          if (section === "verse" && [4, 12].includes(phraseStep)) {
             harmony.chordFrequencies.forEach((frequency, index) => {
               playPreviewTone(
-                frequency / 2,
-                halfBeatSeconds * 2.6,
+                frequency,
+                halfBeatSeconds * 1.15,
                 "triangle",
-                isHook ? 0.012 : 0.009,
+                0.010,
                 "harmonium",
                 scheduledTime + index * 0.012
               );
             });
           }
 
-          if ([7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+          if (section === "bridge" && [6, 14].includes(phraseStep)) {
             const ornamentIndex = (noteIndex + 1) % track.scale.length;
-            const sarangiNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + 12) / 12);
-            playPreviewTone(sarangiNote, 0.22, "sine", isHook ? 0.022 : 0.014, "sarangi", scheduledTime);
+            const sarangiNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(sarangiNote, 0.17, "sine", 0.010, "sarangi", scheduledTime);
           }
 
-          if ([0, 4, 8, 12].includes(phraseStep)) {
-            const tablaPitch = phraseStep % 8 === 0 ? 145 : 205;
-            playPunjabiLayer("tabla", tablaPitch, isHook ? 0.055 : 0.040, scheduledTime);
-          } else if ((isBuild || isHook) && [6, 14].includes(phraseStep)) {
-            playPunjabiLayer("tabla", 230, 0.032, scheduledTime);
+          if (isHook && [4, 12].includes(phraseStep)) {
+            playPunjabiLayer("tabla", phraseStep === 4 ? 205 : 145, 0.018, scheduledTime, 0.10);
+          } else if (isBuild && phraseStep === 12) {
+            playPunjabiLayer("tabla", 205, 0.014, scheduledTime, 0.10);
           }
 
-          if ([2, 6, 10, 14].includes(phraseStep) && !isIntro && !isOutro) {
-            playPunjabiLayer("chimta", 5200, isHook ? 0.026 : 0.018, scheduledTime);
+          if (isHook && phraseStep === 6) {
+            playPunjabiLayer("chimta", 5200, 0.008, scheduledTime, 0.16);
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
@@ -1295,10 +1341,9 @@
         if (instruments.includes("Vocals") && step % melodyEvery === 0) {
           playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018, "vocals", scheduledTime);
         }
-        if ((instruments.includes("Flute") && track.style === "bollywood" || instruments.includes("Algoza") && track.style === "punjabi") && step % (isHook ? 1 : 2) === 0) {
+        if (instruments.includes("Flute") && track.style === "bollywood" && step % (isHook ? 1 : 2) === 0) {
           const fluteNote = melodyFrequency * 2;
-          const fluteInstrument = track.style === "punjabi" ? "algoza" : "flute";
-          playPreviewTone(fluteNote, halfBeatSeconds * (isHook ? 0.82 : 0.68), "sine", isHook ? 0.038 : 0.03, fluteInstrument, scheduledTime);
+          playPreviewTone(fluteNote, halfBeatSeconds * (isHook ? 0.82 : 0.68), "sine", isHook ? 0.038 : 0.03, "flute", scheduledTime);
           if ([7, 15].includes(phraseStep) && !isIntro && !isOutro) {
             const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12) * 2;
             playPreviewTone(graceNote, halfBeatSeconds * 0.22, "sine", 0.019, "flute", scheduledTime + halfBeatSeconds * 0.12);
@@ -1309,6 +1354,13 @@
           if (sitarStep && !isIntro && !isOutro) {
             playPreviewTone(melodyFrequency, halfBeatSeconds * 0.38, "triangle", track.style === "punjabi" ? 0.036 : 0.022, "sitar", scheduledTime);
           }
+        }
+        if (instruments.includes("Dholak") && track.style === "punjabi" && !isIntro && !isOutro && [1, 5, 9, 13].includes(phraseStep)) {
+          playPunjabiLayer("dholak", [1, 9].includes(phraseStep) ? 185 : 132, isHook ? 0.075 : 0.052, scheduledTime);
+        }
+        if (instruments.includes("Algoza") && track.style === "punjabi" && [0, 8].includes(phraseStep)) {
+          const algozaNote = melodyFrequency * 2;
+          playPreviewTone(algozaNote, halfBeatSeconds * 0.8, "sine", isHook ? 0.022 : 0.015, "algoza", scheduledTime);
         }
         if (instruments.includes("Tumbi") && track.style === "punjabi" && [1, 5, 9, 13].includes(phraseStep)) {
           playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.45, "triangle", isHook ? 0.04 : 0.028, "tumbi", scheduledTime);
@@ -1321,7 +1373,7 @@
         if (instruments.includes("Sarangi") && track.style === "punjabi" && [7, 15].includes(phraseStep)) {
           playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.65, "sine", 0.022, "sarangi", scheduledTime);
         }
-        if (instruments.includes("Tabla") && track.style === "punjabi" && [0, 4, 8, 12].includes(phraseStep)) {
+        if (instruments.includes("Tabla") && track.style === "punjabi" && [4, 12].includes(phraseStep)) {
           playPunjabiLayer("tabla", [0, 8].includes(phraseStep) ? 145 : 205, 0.045, scheduledTime);
         }
         if (instruments.includes("Chimta") && track.style === "punjabi" && [2, 6, 10, 14].includes(phraseStep)) {
@@ -1493,7 +1545,7 @@
         animateWaveform(isPlaying);
       }
 
-      function playPunjabiLayer(type, frequency, volume, scheduledTime) {
+      function playPunjabiLayer(type, frequency, volume, scheduledTime, panPosition = 0) {
         const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
         if (type === "dholak") {
           if (!liveDholakBuffer) {
@@ -1505,11 +1557,11 @@
           const skinFilter = previewAudioContext.createBiquadFilter();
           const pan = previewAudioContext.createStereoPanner();
           sample.buffer = liveDholakBuffer;
-          sample.playbackRate.setValueAtTime(frequency > 150 ? 1.08 : 0.82, startTime);
+          sample.playbackRate.setValueAtTime(frequency > 150 ? 1.04 : 0.88, startTime);
           skinFilter.type = "bandpass";
           skinFilter.frequency.setValueAtTime(frequency > 150 ? 420 : 260, startTime);
           skinFilter.Q.setValueAtTime(1.1, startTime);
-          pan.pan.setValueAtTime(frequency > 150 ? 0.12 : -0.12, startTime);
+          pan.pan.setValueAtTime(panPosition, startTime);
           sampleGain.gain.setValueAtTime(0.0001, startTime);
           sampleGain.gain.linearRampToValueAtTime(volume, startTime + 0.006);
           sampleGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.23);
@@ -1520,6 +1572,7 @@
           activeSources.add(sample);
           sample.onended = () => activeSources.delete(sample);
           sample.start(startTime);
+          sample.stop(startTime + 0.25);
           return;
         }
 
@@ -1528,6 +1581,7 @@
           const overtone = previewAudioContext.createOscillator();
           const gain = previewAudioContext.createGain();
           const filter = previewAudioContext.createBiquadFilter();
+          const pan = previewAudioContext.createStereoPanner();
           const duration = type === "tabla" ? 0.16 : 0.075;
           tone.type = type === "tabla" ? "sine" : "triangle";
           overtone.type = type === "tabla" ? "triangle" : "square";
@@ -1542,7 +1596,31 @@
           gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
           tone.connect(filter);
           overtone.connect(filter);
-          filter.connect(gain);
+          filter.connect(pan);
+          pan.pan.setValueAtTime(panPosition, startTime);
+          pan.connect(gain);
+          if (type === "chimta") {
+            const noise = previewAudioContext.createBufferSource();
+            const noiseFilter = previewAudioContext.createBiquadFilter();
+            const noiseBuffer = previewAudioContext.createBuffer(
+              1,
+              Math.ceil(previewAudioContext.sampleRate * duration),
+              previewAudioContext.sampleRate
+            );
+            const noiseSamples = noiseBuffer.getChannelData(0);
+            for (let index = 0; index < noiseSamples.length; index += 1) {
+              noiseSamples[index] = Math.random() * 2 - 1;
+            }
+            noise.buffer = noiseBuffer;
+            noiseFilter.type = "highpass";
+            noiseFilter.frequency.setValueAtTime(5800, startTime);
+            noise.connect(noiseFilter);
+            noiseFilter.connect(pan);
+            activeSources.add(noise);
+            noise.onended = () => activeSources.delete(noise);
+            noise.start(startTime);
+            noise.stop(startTime + duration);
+          }
           gain.connect(previewMasterGain);
           [tone, overtone].forEach((source) => {
             activeSources.add(source);
@@ -1556,6 +1634,7 @@
         const oscillator = previewAudioContext.createOscillator();
         const gain = previewAudioContext.createGain();
         const filter = previewAudioContext.createBiquadFilter();
+        const pan = previewAudioContext.createStereoPanner();
         const duration = 0.42;
 
         if (type === "sub") {
@@ -1572,7 +1651,9 @@
         }
 
         oscillator.connect(filter);
-        filter.connect(gain);
+        filter.connect(pan);
+        pan.pan.setValueAtTime(panPosition, startTime);
+        pan.connect(gain);
         gain.connect(previewMasterGain);
         activeSources.add(oscillator);
         oscillator.onended = () => activeSources.delete(oscillator);
