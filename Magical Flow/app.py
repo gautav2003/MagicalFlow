@@ -375,7 +375,10 @@ def beginner_mode():
 @app.route('/beginner-output')
 @login_required
 def beginner_output():
-    return render_template('Beginneroutput.html')
+    return render_template(
+        'Beginneroutput.html',
+        prompt=request.args.get('prompt', '').strip(),
+    )
 
 @app.route('/pro-studio-mode')
 @login_required

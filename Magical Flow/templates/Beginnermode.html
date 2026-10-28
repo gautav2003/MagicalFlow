@@ -67,6 +67,35 @@
         background: rgba(45, 18, 85, 0.9);
       }
 
+      .punjabi-card {
+        background: linear-gradient(180deg, rgba(35, 10, 60, 0.95) 0%, rgba(12, 2, 24, 0.98) 100%);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.45);
+      }
+      .instrument-badge {
+        background: rgba(249, 115, 22, 0.12);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        color: #fed7aa;
+        transition: all 0.2s ease;
+      }
+      .instrument-badge:hover,
+      .instrument-badge.active {
+        background: #c2410c;
+        color: #ffffff;
+        border-color: #fb923c;
+        box-shadow: 0 0 12px rgba(249, 115, 22, 0.35);
+      }
+      .adlib-btn {
+        background: rgba(168, 85, 247, 0.14);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #e9d5ff;
+        transition: all 0.15s ease;
+      }
+      .adlib-btn:hover {
+        background: #7e22ce;
+        color: #ffffff;
+      }
+
       /* Vintage Cassette Player Styles */
       .cassette-shell {
         position: relative;
@@ -334,13 +363,51 @@
               <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original Punjabi Hip-Hop Demo -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-white">Midnight Dhol Cypher</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D Min · Punjabi hip-hop with dhol groove</p>
+            <!-- Punjabi Cypher Studio -->
+            <section class="inner-card punjabi-card md:col-span-2 rounded-xl p-5 space-y-5" aria-labelledby="punjabiTrackTitle">
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 id="punjabiTrackTitle" class="font-bold text-base text-white">Midnight Dhol Cypher</h3>
+                  <p class="mt-1 text-[11px] text-orange-100/70">Punjabi hip-hop · 96 BPM · live Dhol recording with optional beat previews and vocal adlibs</p>
+                </div>
+                <button type="button" aria-label="Play or pause Midnight Dhol Cypher" aria-pressed="false" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-9 h-9 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
               </div>
-              <button type="button" aria-label="Play or pause Midnight Dhol Cypher" onclick="togglePlay('Midnight Dhol Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+
+              <div class="space-y-2">
+                <label for="songPrompt" class="block text-xs font-semibold text-zinc-200">Punjabi beat prompt</label>
+                <textarea id="songPrompt" rows="2" maxlength="500" class="w-full bg-[#0d041a] border border-orange-500/30 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-400" placeholder="Describe the Punjabi hip-hop beat you want to create...">Midnight Punjabi hip-hop cypher with a live Dhol groove, Tumbi-style accents, deep bass and energetic Punjabi adlibs.</textarea>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold text-zinc-200">Punjabi instrument previews</h4>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" onclick="previewPunjabiSound('dhol').catch(showPunjabiPreviewError)" class="instrument-badge p-3 rounded-xl text-left text-xs font-bold">🪘 Live Dhol</button>
+                  <button type="button" onclick="previewPunjabiSound('tumbi').catch(showPunjabiPreviewError)" class="instrument-badge p-3 rounded-xl text-left text-xs font-bold">🪕 Tumbi-style</button>
+                  <button type="button" onclick="previewPunjabiSound('dholak').catch(showPunjabiPreviewError)" class="instrument-badge p-3 rounded-xl text-left text-xs font-bold">🥁 Dholak-style</button>
+                  <button type="button" onclick="previewPunjabiSound('sub').catch(showPunjabiPreviewError)" class="instrument-badge p-3 rounded-xl text-left text-xs font-bold">🔊 Sub-bass</button>
+                </div>
+                <p class="text-[10px] leading-4 text-zinc-400">Live Dhol uses Johnny Kalsi’s recording. Tumbi-style, Dholak-style and sub-bass buttons are synthesized previews.</p>
+              </div>
+
+              <div class="space-y-2">
+                <h4 class="text-xs font-semibold text-zinc-200">Punjabi vocal adlibs</h4>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" onclick="playPunjabiAdlib('Balle Balle!')" class="adlib-btn p-2.5 rounded-xl text-xs font-bold">🗣️ Balle Balle!</button>
+                  <button type="button" onclick="playPunjabiAdlib('O ho!')" class="adlib-btn p-2.5 rounded-xl text-xs font-bold">🗣️ O ho!</button>
+                  <button type="button" onclick="playPunjabiAdlib('Chak de phatte!')" class="adlib-btn p-2.5 rounded-xl text-xs font-bold">🗣️ Chak de phatte!</button>
+                  <button type="button" onclick="playPunjabiAdlib('Oye hoye!')" class="adlib-btn p-2.5 rounded-xl text-xs font-bold">🗣️ Oye hoye!</button>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button type="button" id="punjabiLoopBtn" aria-pressed="false" onclick="triggerCypherLoop()" class="w-full sm:flex-grow py-3 rounded-xl bg-gradient-to-r from-orange-700 to-amber-600 border border-orange-400/50 text-xs font-bold text-white hover:from-orange-600 hover:to-amber-500 transition-all">
+                  🔥 Play live Dhol cypher loop
+                </button>
+                <button type="button" onclick="generatePunjabiTrack()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-purple-950 border border-purple-500/50 text-xs font-bold text-purple-200 hover:bg-purple-900 transition-all">
+                  Save &amp; open output 🎵
+                </button>
+              </div>
+              <p id="punjabiStatus" class="text-[10px] text-orange-200/80" aria-live="polite">Ready. Browser voice synthesis is used for adlibs when supported.</p>
             </div>
 
             <!-- Original 1990s-Inspired Bollywood Romance Demo -->
@@ -524,6 +591,8 @@
       const soundfontPromises = new Map();
       const sampleBufferCache = new Map();
       const activeSources = new Set();
+      let cypherInterval = null;
+      const punjabiAdlibs = ["Balle Balle!", "O ho!", "Chak de phatte!", "Oye hoye!"];
 
       const genreStyles = {
         "Lo-Fi": "lofi",
@@ -672,6 +741,12 @@
 
       async function togglePlay(trackName) {
         if (trackName && trackName !== selectedTrack) {
+          if (cypherInterval !== null) {
+            window.speechSynthesis?.cancel();
+            document.getElementById("punjabiStatus").innerText = "Live Dhol cypher loop stopped.";
+          }
+          clearInterval(cypherInterval);
+          cypherInterval = null;
           playbackRequestId++;
           clearInterval(timerInterval);
           clearInterval(sequenceInterval);
@@ -685,6 +760,11 @@
           isPlaying = !isPlaying;
         }
         if (!isPlaying) {
+          clearInterval(cypherInterval);
+          cypherInterval = null;
+          if (selectedTrack === "Midnight Dhol Cypher") {
+            window.speechSynthesis?.cancel();
+          }
           playbackRequestId++;
           clearInterval(timerInterval);
           clearInterval(sequenceInterval);
@@ -1266,6 +1346,9 @@
 
       // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
+        clearInterval(cypherInterval);
+        cypherInterval = null;
+        window.speechSynthesis?.cancel();
         playbackRequestId++;
         isPlaying = false;
         clearInterval(timerInterval);
@@ -1312,7 +1395,9 @@
         document.querySelectorAll(".track-play-btn").forEach((button) => {
           const card = button.closest(".inner-card");
           const title = card.querySelector("h3").innerText;
-          button.innerText = title === selectedTrack && isPlaying ? "Ⅱ" : "▶";
+          const trackIsPlaying = title === selectedTrack && isPlaying;
+          button.innerText = trackIsPlaying ? "Ⅱ" : "▶";
+          button.setAttribute("aria-pressed", String(trackIsPlaying));
         });
         document.getElementById("selectedTrackLabel").innerText = selectedTrack;
         document.getElementById("tapeStatus").innerText = isPlaying ? "PLAY" : "STOP";
@@ -1322,6 +1407,171 @@
         document.getElementById("playbackSeek").value = timerSeconds;
         document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(duration)}`;
         animateWaveform(isPlaying);
+        syncPunjabiLoopButton();
+      }
+
+      function syncPunjabiLoopButton() {
+        const button = document.getElementById("punjabiLoopBtn");
+        if (!button) return;
+        const active = cypherInterval !== null;
+        button.setAttribute("aria-pressed", String(active));
+        button.innerText = active
+          ? "■ Stop live Dhol cypher loop"
+          : "🔥 Play live Dhol cypher loop";
+      }
+
+      async function previewPunjabiSound(type) {
+        await startPreviewAudio();
+        const now = previewAudioContext.currentTime;
+        let source;
+        let duration;
+
+        if (type === "dhol") {
+          const buffer = await loadLiveDholRecording();
+          source = previewAudioContext.createBufferSource();
+          const gain = previewAudioContext.createGain();
+          duration = Math.min(1.6, buffer.duration);
+          source.buffer = buffer;
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(0.42, now + 0.02);
+          gain.gain.setValueAtTime(0.42, now + Math.max(0.03, duration - 0.12));
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          source.connect(gain);
+          gain.connect(previewMasterGain);
+          source.start(now, 0, duration);
+          source.stop(now + duration);
+        } else {
+          source = previewAudioContext.createOscillator();
+          const gain = previewAudioContext.createGain();
+          const filter = previewAudioContext.createBiquadFilter();
+          if (type === "tumbi") {
+            duration = 0.32;
+            source.type = "sawtooth";
+            source.frequency.setValueAtTime(587.33, now);
+            source.frequency.exponentialRampToValueAtTime(540, now + duration);
+            filter.type = "lowpass";
+            filter.frequency.value = 2200;
+            gain.gain.setValueAtTime(0.24, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          } else if (type === "dholak") {
+            duration = 0.2;
+            source.type = "triangle";
+            source.frequency.setValueAtTime(190, now);
+            source.frequency.exponentialRampToValueAtTime(95, now + duration);
+            filter.type = "lowpass";
+            filter.frequency.value = 900;
+            gain.gain.setValueAtTime(0.32, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          } else if (type === "sub") {
+            duration = 0.7;
+            source.type = "sine";
+            source.frequency.setValueAtTime(70, now);
+            source.frequency.exponentialRampToValueAtTime(36, now + duration);
+            filter.type = "lowpass";
+            filter.frequency.value = 150;
+            gain.gain.setValueAtTime(0.38, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          } else {
+            throw new Error(`Unknown Punjabi preview sound: ${type}`);
+          }
+          source.connect(filter);
+          filter.connect(gain);
+          gain.connect(previewMasterGain);
+          source.start(now);
+          source.stop(now + duration);
+        }
+
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        document.getElementById("punjabiStatus").innerText =
+          type === "dhol" ? "Playing a live Dhol excerpt by Johnny Kalsi." : `Playing synthesized ${type} preview.`;
+      }
+
+      function playPunjabiAdlib(adlibText) {
+        if (!("speechSynthesis" in window)) {
+          document.getElementById("punjabiStatus").innerText =
+            "Speech synthesis is not available in this browser.";
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(adlibText);
+        utterance.lang = "en-IN";
+        utterance.pitch = 1.25;
+        utterance.rate = 1.12;
+        utterance.volume = 1;
+        utterance.onstart = () => {
+          document.getElementById("punjabiStatus").innerText =
+            "Playing a browser-synthesized Punjabi adlib.";
+        };
+        utterance.onerror = (event) => {
+          document.getElementById("punjabiStatus").innerText =
+            `Could not play the adlib: ${event.error}.`;
+        };
+        utterance.onend = () => {
+          if (cypherInterval === null) {
+            document.getElementById("punjabiStatus").innerText =
+              "Adlib finished. Voice is synthesized by your browser.";
+          }
+        };
+        window.speechSynthesis.speak(utterance);
+      }
+
+      async function triggerCypherLoop() {
+        if (cypherInterval !== null) {
+          clearInterval(cypherInterval);
+          cypherInterval = null;
+          if (selectedTrack === "Midnight Dhol Cypher" && isPlaying) stopPlayer();
+          window.speechSynthesis?.cancel();
+          document.getElementById("punjabiStatus").innerText = "Live Dhol cypher loop stopped.";
+          syncPunjabiLoopButton();
+          return;
+        }
+
+        try {
+          if (selectedTrack !== "Midnight Dhol Cypher" || !isPlaying) {
+            await togglePlay("Midnight Dhol Cypher");
+          }
+          if (!isPlaying || selectedTrack !== "Midnight Dhol Cypher") return;
+
+          let beatCount = 0;
+          const beatIntervalMs = 60000 / getPreviewSettings().bpm;
+          cypherInterval = setInterval(() => {
+            if (beatCount % 2 === 1) {
+              previewPunjabiSound("dholak").catch(showPunjabiPreviewError);
+            }
+            if (beatCount % 4 === 0) {
+              previewPunjabiSound("tumbi").catch(showPunjabiPreviewError);
+            }
+            if (beatCount % 4 === 2) {
+              previewPunjabiSound("sub").catch(showPunjabiPreviewError);
+            }
+            if (beatCount > 0 && beatCount % 8 === 0) {
+              const adlib = punjabiAdlibs[Math.floor(Math.random() * punjabiAdlibs.length)];
+              playPunjabiAdlib(adlib);
+            }
+            beatCount += 1;
+          }, beatIntervalMs);
+          document.getElementById("punjabiStatus").innerText =
+            "Live Dhol loop playing with synthesized Tumbi-style, Dholak-style and sub-bass accents.";
+          syncPunjabiLoopButton();
+        } catch (error) {
+          showPunjabiPreviewError(error);
+        }
+      }
+
+      function showPunjabiPreviewError(error) {
+        document.getElementById("punjabiStatus").innerText = `Punjabi preview unavailable: ${error.message}`;
+        console.error("Unable to play the Punjabi preview:", error);
+      }
+
+      function generatePunjabiTrack() {
+        const prompt =
+          document.getElementById("songPrompt").value.trim() ||
+          "Midnight Dhol Cypher - Punjabi hip-hop with live Dhol and vocal adlibs";
+        const outputUrl = new URL("{{ url_for('beginner_output') }}", window.location.href);
+        outputUrl.searchParams.set("prompt", prompt);
+        window.location.href = outputUrl.toString();
       }
 
       // Vintage Cassette Player: display helpers
