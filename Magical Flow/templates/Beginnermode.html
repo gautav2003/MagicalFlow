@@ -535,7 +535,7 @@
         strings: "string_ensemble_1",
         sarangi: "violin",
         flute: "flute",
-        algoza: "flute",
+        algoza: "pan_flute",
         harmonium: "reed_organ",
         sitar: "sitar",
         brass: "brass_section",
@@ -547,7 +547,7 @@
         sitar: { gain: 0.48, pan: -0.24, lowpass: 6500, highpass: 150 },
         tumbi: { gain: 0.68, pan: 0.18, lowpass: 7800, highpass: 240 },
         ektara: { gain: 0.34, pan: -0.12, lowpass: 4200, highpass: 180, attack: 0.008, release: 0.20 },
-        algoza: { gain: 0.58, pan: 0.20, lowpass: 6600, highpass: 320, attack: 0.025, release: 0.18 },
+        algoza: { gain: 0.68, pan: 0.20, lowpass: 6100, highpass: 260, attack: 0.035, release: 0.22 },
         harmonium: { gain: 0.34, pan: -0.08, lowpass: 3600, highpass: 140 },
         sarangi: { gain: 0.38, pan: -0.20, lowpass: 4400, highpass: 210 },
         bass: { gain: 0.72, pan: 0, lowpass: 1800, highpass: 42, attack: 0.008, release: 0.12 },
@@ -1296,13 +1296,17 @@
             playPreviewTone(harmony.rootFrequency, 0.22, "triangle", 0.025, "ektara", scheduledTime);
           }
 
-          const algozaPattern = isIntro || isOutro ? [8] : section === "bridge" ? [4, 12] : [4, 12];
+          const algozaPattern = isIntro || isOutro ? [8] : [4, 12];
           if (algozaPattern.includes(phraseStep)) {
-            const algozaNote = melodyFrequency * (isIntro || isOutro ? 2 : 1);
-            playPreviewTone(algozaNote, halfBeatSeconds * 0.72, "sine", isHook ? 0.040 : 0.028, "algoza", scheduledTime);
-          }
-          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
-            playPreviewTone(harmony.rootFrequency * 2, halfBeatSeconds * 1.15, "sine", 0.005, "algoza", scheduledTime);
+            const algozaNote = melodyFrequency * 2;
+            const phraseDuration = section === "bridge" ? 1.25 : 1.05;
+            playPreviewTone(algozaNote, halfBeatSeconds * phraseDuration, "sine", isHook ? 0.046 : 0.032, "algoza", scheduledTime);
+
+            if (isHook && phraseStep === 12) {
+              const ornamentIndex = (noteIndex + 1) % track.scale.length;
+              const ornamentNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
+              playPreviewTone(ornamentNote, halfBeatSeconds * 0.24, "sine", 0.018, "algoza", scheduledTime + halfBeatSeconds * 0.86);
+            }
           }
 
           if (section === "bridge" && [1, 9].includes(phraseStep)) {
