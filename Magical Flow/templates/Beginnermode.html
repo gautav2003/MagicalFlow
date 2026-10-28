@@ -204,7 +204,7 @@
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
             <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
-            <button type="button" onclick="setPrompt('Midnight Punjabi hip-hop instrumental with a deep 808, live dhol groove, hand-played dholak, bright tumbi hooks, expressive sitar and a few airy algoza phrases')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
+            <button type="button" onclick="setPrompt('Midnight Dholwave: polished Punjabi folk-meets-hip-hop instrumental, live dhol and dholak, deep tuned 808, tight hip-hop kick and snare, crisp restrained hi-hats, bright tumbi and sitar hook, spacious algoza accents, warm bass-forward mix, clear groove and no crowded layers')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
 
@@ -351,7 +351,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Midnight Dholwave</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi folk-meets-hip-hop · Dhol, Dholak, Tumbi, Sitar &amp; deep 808</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi folk-meets-hip-hop · Dhol, Dholak, Tumbi, Sitar, 808, kick &amp; snare</p>
               </div>
               <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -771,7 +771,7 @@
           startTimer();
           startAudioSequence();
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
-            ? "Punjabi folk-meets-hip-hop: live Dhol, Dholak, Tumbi, Sitar, airy Algoza and a chord-tuned 808"
+            ? "Punjabi folk-meets-hip-hop: Dhol, Dholak, tuned 808, tight kick/snare, crisp hats, Tumbi and Sitar hooks"
             : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -1291,14 +1291,28 @@
             playPreviewTone(sarangiNote, 0.17, "sine", 0.010, "sarangi", scheduledTime);
           }
 
-          if (isHook && [4, 12].includes(phraseStep)) {
-            playPunjabiLayer("tabla", phraseStep === 4 ? 205 : 145, 0.018, scheduledTime, 0.10);
-          } else if (isBuild && phraseStep === 12) {
-            playPunjabiLayer("tabla", 205, 0.014, scheduledTime, 0.10);
+          if (isHook && phraseStep === 12) {
+            playPunjabiLayer("tabla", 205, 0.012, scheduledTime, 0.10);
           }
 
-          if (isHook && phraseStep === 6) {
-            playPunjabiLayer("chimta", 5200, 0.008, scheduledTime, 0.16);
+          if (isHook && phraseStep === 7) {
+            playPunjabiLayer("chimta", 5200, 0.006, scheduledTime, 0.16);
+          }
+
+          if (!isIntro && !isOutro) {
+            if ([0, 8].includes(phraseStep)) {
+              playPunjabiLayer("hiphop-kick", 58, isHook ? 0.050 : 0.038, scheduledTime);
+            } else if ([6, 14].includes(phraseStep)) {
+              playPunjabiLayer("hiphop-kick", 55, isHook ? 0.066 : 0.050, scheduledTime);
+            }
+
+            if ([2, 10].includes(phraseStep)) {
+              playPunjabiLayer("hiphop-snare", 185, isHook ? 0.036 : 0.028, scheduledTime, 0.02);
+            }
+
+            if ([3, 7, 11, 15].includes(phraseStep)) {
+              playPunjabiLayer("hiphop-hat", 7200, isHook ? 0.010 : 0.007, scheduledTime, 0.12);
+            }
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
@@ -1573,6 +1587,78 @@
           sample.onended = () => activeSources.delete(sample);
           sample.start(startTime);
           sample.stop(startTime + 0.25);
+          return;
+        }
+
+        if (type === "hiphop-kick") {
+          const kick = previewAudioContext.createOscillator();
+          const gain = previewAudioContext.createGain();
+          const filter = previewAudioContext.createBiquadFilter();
+          const duration = 0.22;
+          kick.type = "sine";
+          kick.frequency.setValueAtTime(frequency * 2.1, startTime);
+          kick.frequency.exponentialRampToValueAtTime(frequency, startTime + 0.10);
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(145, startTime);
+          gain.gain.setValueAtTime(0.0001, startTime);
+          gain.gain.linearRampToValueAtTime(volume, startTime + 0.004);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          kick.connect(filter);
+          filter.connect(gain);
+          gain.connect(previewMasterGain);
+          activeSources.add(kick);
+          kick.onended = () => activeSources.delete(kick);
+          kick.start(startTime);
+          kick.stop(startTime + duration);
+          return;
+        }
+
+        if (type === "hiphop-snare" || type === "hiphop-hat") {
+          const duration = type === "hiphop-snare" ? 0.14 : 0.055;
+          const noise = previewAudioContext.createBufferSource();
+          const noiseBuffer = previewAudioContext.createBuffer(
+            1,
+            Math.ceil(previewAudioContext.sampleRate * duration),
+            previewAudioContext.sampleRate
+          );
+          const noiseSamples = noiseBuffer.getChannelData(0);
+          for (let index = 0; index < noiseSamples.length; index += 1) {
+            noiseSamples[index] = Math.random() * 2 - 1;
+          }
+          const noiseFilter = previewAudioContext.createBiquadFilter();
+          const noiseGain = previewAudioContext.createGain();
+          const pan = previewAudioContext.createStereoPanner();
+          noise.buffer = noiseBuffer;
+          noiseFilter.type = type === "hiphop-snare" ? "bandpass" : "highpass";
+          noiseFilter.frequency.setValueAtTime(type === "hiphop-snare" ? 1900 : 6800, startTime);
+          noiseFilter.Q.setValueAtTime(type === "hiphop-snare" ? 0.8 : 0.7, startTime);
+          noiseGain.gain.setValueAtTime(0.0001, startTime);
+          noiseGain.gain.linearRampToValueAtTime(volume, startTime + 0.003);
+          noiseGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          pan.pan.setValueAtTime(panPosition, startTime);
+          noise.connect(noiseFilter);
+          noiseFilter.connect(pan);
+          pan.connect(noiseGain);
+          noiseGain.connect(previewMasterGain);
+          activeSources.add(noise);
+          noise.onended = () => activeSources.delete(noise);
+          noise.start(startTime);
+          noise.stop(startTime + duration);
+
+          if (type === "hiphop-snare") {
+            const body = previewAudioContext.createOscillator();
+            const bodyGain = previewAudioContext.createGain();
+            body.type = "triangle";
+            body.frequency.setValueAtTime(180, startTime);
+            bodyGain.gain.setValueAtTime(volume * 0.48, startTime);
+            bodyGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.09);
+            body.connect(bodyGain);
+            bodyGain.connect(previewMasterGain);
+            activeSources.add(body);
+            body.onended = () => activeSources.delete(body);
+            body.start(startTime);
+            body.stop(startTime + 0.09);
+          }
           return;
         }
 
