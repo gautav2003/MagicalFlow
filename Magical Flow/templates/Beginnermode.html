@@ -1,12 +1,20 @@
 <!doctype html>
 <html lang="en" class="h-full">
   <head>
+    <!--
+      BEGINNER MODE FILE GUIDE
+      1. PAGE STYLES: theme, player and featured romance card
+      2. PAGE LAYOUT: navigation and music-generation workspace
+      3. FEATURED ROMANCE: Moonlit card, prompt, instruments and actions
+      4. PAGE INTERACTIONS: romance audio, track previews and recording
+    -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magical Flow - Beginner Mode</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- PAGE STYLES -->
     <style>
       body {
         font-family: "Inter", sans-serif;
@@ -141,6 +149,37 @@
           inset 0 1px rgba(255, 255, 255, 0.35),
           0 1px 0 #3b0764;
       }
+      /* FEATURE: Moonlit Bollywood Romance card */
+      .sanu-card {
+        background: linear-gradient(180deg, rgba(45, 10, 60, 0.95) 0%, rgba(15, 3, 25, 0.98) 100%);
+        border: 1px solid rgba(244, 63, 94, 0.45);
+        box-shadow: 0 4px 35px rgba(0, 0, 0, 0.55);
+      }
+      .sanu-badge {
+        background: rgba(244, 63, 94, 0.15);
+        border: 1px solid rgba(244, 63, 94, 0.5);
+        color: #fda4af;
+        transition: all 0.2s ease;
+      }
+      .sanu-badge:hover,
+      .sanu-badge.active {
+        background: #e11d48;
+        color: #ffffff;
+        border-color: #f43f5e;
+        box-shadow: 0 0 15px rgba(244, 63, 94, 0.6);
+      }
+      .sanu-badge:focus-visible,
+      .sanu-play-button:focus-visible {
+        outline: 2px solid #fda4af;
+        outline-offset: 2px;
+      }
+      .sanu-play-button {
+        background: linear-gradient(110deg, #be123c, #c026d3);
+        border: 1px solid rgba(253, 164, 175, 0.65);
+      }
+      .sanu-play-button:hover {
+        background: linear-gradient(110deg, #e11d48, #d946ef);
+      }
       @media (prefers-reduced-motion: reduce) {
         .cassette-reel.spinning {
           animation: none;
@@ -148,6 +187,7 @@
       }
     </style>
   </head>
+  <!-- PAGE LAYOUT -->
   <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
     <!-- Top Navigation Header -->
     <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
@@ -356,14 +396,66 @@
               <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original 1990s-Inspired Bollywood Romance Demo -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · A Min · Original 90s-inspired Bollywood arrangement</p>
+            <!-- FEATURE: Moonlit Bollywood Romance (Kumar Sanu 90s ballad layout) -->
+            <section class="sanu-card rounded-2xl p-5 sm:p-6 space-y-5" aria-labelledby="moonlitTitle">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <span class="inline-flex items-center gap-2 rounded-full bg-rose-950/80 border border-rose-500/50 px-3 py-1 text-[9px] font-bold uppercase tracking-wider text-rose-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-300"></span>
+                    Featured Romantic Arrangement
+                  </span>
+                  <h3 id="moonlitTitle" class="mt-2 text-lg font-black text-white">Moonlit Bollywood Romance</h3>
+                  <p class="mt-1 text-[11px] leading-relaxed text-zinc-400">
+                    92 BPM · A minor · Vocal lead, nylon guitar, strings, bansuri and tabla
+                  </p>
+                </div>
+                <span class="shrink-0 rounded-lg bg-black/20 px-2.5 py-1 text-[9px] font-mono text-rose-200">90s Bollywood</span>
               </div>
-              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
+
+              <div class="space-y-2">
+                <label for="songPrompt" class="block text-xs font-semibold text-zinc-300">Romantic Ballad Prompt</label>
+                <textarea
+                  id="songPrompt"
+                  rows="3"
+                  maxlength="500"
+                  class="w-full bg-[#0d041a] border border-rose-500/30 rounded-xl p-4 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-400"
+                  placeholder="Describe a 90s Bollywood romantic ballad with a soulful lead, acoustic guitar and lush string pads..."
+                ></textarea>
+              </div>
+
+              <div class="space-y-2">
+                <label class="block text-xs font-semibold text-zinc-300">Kumar Sanu Style Instruments (Click to Preview)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  <button type="button" data-instrument="vocal" onclick="playSanuInstrument('vocal')" class="sanu-badge p-3 rounded-xl text-xs font-bold text-left">🎤 Soulful Vocal Lead</button>
+                  <button type="button" data-instrument="guitar" onclick="playSanuInstrument('guitar')" class="sanu-badge p-3 rounded-xl text-xs font-bold text-left">🎸 Nylon Acoustic Arp</button>
+                  <button type="button" data-instrument="strings" onclick="playSanuInstrument('strings')" class="sanu-badge p-3 rounded-xl text-xs font-bold text-left">🎻 Sweeping 90s Strings</button>
+                  <button type="button" data-instrument="bansuri" onclick="playSanuInstrument('bansuri')" class="sanu-badge p-3 rounded-xl text-xs font-bold text-left">🪈 Interlude Bansuri</button>
+                  <button type="button" data-instrument="tabla" onclick="playSanuInstrument('tabla')" class="sanu-badge p-3 rounded-xl text-xs font-bold text-left">🥁 Soft Romantic Tabla</button>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                <button
+                  type="button"
+                  onclick="toggleSanuMasterpiece()"
+                  id="masterPlayBtn"
+                  aria-pressed="false"
+                  class="sanu-play-button w-full sm:flex-grow py-3.5 rounded-xl text-xs font-bold text-white transition-all shadow-lg shadow-rose-950"
+                >
+                  🎶 Play Live Moonlit Bollywood Romance
+                </button>
+                <button
+                  type="button"
+                  onclick="saveSanuTrack()"
+                  class="w-full sm:w-auto whitespace-nowrap px-4 py-3.5 rounded-xl bg-purple-950 border border-purple-500/50 text-xs font-bold text-purple-300 hover:bg-purple-900 transition-all"
+                >
+                  Save &amp; open output
+                </button>
+              </div>
+              <p id="sanuStatus" class="min-h-4 text-[10px] text-rose-200/80" role="status" aria-live="polite">
+                Original instrumental preview · click an instrument or play the full arrangement
+              </p>
+            </section>
           </div>
         </div>
 
@@ -458,9 +550,161 @@
       <span class="text-lg">🎧</span>
     </a>
 
-    <!-- Page Interactions -->
+    <!-- PAGE INTERACTIONS -->
     <script>
-      // Prompt Presets
+      // FEATURE: Moonlit Bollywood Romance audio controls
+      let audioCtx = null;
+      let sanuLoopInterval = null;
+      let isMasterPlaying = false;
+      const activeSanuSources = new Set();
+      const sanuInstrumentSettings = {
+        vocal: { waveform: "sine", frequency: 523.25, attack: 0.4, duration: 1.5, level: 0.12, vibrato: 10 },
+        guitar: { waveform: "triangle", frequency: 329.63, attack: 0.01, duration: 0.7, level: 0.1 },
+        strings: { waveform: "sawtooth", frequency: 261.63, attack: 0.6, duration: 2.2, level: 0.045, cutoff: 900 },
+        bansuri: { waveform: "sine", frequency: 587.33, attack: 0.3, duration: 1, level: 0.1 },
+        tabla: { waveform: "sine", frequency: 120, attack: 0.004, duration: 0.35, level: 0.16, endFrequency: 45 },
+      };
+
+      async function initAudio() {
+        const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) {
+          throw new Error("Web Audio is not supported by this browser.");
+        }
+        if (!audioCtx) {
+          audioCtx = new AudioContextConstructor();
+        }
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
+        }
+      }
+
+      function stopSanuSources() {
+        activeSanuSources.forEach((source) => source.stop());
+        activeSanuSources.clear();
+      }
+
+      function playSanuInstrument(type, fromArrangement = false) {
+        const instrument = sanuInstrumentSettings[type];
+        if (!instrument) {
+          document.getElementById("sanuStatus").innerText = `Unknown instrument: ${type}`;
+          return;
+        }
+        if (!fromArrangement) {
+          if (isMasterPlaying) stopSanuMasterpiece();
+          if (isPlaying) stopPlayer();
+          stopSanuSources();
+        }
+
+        initAudio().then(() => {
+          const now = audioCtx.currentTime;
+          const endTime = now + instrument.duration;
+          const oscillator = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          oscillator.type = instrument.waveform;
+          oscillator.frequency.setValueAtTime(instrument.frequency, now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(instrument.level, now + instrument.attack);
+          gain.gain.exponentialRampToValueAtTime(0.001, endTime);
+
+          if (instrument.cutoff) {
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(instrument.cutoff, now);
+            oscillator.connect(filter);
+            filter.connect(gain);
+          } else {
+            oscillator.connect(gain);
+          }
+          gain.connect(audioCtx.destination);
+
+          activeSanuSources.add(oscillator);
+          oscillator.onended = () => activeSanuSources.delete(oscillator);
+          oscillator.start(now);
+          oscillator.stop(endTime);
+
+          if (instrument.vibrato) {
+            const vibrato = audioCtx.createOscillator();
+            const vibratoDepth = audioCtx.createGain();
+            vibrato.frequency.setValueAtTime(5.5, now);
+            vibratoDepth.gain.setValueAtTime(instrument.vibrato, now);
+            vibrato.connect(vibratoDepth);
+            vibratoDepth.connect(oscillator.frequency);
+            activeSanuSources.add(vibrato);
+            vibrato.onended = () => activeSanuSources.delete(vibrato);
+            vibrato.start(now);
+            vibrato.stop(endTime);
+          }
+
+          if (instrument.endFrequency) {
+            oscillator.frequency.exponentialRampToValueAtTime(instrument.endFrequency, now + instrument.duration * 0.7);
+          }
+
+          if (!fromArrangement) {
+            document.querySelectorAll(".sanu-badge").forEach((button) => {
+              button.classList.toggle("active", button.dataset.instrument === type);
+            });
+            document.getElementById("sanuStatus").innerText = `Previewing ${type}...`;
+          }
+        }).catch((error) => {
+          document.getElementById("sanuStatus").innerText = `Preview unavailable: ${error.message}`;
+          console.error("Unable to play the Moonlit instrument preview:", error);
+        });
+      }
+
+      function toggleSanuMasterpiece() {
+        if (isMasterPlaying) {
+          stopSanuMasterpiece();
+          return;
+        }
+        if (isPlaying) stopPlayer();
+
+        const button = document.getElementById("masterPlayBtn");
+        button.disabled = true;
+        document.getElementById("sanuStatus").innerText = "Starting the Moonlit romantic arrangement...";
+        initAudio().then(() => {
+          isMasterPlaying = true;
+          button.disabled = false;
+          button.setAttribute("aria-pressed", "true");
+          button.innerText = "⏸ Stop Moonlit Bollywood Romance";
+          document.getElementById("sanuStatus").innerText = "Playing the 92 BPM romantic arrangement";
+
+          let step = 0;
+          const playArrangementStep = () => {
+            playSanuInstrument(step % 2 === 0 ? "vocal" : "bansuri", true);
+            if (step % 4 === 0) playSanuInstrument("strings", true);
+            if (step % 2 === 1) playSanuInstrument("guitar", true);
+            if (step % 4 === 2) playSanuInstrument("tabla", true);
+            step = (step + 1) % 8;
+          };
+          playArrangementStep();
+          sanuLoopInterval = window.setInterval(playArrangementStep, 750);
+        }).catch((error) => {
+          button.disabled = false;
+          document.getElementById("sanuStatus").innerText = `Playback unavailable: ${error.message}`;
+          console.error("Unable to start the Moonlit arrangement:", error);
+        });
+      }
+
+      function stopSanuMasterpiece() {
+        window.clearInterval(sanuLoopInterval);
+        sanuLoopInterval = null;
+        isMasterPlaying = false;
+        stopSanuSources();
+        const button = document.getElementById("masterPlayBtn");
+        button.disabled = false;
+        button.setAttribute("aria-pressed", "false");
+        button.innerText = "🎶 Play Live Moonlit Bollywood Romance";
+        document.getElementById("sanuStatus").innerText = "Arrangement stopped";
+      }
+
+      function saveSanuTrack() {
+        const prompt = document.getElementById("songPrompt").value.trim() ||
+          "Moonlit Bollywood Romance: original 90s-inspired romantic ballad with a soulful lead, nylon guitar, sweeping strings, bansuri and soft tabla";
+        window.location.href = "{{ url_for('beginner_output') }}?prompt=" + encodeURIComponent(prompt);
+      }
+
+      // BEGINNER FORM, TRACK PREVIEW AND RECORDING CONTROLS
       function setPrompt(text) {
         document.getElementById("promptArea").value = text;
       }
@@ -492,17 +736,6 @@
           style: "punjabi",
           melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
           punjabiArrangement: true,
-        },
-        "Moonlit Bollywood Romance": {
-          duration: 220,
-          bpm: 92,
-          root: 220,
-          scale: [0, 2, 3, 7, 9, 12, 14, 15],
-          chord: [0, 3, 7],
-          wave: "sine",
-          style: "bollywood",
-          melody: [0, 2, 4, 5, 4, 2, 1, 3, 4, 5, 6, 5, 4, 2, 1, 2],
-          arrangement: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
         },
       };
       let previewAudioContext = null;
@@ -730,6 +963,7 @@
       });
 
       async function togglePlay(trackName) {
+        if (isMasterPlaying) stopSanuMasterpiece();
         if (trackName && trackName !== selectedTrack) {
           playbackRequestId++;
           clearInterval(timerInterval);
