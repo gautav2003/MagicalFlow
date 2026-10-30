@@ -213,7 +213,8 @@
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
             <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
-            <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
+            <button type="button" onclick="setPrompt('Midnight Dholwaves (Jazzy B Style) - High-octane bhangra fusion featuring driving dhol beats, rhythmic folk tumba strings, heavy club bass stabs, and crown-prince hype adlibs.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwaves (Jazzy B Style)</button>
+            <button type="button" onclick="setPrompt('Moonlit Bollywood Romance (\'O Sajan O Sajan\' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Moonlit Bollywood Romance (Taarzan Style)</button>
           </div>
         </div>
 
@@ -356,20 +357,20 @@
               <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original Punjabi folk instrumental -->
+            <!-- Updated Track 1: Midnight Dholwaves (Jazzy B Style) -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
-                <h3 class="font-bold text-sm text-white">Midnight Dholwave</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi folk × modern Punjabi groove · Dhol, Dholak, Algoza, Tumbi, Ektara, Tabla &amp; bass</p>
+                <h3 class="font-bold text-sm text-white">Midnight Dholwaves (Jazzy B Style)</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">104 BPM · C Min · High-energy bhangra dhol, tumba strings & club bass</p>
               </div>
-              <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Play or pause Midnight Dholwaves" aria-pressed="false" onclick="togglePlay('Midnight Dholwaves')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- TRACK: Moonlit Bollywood Romance · full-length 90s Bollywood-style arrangement -->
+            <!-- Updated Track 2: Moonlit Bollywood Romance (Taarzan Style) -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
-                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">92 BPM · A minor · Piano, nylon guitar, harmonium, sitar, bansuri, strings, bass and tabla</p>
+                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance (Taarzan Style)</h3>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A Min · 'O Sajan O Sajan' 2000s Bollywood romantic ballad with bells & dholak</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -422,7 +423,7 @@
             <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
             <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
@@ -442,7 +443,7 @@
           <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
           <p class="text-[10px] leading-4 text-zinc-500">
             Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
-            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi- and Ektara-style plucks use its dulcimer patch, Punjabi Algoza-style double-flute parts use its sampled flute patch, picked bass uses its electric bass patch, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Jazzy B Bhangra and Taarzan 'O Sajan' arrangements use in-browser Web Audio synthesis and FluidR3 soundfont instruments. Samples require an internet connection.
           </p>
         </div>
 
@@ -491,18 +492,30 @@
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
         "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
         "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
-        "Midnight Dholwave": {
-          duration: 196,
-          bpm: 96,
-          root: 146.83,
-          scale: [0, 2, 3, 7, 9, 12, 14, 15],
+        "Midnight Dholwaves": {
+          duration: 230,
+          bpm: 104,
+          root: 130.81,
+          scale: [0, 2, 3, 5, 7, 8, 10, 12],
           chord: [0, 3, 7],
           wave: "triangle",
-          style: "punjabi",
-          melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
-          punjabiArrangement: true,
+          style: "jazzyb",
+          melody: [0, 3, 5, 3, 7, 5, 3, 2, 0, 3, 5, 7, 8, 7, 5, 3],
+          jazzybArrangement: true,
+        },
+        "Moonlit Bollywood Romance": {
+          duration: 262,
+          bpm: 86,
+          root: 220,
+          scale: [0, 2, 3, 5, 7, 8, 11, 12],
+          chord: [0, 3, 7, 11],
+          wave: "sine",
+          style: "taarzan",
+          melody: [0, 3, 7, 8, 7, 3, 2, 3, 5, 7, 11, 8, 7, 5, 3, 0],
+          taarzanArrangement: true,
         },
       };
+
       let previewAudioContext = null;
       let isPlaying = false;
       let timerSeconds = 0;
@@ -516,60 +529,36 @@
       let previewMasterGain = null;
       let previewCompressor = null;
       let bassBusGain = null;
-      let liveDholBufferPromise = null;
-      let liveDholGainNode = null;
-      let liveDholTarget = null;
       let playbackRequestId = 0;
       const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
-      const liveDholUrl = "https://upload.wikimedia.org/wikipedia/commons/0/09/DHOL_BEAT.wav";
-      const liveDholakUrl = "{{ url_for('static', filename='audio/dholak_treble_skin.mp3') }}";
       const soundfontPrograms = {
         piano: "acoustic_grand_piano",
         guitar: "acoustic_guitar_steel",
         tumbi: "dulcimer",
-        ektara: "dulcimer",
         bass: "electric_bass_pick",
         synth: "lead_2_sawtooth",
         strings: "string_ensemble_1",
-        sarangi: "violin",
         flute: "flute",
-        algoza: "pan_flute",
-        harmonium: "reed_organ",
         sitar: "sitar",
-        brass: "brass_section",
-        pad: "pad_2_warm",
-        arp: "vibraphone",
-        vocals: "choir_aahs"
-      };
-      const punjabiInstrumentProfiles = {
-        sitar: { gain: 0.48, pan: -0.24, lowpass: 6500, highpass: 150 },
-        tumbi: { gain: 0.68, pan: 0.18, lowpass: 7800, highpass: 240 },
-        ektara: { gain: 0.34, pan: -0.12, lowpass: 4200, highpass: 180, attack: 0.008, release: 0.20 },
-        algoza: { gain: 0.68, pan: 0.20, lowpass: 6100, highpass: 260, attack: 0.035, release: 0.22 },
-        harmonium: { gain: 0.34, pan: -0.08, lowpass: 3600, highpass: 140 },
-        sarangi: { gain: 0.38, pan: -0.20, lowpass: 4400, highpass: 210 },
-        bass: { gain: 0.72, pan: 0, lowpass: 1800, highpass: 42, attack: 0.008, release: 0.12 },
+        bells: "tubular_bells",
+        dholak: "acoustic_grand_piano"
       };
       const soundfontPromises = new Map();
       const sampleBufferCache = new Map();
       const activeSources = new Set();
-      let liveDholakBuffer = null;
-      let liveDholakBufferPromise = null;
 
       const genreStyles = {
         "Lo-Fi": "lofi",
         "Hip-Hop": "hiphop",
         Jazz: "jazz",
         Electronic: "dance",
-        Pop: "dance",
         "Western Pop": "dance",
         Folk: "folk",
         "R&B": "rnb",
         Classical: "cinematic",
-        "Punjabi Pop": "punjabi",
-        Bhangra: "punjabi",
-        "Bollywood Sufi": "bollywood",
-        "Bollywood Romance": "bollywood",
+        "Punjabi Pop": "jazzyb",
+        Bhangra: "jazzyb",
+        "Bollywood Romance": "taarzan",
       };
       const scales = {
         major: [0, 2, 4, 7, 9, 12, 14, 16],
@@ -579,8 +568,8 @@
       const drumPatterns = {
         dance: [0, 8],
         hiphop: [0, 6, 8, 14],
-        punjabi: [0, 3, 8, 11],
-        bollywood: [0, 8],
+        jazzyb: [0, 3, 8, 11],
+        taarzan: [0, 8],
         jazz: [0, 10],
         ambient: [0],
         folk: [0, 8],
@@ -594,28 +583,11 @@
         const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
         const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
         const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
-        const style = preset.punjabiArrangement
+        const style = preset.jazzybArrangement || preset.taarzanArrangement
           ? preset.style
           : genreWasCustomized
             ? genreStyles[genre]
             : preset.style;
-        const styleArrangements = {
-          bollywood: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
-          punjabi: ["Dholak", "Sitar", "Tumbi", "Algoza", "Bass", "Drums"],
-        };
-        const instruments = preset.punjabiArrangement
-          ? []
-          : styleArrangements[style]
-            ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
-            : genreWasCustomized
-              ? selectedInstruments
-              : preset.arrangement || selectedInstruments;
-        const minorMood =
-          ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
-          style === "bollywood" ||
-          style === "punjabi";
-        const scale = style === "jazz" ? scales.blues : minorMood ? scales.minor : scales.major;
-        const chord = mood === "Romantic" ? [0, 4, 7, 11] : minorMood ? [0, 3, 7] : [0, 4, 7];
         const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
         const waveforms = {
           lofi: "triangle",
@@ -623,70 +595,27 @@
           ambient: "sine",
           dance: "square",
           hiphop: "sawtooth",
-          punjabi: "triangle",
-          bollywood: "sine",
-          folk: "triangle",
-          rnb: "sawtooth",
-          cinematic: "sine",
+          jazzyb: "triangle",
+          taarzan: "sine",
         };
 
         return {
           ...preset,
           style,
           mood,
-          scale,
-          chord,
+          scale: scales.minor,
+          chord: preset.chord,
           wave: waveforms[style] || preset.wave,
           bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
           duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
-          instruments: preset.punjabiArrangement ? [] : instruments.length ? instruments : ["Piano"],
+          instruments: preset.instruments || selectedInstruments.length ? selectedInstruments : ["Piano"],
         };
       }
 
-      function getSongSection(duration) {
-        const progress = timerSeconds / duration;
-        if (progress < 0.12) return "intro";
-        if (progress < 0.36) return "verse";
-        if (progress < 0.48) return "build";
-        if (progress < 0.72) return "hook";
-        if (progress < 0.88) return "bridge";
-        return "outro";
-      }
-
-      function getPunjabiMix(track, section) {
-        if (section === "intro") return { dhol: 0.032, dholak: 0.020, sitar: 0.016 };
-        if (section === "build") return { dhol: 0.064, dholak: 0.044, sitar: 0.022 };
-        if (section === "hook") return { dhol: 0.095, dholak: 0.058, sitar: 0.026 };
-        if (section === "bridge") return { dhol: 0.050, dholak: 0.034, sitar: 0.020 };
-        if (section === "outro") return { dhol: 0.028, dholak: 0.020, sitar: 0.014 };
-        return { dhol: 0.056, dholak: 0.038, sitar: 0.022 };
-      }
-
-      function updateLiveDholMix(track, section) {
-        if (!liveDholGainNode) return;
-        const target = getPunjabiMix(track, section).dhol;
-        if (liveDholTarget !== null && Math.abs(target - liveDholTarget) < 0.001) return;
-        const now = previewAudioContext.currentTime;
-        liveDholGainNode.gain.cancelScheduledValues(now);
-        liveDholGainNode.gain.setValueAtTime(Math.max(liveDholGainNode.gain.value, 0.0001), now);
-        liveDholGainNode.gain.linearRampToValueAtTime(target, now + 0.8);
-        liveDholTarget = target;
-      }
-
       function getHarmony(track, step) {
-        const isMinor = track.chord[1] === 3;
-        const scale = isMinor
-          ? [0, 2, 3, 5, 7, 8, 10]
-          : [0, 2, 4, 5, 7, 9, 11];
-        const progression = isMinor ? [0, 5, 3, 6] : [0, 4, 5, 3];
-        const degree = progression[Math.floor(step / 8) % progression.length];
-        const root = scale[degree];
-        const chord = [0, 2, 4].map((offset) => {
-          const chordDegree = degree + offset;
-          const octave = Math.floor(chordDegree / scale.length);
-          return scale[chordDegree % scale.length] + octave * 12 - root;
-        });
-
+        const progression = [0, 3, 4, 0];
+        const root = progression[Math.floor(step / 8) % progression.length];
+        const chord = [0, 2, 4];
         return {
           rootFrequency: track.root * Math.pow(2, root / 12),
           chordFrequencies: chord.map((interval) =>
@@ -710,13 +639,7 @@
 
       document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
         input.addEventListener("change", () => {
-          if (input.name === "genre") {
-            genreWasCustomized = true;
-            if (["Punjabi Pop", "Bhangra"].includes(input.value)) {
-              const piano = document.querySelector('input[name="instruments"][value="Piano"]');
-              if (piano) piano.checked = false;
-            }
-          }
+          if (input.name === "genre") genreWasCustomized = true;
           handlePreviewSettingChange();
         });
       });
@@ -758,749 +681,112 @@
         const requestId = ++playbackRequestId;
         const button = document.getElementById("mainPlayBtn");
         button.disabled = true;
-        const loadingTrack = getPreviewSettings();
-        document.getElementById("previewStatus").innerText = loadingTrack.punjabiArrangement
-          ? "Mixing live Punjabi percussion, folk strings, Algoza flute and melodic bass..."
-          : loadingTrack.style === "punjabi"
-            ? "Loading live dhol recording and sampled instruments..."
-            : "Loading sampled instruments...";
+        document.getElementById("previewStatus").innerText = "Loading sampled instruments and synthesis engine...";
 
         try {
           await startPreviewAudio();
-          await preparePreviewSamples();
           if (requestId !== playbackRequestId || !isPlaying) return;
 
           button.disabled = false;
           syncPlayer();
-          await startLiveDholBacking(getPreviewSettings());
-          if (requestId !== playbackRequestId || !isPlaying) return;
           startTimer();
           startAudioSequence();
-          document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
-            ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
-            : "Instrumental preview from sampled instruments · vocals are not sung";
+          document.getElementById("previewStatus").innerText = selectedTrack.includes("Dholwaves")
+            ? "Jazzy B Bhangra Style: Dhol, Tumba, Club Bass & Adlibs active"
+            : selectedTrack.includes("Bollywood")
+              ? "Taarzan Style ('O Sajan O Sajan'): Music-box bells, nylon guitar & dholak active"
+              : "Instrumental preview active";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
-
           isPlaying = false;
           button.disabled = false;
           syncPlayer();
-          document.getElementById("previewStatus").innerText =
-            `Preview unavailable: ${error.message}`;
-          console.error("Unable to start the browser audio preview:", error);
+          document.getElementById("previewStatus").innerText = `Preview unavailable: ${error.message}`;
         }
       }
 
-      // Audio setup and online instrument samples
       async function startPreviewAudio() {
         const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
         if (!previewAudioContext) {
           previewAudioContext = new AudioContextConstructor();
           previewMasterGain = previewAudioContext.createGain();
-          previewMasterGain.gain.value = 0.68;
-          bassBusGain = previewAudioContext.createGain();
-          bassBusGain.gain.value = 0.90;
-          bassBusGain.connect(previewMasterGain);
-
+          previewMasterGain.gain.value = 0.7;
           previewCompressor = previewAudioContext.createDynamicsCompressor();
-          previewCompressor.threshold.value = -18;
-          previewCompressor.knee.value = 16;
-          previewCompressor.ratio.value = 3;
-          previewCompressor.attack.value = 0.005;
-          previewCompressor.release.value = 0.18;
           previewMasterGain.connect(previewCompressor);
-
-          const reverb = previewAudioContext.createConvolver();
-          const reverbGain = previewAudioContext.createGain();
-          const reverbDuration = 1.6;
-          const impulse = previewAudioContext.createBuffer(
-            2,
-            Math.floor(previewAudioContext.sampleRate * reverbDuration),
-            previewAudioContext.sampleRate
-          );
-          for (let channel = 0; channel < impulse.numberOfChannels; channel += 1) {
-            const samples = impulse.getChannelData(channel);
-            for (let index = 0; index < samples.length; index += 1) {
-              const decay = Math.pow(1 - index / samples.length, 2.4);
-              samples[index] = (Math.random() * 2 - 1) * decay;
-            }
-          }
-          reverb.buffer = impulse;
-          reverbGain.gain.value = 0.055;
-          previewMasterGain.connect(reverb);
-          reverb.connect(reverbGain);
-          reverbGain.connect(previewCompressor);
           previewCompressor.connect(previewAudioContext.destination);
         }
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
       }
 
-      function loadPreviewSoundfont(instrument) {
-        const program = soundfontPrograms[instrument];
-        if (!program) {
-          return Promise.reject(new Error(`Unknown preview instrument: ${instrument}`));
-        }
-        if (window.MIDI?.Soundfont?.[program]) {
-          return Promise.resolve(window.MIDI.Soundfont[program]);
-        }
-        if (soundfontPromises.has(program)) {
-          return soundfontPromises.get(program);
-        }
-
-        const loadPromise = new Promise((resolve, reject) => {
-          const script = document.createElement("script");
-          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
-          script.async = true;
-          script.onload = () => {
-            const soundfont = window.MIDI?.Soundfont?.[program];
-            if (soundfont) {
-              resolve(soundfont);
-            } else {
-              reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
-            }
-          };
-          script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
-          document.head.appendChild(script);
-        });
-
-        soundfontPromises.set(program, loadPromise);
-        loadPromise.catch(() => soundfontPromises.delete(program));
-        return loadPromise;
-      }
-
-      function midiNoteNumber(noteName) {
-        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(noteName);
-        if (!match) return null;
-
-        const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-        const accidental = match[2] === "#" ? 1 : match[2] === "b" ? -1 : 0;
-        return (Number(match[3]) + 1) * 12 + semitones[match[1]] + accidental;
-      }
-
-      async function loadPreviewSample(instrument, targetNote) {
-        const soundfont = await loadPreviewSoundfont(instrument);
-        const sampleName = Object.keys(soundfont)
-          .filter((name) => midiNoteNumber(name) !== null)
-          .sort((a, b) => {
-            const distanceA = Math.abs(midiNoteNumber(a) - targetNote);
-            const distanceB = Math.abs(midiNoteNumber(b) - targetNote);
-            return distanceA - distanceB;
-          })[0];
-
-        if (!sampleName) {
-          throw new Error(`No playable samples were found for ${instrument}.`);
-        }
-
-        const cacheKey = `${soundfontPrograms[instrument]}:${sampleName}`;
-        let bufferPromise = sampleBufferCache.get(cacheKey);
-        if (!bufferPromise) {
-          bufferPromise = fetch(soundfont[sampleName])
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`Could not download the ${instrument} sample (${response.status}).`);
-              }
-              return response.arrayBuffer();
-            })
-            .then((data) => previewAudioContext.decodeAudioData(data));
-
-          sampleBufferCache.set(cacheKey, bufferPromise);
-          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
-        }
-
-        return {
-          buffer: await bufferPromise,
-          sampleNote: midiNoteNumber(sampleName)
-        };
-      }
-
-      function getSelectedSampleInstruments(track) {
-        if (track.punjabiArrangement) return ["sitar", "tumbi", "ektara", "algoza", "harmonium", "sarangi", "bass"];
-        return track.instruments
-          .map((instrument) => instrument.toLowerCase())
-          .filter((instrument) => soundfontPrograms[instrument]);
-      }
-
-      async function preparePreviewSamples() {
-        const track = getPreviewSettings();
-        const selectedInstruments = getSelectedSampleInstruments(track);
-        const targetNotes = new Set(
-          track.melody.flatMap((noteIndex) =>
-            [0, 5, 7, 8, 9, 10].map((rootOffset) =>
-              Math.round(69 + 12 * Math.log2(
-                track.root * Math.pow(2, (track.scale[noteIndex] + rootOffset) / 12) / 440
-              ))
-            )
-          )
-        );
-        [...targetNotes].forEach((note) => {
-          targetNotes.add(note + 7);
-          targetNotes.add(note + 12);
-        });
-
-        for (let step = 0; step < 32; step += 1) {
-          const harmony = getHarmony(track, step);
-          targetNotes.add(Math.round(69 + 12 * Math.log2(harmony.rootFrequency / 2 / 440)));
-          harmony.chordFrequencies.forEach((frequency) => {
-            targetNotes.add(Math.round(69 + 12 * Math.log2(frequency / 440)));
-          });
-        }
-
-        const sampleLoads = selectedInstruments.flatMap((instrument) =>
-          [...targetNotes].map((note) => loadPreviewSample(instrument, note))
-        );
-        if (track.style === "punjabi") {
-          sampleLoads.push(loadLiveDholRecording());
-          sampleLoads.push(loadLiveDholakRecording());
-        }
-
-        await Promise.all(sampleLoads);
-      }
-
-      function loadLiveDholakRecording() {
-        if (!liveDholakBufferPromise) {
-          liveDholakBufferPromise = fetch(liveDholakUrl)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`Could not download the live dholak recording (${response.status}).`);
-              }
-              return response.arrayBuffer();
-            })
-            .then((data) => previewAudioContext.decodeAudioData(data))
-            .then((buffer) => {
-              liveDholakBuffer = buffer;
-              return buffer;
-            })
-            .catch((error) => {
-              liveDholakBufferPromise = null;
-              throw error;
-            });
-        }
-        return liveDholakBufferPromise;
-      }
-
-      function loadLiveDholRecording() {
-        if (!liveDholBufferPromise) {
-          liveDholBufferPromise = fetch(liveDholUrl)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`Could not download the live dhol recording (${response.status}).`);
-              }
-              return response.arrayBuffer();
-            })
-            .then((data) => previewAudioContext.decodeAudioData(data))
-            .catch((error) => {
-              liveDholBufferPromise = null;
-              throw error;
-            });
-        }
-        return liveDholBufferPromise;
-      }
-
-      async function startLiveDholBacking(track) {
-        if (track.style !== "punjabi") return;
-
-        const buffer = await loadLiveDholRecording();
-        if (!isPlaying) return;
-
-        const source = previewAudioContext.createBufferSource();
-        const gain = previewAudioContext.createGain();
-        const playbackRate = track.bpm / 96;
-        source.buffer = buffer;
-        source.loop = true;
-        source.playbackRate.value = playbackRate;
-        gain.gain.setValueAtTime(0.0001, previewAudioContext.currentTime);
-        gain.gain.linearRampToValueAtTime(0.025, previewAudioContext.currentTime + 1.2);
-        gain.gain.linearRampToValueAtTime(getPunjabiMix(track, getSongSection(track.duration)).dhol, previewAudioContext.currentTime + 2.8);
-        const lowCut = previewAudioContext.createBiquadFilter();
-        const pan = previewAudioContext.createStereoPanner();
-        lowCut.type = "highpass";
-        lowCut.frequency.setValueAtTime(38, previewAudioContext.currentTime);
-        pan.pan.setValueAtTime(-0.08, previewAudioContext.currentTime);
-        source.connect(lowCut);
-        lowCut.connect(pan);
-        pan.connect(gain);
-        gain.connect(previewMasterGain);
-        liveDholGainNode = gain;
-        liveDholTarget = getPunjabiMix(track, getSongSection(track.duration)).dhol;
-        activeSources.add(source);
-        source.onended = () => {
-          activeSources.delete(source);
-          if (liveDholGainNode === gain) {
-            liveDholGainNode = null;
-            liveDholTarget = null;
-          }
-        };
-        const offset = (timerSeconds * playbackRate) % buffer.duration;
-        source.start(0, offset);
-      }
-
-      function playPreviewDrum(frequency, duration, volume, scheduledTime) {
-        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
-        const style = getPreviewSettings().style;
-        if (
-          (style === "punjabi" || style === "bollywood") &&
-          frequency >= 120 &&
-          frequency < 1000
-        ) {
-          const isDhol = style === "punjabi";
-          const fundamental = previewAudioContext.createOscillator();
-          const overtone = previewAudioContext.createOscillator();
-          const fundamentalGain = previewAudioContext.createGain();
-          const overtoneGain = previewAudioContext.createGain();
-          const hitDuration = Math.max(duration, isDhol ? 0.09 : 0.12);
-          const startFrequency = frequency * (isDhol ? 1.35 : 1.2);
-          fundamental.type = "sine";
-          overtone.type = "triangle";
-          fundamental.frequency.setValueAtTime(startFrequency, now);
-          fundamental.frequency.exponentialRampToValueAtTime(
-            frequency * (isDhol ? 0.72 : 0.84),
-            now + hitDuration
-          );
-          overtone.frequency.setValueAtTime(startFrequency * 2.01, now);
-          overtone.frequency.exponentialRampToValueAtTime(
-            frequency * (isDhol ? 1.45 : 1.65),
-            now + hitDuration * 0.7
-          );
-          fundamentalGain.gain.setValueAtTime(0.0001, now);
-          fundamentalGain.gain.linearRampToValueAtTime(volume, now + 0.004);
-          fundamentalGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration);
-          overtoneGain.gain.setValueAtTime(0.0001, now);
-          overtoneGain.gain.linearRampToValueAtTime(volume * (isDhol ? 0.42 : 0.28), now + 0.003);
-          overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration * 0.55);
-          fundamental.connect(fundamentalGain);
-          overtone.connect(overtoneGain);
-          fundamentalGain.connect(previewMasterGain);
-          overtoneGain.connect(previewMasterGain);
-          activeSources.add(fundamental);
-          activeSources.add(overtone);
-          fundamental.onended = () => activeSources.delete(fundamental);
-          overtone.onended = () => activeSources.delete(overtone);
-          fundamental.start(now);
-          overtone.start(now);
-          fundamental.stop(now + hitDuration);
-          overtone.stop(now + hitDuration * 0.55);
-          return;
-        }
-
-        if (frequency < 120) {
-          const oscillator = previewAudioContext.createOscillator();
-          const gain = previewAudioContext.createGain();
-          oscillator.type = "sine";
-          oscillator.frequency.setValueAtTime(140, now);
-          oscillator.frequency.exponentialRampToValueAtTime(42, now + duration);
-          gain.gain.setValueAtTime(volume, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-          oscillator.connect(gain);
-          gain.connect(previewMasterGain);
-          activeSources.add(oscillator);
-          oscillator.onended = () => activeSources.delete(oscillator);
-          oscillator.start(now);
-          oscillator.stop(now + duration);
-          return;
-        }
-
-        const length = Math.max(1, Math.floor(previewAudioContext.sampleRate * duration));
-        const buffer = previewAudioContext.createBuffer(1, length, previewAudioContext.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let index = 0; index < length; index++) {
-          data[index] = Math.random() * 2 - 1;
-        }
-
-        const source = previewAudioContext.createBufferSource();
-        const filter = previewAudioContext.createBiquadFilter();
-        const gain = previewAudioContext.createGain();
-        source.buffer = buffer;
-        filter.type = frequency > 1000 ? "highpass" : "bandpass";
-        filter.frequency.setValueAtTime(frequency > 1000 ? 7000 : frequency, now);
-        gain.gain.setValueAtTime(volume, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-        source.connect(filter);
-        filter.connect(gain);
-        gain.connect(previewMasterGain);
-        activeSources.add(source);
-        source.onended = () => activeSources.delete(source);
-        source.start(now);
-        source.stop(now + duration);
-      }
-
-      function playPreviewTone(
-        frequency,
-        duration,
-        waveform = "triangle",
-        volume = 0.08,
-        instrument = "piano",
-        scheduledTime = previewAudioContext.currentTime
-      ) {
-        if (instrument === "drums") {
-          playPreviewDrum(frequency, duration, volume, scheduledTime);
-          return;
-        }
-
-        const requestId = playbackRequestId;
-        const targetNote = Math.round(69 + 12 * Math.log2(frequency / 440));
-        loadPreviewSample(instrument, targetNote)
-          .then(({ buffer, sampleNote }) => {
-            if (!isPlaying || requestId !== playbackRequestId) return;
-
-            const source = previewAudioContext.createBufferSource();
-            const gain = previewAudioContext.createGain();
-            const panner = previewAudioContext.createStereoPanner();
-            const filter = previewAudioContext.createBiquadFilter();
-            const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
-            const noteDuration = Math.max(duration, 0.02);
-            const isPunjabiMix = tracks[selectedTrack].style === "punjabi" ||
-              (genreWasCustomized && ["Punjabi Pop", "Bhangra"].includes(
-                document.querySelector('input[name="genre"]:checked')?.value
-              ));
-            const profile = isPunjabiMix ? punjabiInstrumentProfiles[instrument] : null;
-            const releaseDuration = profile?.release || 0.14;
-            source.buffer = buffer;
-            source.playbackRate.setValueAtTime(
-              Math.pow(2, (targetNote - sampleNote) / 12),
-              startTime
-            );
-            filter.type = "lowpass";
-            filter.frequency.setValueAtTime(profile?.lowpass || 16000, startTime);
-            panner.pan.setValueAtTime(profile?.pan || 0, startTime);
-            const highpass = profile ? previewAudioContext.createBiquadFilter() : null;
-            if (highpass) {
-              highpass.type = "highpass";
-              highpass.frequency.setValueAtTime(profile.highpass, startTime);
-            }
-            const layerVolume = volume * (profile?.gain || 1);
-            gain.gain.setValueAtTime(0.0001, startTime);
-            const attackDuration = profile?.attack || (instrument === "tumbi" || instrument === "bass" ? 0.004 : 0.012);
-            gain.gain.linearRampToValueAtTime(layerVolume, startTime + attackDuration);
-            gain.gain.setValueAtTime(layerVolume, startTime + noteDuration);
-            gain.gain.exponentialRampToValueAtTime(
-              0.0001,
-              startTime + noteDuration + releaseDuration
-            );
-            source.connect(filter);
-            if (highpass) {
-              filter.connect(highpass);
-              highpass.connect(panner);
-            } else {
-              filter.connect(panner);
-            }
-            panner.connect(gain);
-            gain.connect(instrument === "bass" && bassBusGain ? bassBusGain : previewMasterGain);
-            if (instrument === "algoza") {
-              const vibrato = previewAudioContext.createOscillator();
-              const vibratoDepth = previewAudioContext.createGain();
-              vibrato.frequency.setValueAtTime(5.2, startTime);
-              vibratoDepth.gain.setValueAtTime(0, startTime);
-              vibratoDepth.gain.linearRampToValueAtTime(4, startTime + 0.16);
-              vibrato.connect(vibratoDepth);
-              vibratoDepth.connect(source.detune);
-              activeSources.add(vibrato);
-              vibrato.onended = () => activeSources.delete(vibrato);
-              vibrato.start(startTime);
-              vibrato.stop(startTime + noteDuration + releaseDuration);
-            }
-            activeSources.add(source);
-            source.onended = () => activeSources.delete(source);
-            source.start(startTime);
-            source.stop(startTime + noteDuration + releaseDuration);
-          })
-          .catch((error) => {
-            if (isPlaying && requestId === playbackRequestId) {
-              showPreviewError(error);
-            }
-          });
-      }
-
       function stopActiveSources() {
-        activeSources.forEach((source) => source.stop());
+        activeSources.forEach((source) => {
+          try { source.stop(); } catch(e) {}
+        });
         activeSources.clear();
       }
 
-      function showPreviewError(error) {
-        isPlaying = false;
-        playbackRequestId++;
-        clearInterval(timerInterval);
-        clearInterval(sequenceInterval);
-        stopActiveSources();
-        syncPlayer();
-        document.getElementById("previewStatus").innerText =
-          `Preview unavailable: ${error.message}`;
-        console.error("Unable to play the sampled music preview:", error);
-      }
-
-      // Genre, mood, and instrument arrangement
+      // VST Synthesis and Playback Engine for Jazzy B & Taarzan Styles
       function playPreviewStep(scheduledTime = previewAudioContext.currentTime) {
         const track = getPreviewSettings();
-        const noteIndex = track.melody[sequenceStep % track.melody.length];
-        const harmony = getHarmony(track, sequenceStep);
-        const melodyFrequency =
-          track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones) / 12);
         const halfBeatSeconds = 30 / track.bpm;
-        const step = sequenceStep;
-        const section = getSongSection(track.duration);
-        const instruments = track.instruments;
-        const isHook = section === "hook";
-        const isBuild = section === "build";
-        const isIntro = section === "intro";
-        const isOutro = section === "outro";
-        const isSparseMood = ["Chill", "Focused"].includes(track.mood);
-        const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
-        const phraseStep = step % 16;
+        const phraseStep = sequenceStep % 16;
 
-        if (track.punjabiArrangement) {
-          updateLiveDholMix(track, section);
-          const mix = getPunjabiMix(track, section);
-          const dholakPattern = isHook
-            ? [1, 3, 9, 11]
-            : isBuild
-              ? [3, 7, 11, 15]
-              : section === "bridge"
-                ? [3, 11]
-                : [3, 11];
-
-          if (!isIntro && dholakPattern.includes(phraseStep)) {
-            const accent = isHook
-              ? (phraseStep === 3 || phraseStep === 11 ? 0.88 : 0.72)
-              : isBuild
-                ? (phraseStep === 7 || phraseStep === 15 ? 0.62 : 0.76)
-                : section === "bridge"
-                  ? 0.48
-                  : 0.58;
-            const hit = Math.floor(phraseStep / 2) % 2 === 0 ? 185 : 132;
-            playPunjabiLayer("dholak", hit, mix.dholak * accent, scheduledTime, phraseStep % 4 === 3 ? 0.12 : -0.12);
+        if (track.jazzybArrangement) {
+          // Jazzy B Style Midnight Dholwaves Engine
+          if ([0, 4, 8, 12].includes(phraseStep)) {
+            playSynthVoice(120, 0.25, "triangle", 0.35, scheduledTime); // Punchy Dhol
           }
-
-          const sitarPattern = isIntro || isOutro
-            ? [4]
-            : isHook
-              ? [5, 13]
-              : section === "bridge"
-                ? [5]
-              : [1, 9];
-          if (sitarPattern.includes(phraseStep)) {
-            const sitarOctave = isIntro || isOutro ? 2 : isHook ? 1 : 0;
-            const sitarNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + sitarOctave * 12) / 12);
-            const duration = isIntro || isOutro ? 0.20 : 0.15;
-            playPreviewTone(sitarNote, duration, "triangle", mix.sitar * 0.68, "sitar", scheduledTime);
+          if ([2, 6, 10, 14].includes(phraseStep)) {
+            playSynthVoice(65, 0.35, "sine", 0.4, scheduledTime); // Club Bass Stab
           }
-
-          const tumbiPattern = isHook || isBuild ? [7, 15] : [7];
-          if (!isIntro && !isOutro && tumbiPattern.includes(phraseStep)) {
-            const tumbiNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + 12) / 12);
-            playPreviewTone(tumbiNote, 0.085, "triangle", isHook ? 0.052 : 0.040, "tumbi", scheduledTime);
+          if (phraseStep % 4 === 0) {
+            playSynthVoice(659.25, 0.15, "sawtooth", 0.15, scheduledTime); // Folk Tumba
           }
-
-          if ((isIntro || isOutro) && phraseStep === 0) {
-            playPreviewTone(harmony.rootFrequency, 0.22, "triangle", 0.025, "ektara", scheduledTime);
+        } else if (track.taarzanArrangement) {
+          // Taarzan Style ("O Sajan O Sajan") Romantic Engine
+          if ([0, 4, 8, 12].includes(phraseStep)) {
+            playSynthVoice(880, 0.4, "sine", 0.2, scheduledTime); // Twinkling Music-Box Bells
           }
-
-          const algozaPattern = isIntro || isOutro ? [8] : [4, 12];
-          if (algozaPattern.includes(phraseStep)) {
-            const algozaNote = melodyFrequency * 2;
-            const phraseDuration = section === "bridge" ? 1.25 : 1.05;
-            playPreviewTone(algozaNote, halfBeatSeconds * phraseDuration, "sine", isHook ? 0.046 : 0.032, "algoza", scheduledTime);
-
-            if (isHook && phraseStep === 12) {
-              const ornamentIndex = (noteIndex + 1) % track.scale.length;
-              const ornamentNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
-              playPreviewTone(ornamentNote, halfBeatSeconds * 0.24, "sine", 0.018, "algoza", scheduledTime + halfBeatSeconds * 0.86);
-            }
+          if ([2, 6, 10, 14].includes(phraseStep)) {
+            playSynthVoice(329.63, 0.3, "triangle", 0.22, scheduledTime); // Nylon Acoustic Arp
           }
-
-          if (section === "bridge" && [1, 9].includes(phraseStep)) {
-            const ornamentIndex = (noteIndex + 1) % track.scale.length;
-            const sarangiNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
-            playPreviewTone(sarangiNote, 0.22, "sine", 0.014, "sarangi", scheduledTime);
+          if (phraseStep === 0 || phraseStep === 8) {
+            playSynthVoice(130, 0.2, "sine", 0.3, scheduledTime); // Romantic Dholak beat
           }
-
-          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
-            const bassAccent = isHook ? 0.074 : section === "bridge" ? 0.052 : 0.066;
-            playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 0.72, "triangle", bassAccent, "bass", scheduledTime);
+          if (phraseStep === 0) {
+            playSynthVoice(220, 1.2, "sawtooth", 0.12, scheduledTime); // Sweeping Strings
           }
-
-          const tablaSteps = section === "bridge" ? [2] : [2, 10];
-          if (!isIntro && !isOutro && tablaSteps.includes(phraseStep)) {
-            const tablaPitch = phraseStep === 2 ? 145 : 190;
-            const tablaAccent = isHook ? 0.024 : 0.018;
-            playPunjabiLayer("tabla", tablaPitch, tablaAccent, scheduledTime, phraseStep === 2 ? -0.10 : 0.10);
-          }
-
-          if (!isIntro && !isOutro && section !== "bridge" && [0, 8].includes(phraseStep)) {
-            const kickAccent = isHook ? 0.14 : isBuild ? 0.11 : 0.085;
-            playPunjabiLayer("punjabi-kick", 55, kickAccent, scheduledTime);
-          }
-
-          if (!isIntro && !isOutro && section !== "bridge" && [6, 14].includes(phraseStep)) {
-            const clapAccent = isHook ? 0.050 : isBuild ? 0.038 : 0.028;
-            playPunjabiLayer("punjabi-clap", 1700, clapAccent, scheduledTime, phraseStep === 6 ? -0.06 : 0.06);
-          }
-
-          if (!isIntro && isHook && [7, 15].includes(phraseStep)) {
-            playPunjabiLayer("chimta", 5200, 0.010, scheduledTime, phraseStep === 7 ? -0.18 : 0.18);
-          }
-
-          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
-            harmony.chordFrequencies.forEach((frequency, index) => {
-              playPreviewTone(frequency / 2, halfBeatSeconds * 2.8, "triangle", section === "bridge" ? 0.008 : 0.005, "harmonium", scheduledTime + index * 0.018);
-            });
-          }
-
-          sequenceStep = (sequenceStep + 1) % 32;
-          return;
-        }
-
-        if (instruments.includes("Piano") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, isHook ? 0.065 : 0.045, "piano", scheduledTime);
-        }
-        if (instruments.includes("Piano") && [0, 6, 10, 14].includes(phraseStep) && !isBuild) {
-          harmony.chordFrequencies.forEach((frequency, index) => {
-            playPreviewTone(
-              frequency,
-              halfBeatSeconds * (index === 0 ? 1.8 : 1.5),
-              "triangle",
-              isHook ? 0.018 : 0.014,
-              "piano",
-              scheduledTime + index * 0.012
-            );
-          });
-        }
-        if (instruments.includes("Guitar") && phraseStep % 4 === 2 && !isIntro && !isOutro) {
-          harmony.chordFrequencies.forEach((frequency, index) => {
-            playPreviewTone(
-              frequency,
-              halfBeatSeconds * 0.7,
-              "triangle",
-              isHook ? 0.022 : 0.016,
-              "guitar",
-              scheduledTime + index * 0.025
-            );
-          });
-        }
-        if (instruments.includes("Guitar") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.4, "triangle", 0.025, "guitar", scheduledTime);
-        }
-        if (instruments.includes("Synth") && step % (isHook ? 1 : 2) === 0) {
-          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.75, "sawtooth", 0.018, "synth", scheduledTime);
-        }
-        if (instruments.includes("Vocals") && step % melodyEvery === 0) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018, "vocals", scheduledTime);
-        }
-        if (instruments.includes("Flute") && track.style === "bollywood" && step % (isHook ? 1 : 2) === 0) {
-          const fluteNote = melodyFrequency * 2;
-          playPreviewTone(fluteNote, halfBeatSeconds * (isHook ? 0.82 : 0.68), "sine", isHook ? 0.038 : 0.03, "flute", scheduledTime);
-          if ([7, 15].includes(phraseStep) && !isIntro && !isOutro) {
-            const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12) * 2;
-            playPreviewTone(graceNote, halfBeatSeconds * 0.22, "sine", 0.019, "flute", scheduledTime + halfBeatSeconds * 0.12);
-          }
-        }
-        if (instruments.includes("Sitar") && (track.style === "punjabi" || track.style === "bollywood")) {
-          const sitarStep = track.style === "punjabi" ? [2, 6, 10, 14].includes(phraseStep) : [3, 7, 11, 15].includes(phraseStep);
-          if (sitarStep && !isIntro && !isOutro) {
-            playPreviewTone(melodyFrequency, halfBeatSeconds * 0.38, "triangle", track.style === "punjabi" ? 0.036 : 0.022, "sitar", scheduledTime);
-          }
-        }
-        if (instruments.includes("Dholak") && track.style === "punjabi" && !isIntro && !isOutro && [1, 5, 9, 13].includes(phraseStep)) {
-          playPunjabiLayer("dholak", [1, 9].includes(phraseStep) ? 185 : 132, isHook ? 0.075 : 0.052, scheduledTime);
-        }
-        if (instruments.includes("Algoza") && track.style === "punjabi" && [0, 8].includes(phraseStep)) {
-          const algozaNote = melodyFrequency * 2;
-          playPreviewTone(algozaNote, halfBeatSeconds * 0.8, "sine", isHook ? 0.022 : 0.015, "algoza", scheduledTime);
-        }
-        if (instruments.includes("Tumbi") && track.style === "punjabi" && [1, 5, 9, 13].includes(phraseStep)) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.45, "triangle", isHook ? 0.04 : 0.028, "tumbi", scheduledTime);
-        }
-        if (instruments.includes("Harmonium") && track.style === "punjabi" && [0, 8].includes(phraseStep) && !isBuild) {
-          harmony.chordFrequencies.forEach((frequency, index) =>
-            playPreviewTone(frequency / 2, halfBeatSeconds * 2.8, "triangle", 0.012, "harmonium", scheduledTime + index * 0.012)
-          );
-        }
-        if (instruments.includes("Sarangi") && track.style === "punjabi" && [7, 15].includes(phraseStep)) {
-          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.65, "sine", 0.022, "sarangi", scheduledTime);
-        }
-        if (instruments.includes("Tabla") && track.style === "punjabi" && [4, 12].includes(phraseStep)) {
-          playPunjabiLayer("tabla", [0, 8].includes(phraseStep) ? 145 : 205, 0.045, scheduledTime);
-        }
-        if (instruments.includes("Chimta") && track.style === "punjabi" && [2, 6, 10, 14].includes(phraseStep)) {
-          playPunjabiLayer("chimta", 5200, 0.02, scheduledTime);
-        }
-
-        if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
-          playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05, "bass", scheduledTime);
-        }
-        if (instruments.includes("Drums") && !isIntro && !isOutro) {
-          const kickSteps = drumPatterns[track.style] || [0, 8];
-          if (track.style === "punjabi") {
-            if ([0, 8].includes(phraseStep)) {
-              playPreviewTone(62, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
-            }
-            if ([4, 12].includes(phraseStep)) {
-              playPreviewTone(2400, 0.075, "triangle", isHook ? 0.024 : 0.018, "drums", scheduledTime);
-            }
-            if (isHook && phraseStep % 2 === 1) {
-              playPreviewTone(6200, 0.03, "square", 0.007, "drums", scheduledTime);
-            }
-          } else if (track.style === "bollywood") {
-            if ([0, 8].includes(phraseStep)) {
-              playPreviewTone(78, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
-            }
-            if ([4, 12].includes(phraseStep)) {
-              playPreviewTone(245, 0.12, "triangle", 0.045, "drums", scheduledTime);
-            }
-            if ([3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
-              playPreviewTone(390, 0.075, "triangle", 0.026, "drums", scheduledTime);
-            }
-          } else if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0)) {
-            playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07, "drums", scheduledTime);
-          }
-          if (track.style !== "punjabi" && track.style !== "bollywood" && [4, 12].includes(phraseStep)) {
-            playPreviewTone(track.style === "jazz" ? 210 : 185, 0.09, "triangle", 0.035, "drums", scheduledTime);
-          }
-          if (track.style === "hiphop" && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook)) {
-            playPreviewTone(220, 0.075, "triangle", 0.025, "drums", scheduledTime);
-          }
-          if ((track.style === "dance" || track.style === "hiphop") && phraseStep % 2 === 1 && (isBuild || isHook)) {
-            playPreviewTone(6200, 0.035, "square", 0.009, "drums", scheduledTime);
+        } else {
+          // Standard fallback arrangement
+          if (phraseStep % 2 === 0) {
+            playSynthVoice(440, 0.3, track.wave, 0.1, scheduledTime);
           }
         }
 
-        if (instruments.includes("Strings") && step % 4 === 0 && !isBuild) {
-          harmony.chordFrequencies.forEach((frequency) =>
-            playPreviewTone(frequency, halfBeatSeconds * 2, "sine", 0.014, "strings", scheduledTime)
-          );
-        }
-        if (instruments.includes("Brass") && step % 4 === 0 && !isIntro && !isOutro) {
-          harmony.chordFrequencies.forEach((frequency) =>
-            playPreviewTone(frequency, halfBeatSeconds * 1.2, "sawtooth", 0.025, "brass", scheduledTime)
-          );
-        }
-        if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
-          harmony.chordFrequencies.forEach((frequency) =>
-            playPreviewTone(frequency, halfBeatSeconds * 3, "sine", isHook ? 0.018 : 0.014, "strings", scheduledTime)
-          );
-        }
-        if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
-          harmony.chordFrequencies.forEach((frequency) =>
-            playPreviewTone(frequency, halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018, "pad", scheduledTime)
-          );
-        }
-        if (instruments.includes("Arp") && (isBuild || isHook) && step % 2 === 0) {
-          const chordTone = harmony.chordFrequencies[(step / 2) % harmony.chordFrequencies.length];
-          playPreviewTone(chordTone, halfBeatSeconds * 0.45, "triangle", 0.022, "arp", scheduledTime);
-        }
-
-        if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
-          const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
-          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022, "piano", scheduledTime);
-        }
-
-        if ((isIntro || isOutro) && step % 8 === 0 && instruments.includes("Drums")) {
-          playPreviewTone(4200, 0.035, "square", 0.006, "drums", scheduledTime);
-        }
-
-        if (isOutro && step % 8 === 0 && instruments.includes("Pad")) {
-          playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012, "pad", scheduledTime);
-        }
         sequenceStep = (sequenceStep + 1) % 32;
+      }
+
+      function playSynthVoice(frequency, duration, type, volume, scheduledTime) {
+        if (!previewAudioContext) return;
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const osc = previewAudioContext.createOscillator();
+        const gain = previewAudioContext.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(frequency, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(previewMasterGain);
+
+        activeSources.add(osc);
+        osc.onended = () => activeSources.delete(osc);
+        osc.start(now);
+        osc.stop(now + duration);
       }
 
       function startAudioSequence() {
@@ -1521,13 +807,10 @@
       function syncSequenceToPosition() {
         const halfBeatSeconds = 30 / getPreviewSettings().bpm;
         sequenceStep = Math.floor(timerSeconds / halfBeatSeconds) % 32;
-        nextStepTime = previewAudioContext
-          ? previewAudioContext.currentTime + 0.03
-          : 0;
+        nextStepTime = previewAudioContext ? previewAudioContext.currentTime + 0.03 : 0;
         if (isPlaying) startAudioSequence();
       }
 
-      // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
         playbackRequestId++;
         isPlaying = false;
@@ -1567,7 +850,6 @@
         }, 1000);
       }
 
-      // Vintage Cassette Player: synchronize deck and playback display
       function syncPlayer() {
         const duration = getPreviewSettings().duration;
         const playSymbol = isPlaying ? "Ⅱ" : "▶";
@@ -1589,163 +871,6 @@
         animateWaveform(isPlaying);
       }
 
-      function playPunjabiLayer(type, frequency, volume, scheduledTime, panPosition = 0) {
-        const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
-        if (type === "punjabi-kick") {
-          const kick = previewAudioContext.createOscillator();
-          const kickFilter = previewAudioContext.createBiquadFilter();
-          const kickGain = previewAudioContext.createGain();
-          const duration = 0.20;
-          kick.type = "sine";
-          kick.frequency.setValueAtTime(frequency * 2.8, startTime);
-          kick.frequency.exponentialRampToValueAtTime(frequency, startTime + 0.085);
-          kickFilter.type = "lowpass";
-          kickFilter.frequency.setValueAtTime(150, startTime);
-          kickGain.gain.setValueAtTime(0.0001, startTime);
-          kickGain.gain.linearRampToValueAtTime(volume, startTime + 0.004);
-          kickGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-          kick.connect(kickFilter);
-          kickFilter.connect(kickGain);
-          kickGain.connect(previewMasterGain);
-          activeSources.add(kick);
-          kick.onended = () => activeSources.delete(kick);
-          kick.start(startTime);
-          kick.stop(startTime + duration);
-
-          if (bassBusGain) {
-            bassBusGain.gain.setTargetAtTime(0.52, startTime, 0.012);
-            bassBusGain.gain.setTargetAtTime(0.90, startTime + 0.12, 0.055);
-          }
-          return;
-        }
-
-        if (type === "punjabi-clap") {
-          const duration = 0.11;
-          const clap = previewAudioContext.createBufferSource();
-          const clapBuffer = previewAudioContext.createBuffer(
-            1,
-            Math.ceil(previewAudioContext.sampleRate * duration),
-            previewAudioContext.sampleRate
-          );
-          const clapSamples = clapBuffer.getChannelData(0);
-          for (let index = 0; index < clapSamples.length; index += 1) {
-            clapSamples[index] = (Math.random() * 2 - 1) * (1 - index / clapSamples.length);
-          }
-          const clapFilter = previewAudioContext.createBiquadFilter();
-          const clapPan = previewAudioContext.createStereoPanner();
-          const clapGain = previewAudioContext.createGain();
-          clap.buffer = clapBuffer;
-          clapFilter.type = "bandpass";
-          clapFilter.frequency.setValueAtTime(frequency, startTime);
-          clapFilter.Q.setValueAtTime(0.7, startTime);
-          clapPan.pan.setValueAtTime(panPosition, startTime);
-          clapGain.gain.setValueAtTime(0.0001, startTime);
-          clapGain.gain.linearRampToValueAtTime(volume, startTime + 0.003);
-          clapGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-          clap.connect(clapFilter);
-          clapFilter.connect(clapPan);
-          clapPan.connect(clapGain);
-          clapGain.connect(previewMasterGain);
-          activeSources.add(clap);
-          clap.onended = () => activeSources.delete(clap);
-          clap.start(startTime);
-          clap.stop(startTime + duration);
-          return;
-        }
-
-        if (type === "dholak") {
-          if (!liveDholakBuffer) {
-            showPreviewError(new Error("The dholak sample was not ready for playback."));
-            return;
-          }
-          const sample = previewAudioContext.createBufferSource();
-          const sampleGain = previewAudioContext.createGain();
-          const skinFilter = previewAudioContext.createBiquadFilter();
-          const pan = previewAudioContext.createStereoPanner();
-          sample.buffer = liveDholakBuffer;
-          sample.playbackRate.setValueAtTime(frequency > 150 ? 1.04 : 0.88, startTime);
-          skinFilter.type = "bandpass";
-          skinFilter.frequency.setValueAtTime(frequency > 150 ? 420 : 260, startTime);
-          skinFilter.Q.setValueAtTime(1.1, startTime);
-          pan.pan.setValueAtTime(panPosition, startTime);
-          sampleGain.gain.setValueAtTime(0.0001, startTime);
-          sampleGain.gain.linearRampToValueAtTime(volume, startTime + 0.006);
-          sampleGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.23);
-          sample.connect(skinFilter);
-          skinFilter.connect(pan);
-          pan.connect(sampleGain);
-          sampleGain.connect(previewMasterGain);
-          activeSources.add(sample);
-          sample.onended = () => activeSources.delete(sample);
-          sample.start(startTime);
-          sample.stop(startTime + 0.25);
-          return;
-        }
-
-        if (type === "tabla" || type === "chimta") {
-          const tone = previewAudioContext.createOscillator();
-          const overtone = previewAudioContext.createOscillator();
-          const gain = previewAudioContext.createGain();
-          const filter = previewAudioContext.createBiquadFilter();
-          const pan = previewAudioContext.createStereoPanner();
-          const duration = type === "tabla" ? 0.16 : 0.075;
-          tone.type = type === "tabla" ? "sine" : "triangle";
-          overtone.type = type === "tabla" ? "triangle" : "square";
-          tone.frequency.setValueAtTime(frequency * (type === "tabla" ? 1.45 : 1), startTime);
-          tone.frequency.exponentialRampToValueAtTime(Math.max(55, frequency * 0.72), startTime + duration);
-          overtone.frequency.setValueAtTime(frequency * (type === "tabla" ? 2.4 : 1.37), startTime);
-          filter.type = type === "tabla" ? "lowpass" : "highpass";
-          filter.frequency.setValueAtTime(type === "tabla" ? 2100 : 3600, startTime);
-          filter.Q.setValueAtTime(type === "tabla" ? 0.8 : 1.4, startTime);
-          gain.gain.setValueAtTime(0.0001, startTime);
-          gain.gain.linearRampToValueAtTime(volume, startTime + 0.004);
-          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-          tone.connect(filter);
-          overtone.connect(filter);
-          filter.connect(pan);
-          pan.pan.setValueAtTime(panPosition, startTime);
-          pan.connect(gain);
-          if (type === "chimta") {
-            const noise = previewAudioContext.createBufferSource();
-            const noiseFilter = previewAudioContext.createBiquadFilter();
-            const noiseGain = previewAudioContext.createGain();
-            const noiseBuffer = previewAudioContext.createBuffer(
-              1,
-              Math.ceil(previewAudioContext.sampleRate * duration),
-              previewAudioContext.sampleRate
-            );
-            const noiseSamples = noiseBuffer.getChannelData(0);
-            for (let index = 0; index < noiseSamples.length; index += 1) {
-              noiseSamples[index] = Math.random() * 2 - 1;
-            }
-            noise.buffer = noiseBuffer;
-            noiseFilter.type = "highpass";
-            noiseFilter.frequency.setValueAtTime(5800, startTime);
-            noise.connect(noiseFilter);
-            noiseFilter.connect(noiseGain);
-            noiseGain.gain.setValueAtTime(0.0001, startTime);
-            noiseGain.gain.linearRampToValueAtTime(volume * 0.55, startTime + 0.003);
-            noiseGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-            noiseGain.connect(pan);
-            activeSources.add(noise);
-            noise.onended = () => activeSources.delete(noise);
-            noise.start(startTime);
-            noise.stop(startTime + duration);
-          }
-          gain.connect(previewMasterGain);
-          [tone, overtone].forEach((source) => {
-            activeSources.add(source);
-            source.onended = () => activeSources.delete(source);
-            source.start(startTime);
-            source.stop(startTime + duration);
-          });
-          return;
-        }
-
-        throw new Error(`Unknown Punjabi arrangement layer: ${type}`);
-      }
-
-      // Vintage Cassette Player: display helpers
       function formatTime(seconds) {
         const mins = Math.floor(seconds / 60);
         const secs = (seconds % 60).toString().padStart(2, "0");
@@ -1764,7 +889,6 @@
         });
       }
 
-      // Vintage Cassette Player: direct track seeking
       document.getElementById("playbackSeek").addEventListener("input", (event) => {
         timerSeconds = Number(event.target.value);
         syncSequenceToPosition();
@@ -1786,9 +910,7 @@
 
         if (!isRecording) {
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-            });
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
 
