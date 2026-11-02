@@ -324,6 +324,7 @@
                 <button type="button" onclick="selectInstrument(this, 'Electric Bass')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Bass</button>
                 <button type="button" onclick="selectInstrument(this, '808 Sub')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">808 Sub</button>
                 <button type="button" onclick="selectInstrument(this, 'Trap Drums')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Trap Drums</button>
+                <button type="button" onclick="selectInstrument(this, 'Dhol')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Dhol</button>
                 <button type="button" onclick="selectInstrument(this, 'Lead Synth')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Lead Synth</button>
                 <button type="button" onclick="selectInstrument(this, 'Supersaw')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Supersaw</button>
                 <button type="button" onclick="selectInstrument(this, 'Cinematic Strings')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Cinematic Strings</button>
@@ -342,6 +343,12 @@
               <button type="button" onclick="playDrum('closedHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Closed Hat <span class="opacity-70">D</span></button>
               <button type="button" onclick="playDrum('openHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Open Hat <span class="opacity-70">F</span></button>
               <button type="button" onclick="playDrum('tom')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tom <span class="opacity-70">G</span></button>
+            </div>
+            <div id="dholPads" class="hidden flex flex-wrap gap-2" aria-label="Dhol pads">
+              <button type="button" onclick="playDholStroke('dha')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Dha <span class="opacity-70">A · bass + treble</span></button>
+              <button type="button" onclick="playDholStroke('ge')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Ge <span class="opacity-70">S · bass</span></button>
+              <button type="button" onclick="playDholStroke('na')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Na <span class="opacity-70">D · bright</span></button>
+              <button type="button" onclick="playDholStroke('tak')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tak <span class="opacity-70">F · muted</span></button>
             </div>
             <div id="drumSequencer" class="hidden space-y-2">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -675,6 +682,69 @@
     }
   }
 
+  function playDholStroke(stroke) {
+    initAudio();
+    const now = audioCtx.currentTime;
+    const strokes = {
+      dha: { tones: [[105, 0.72, 0.42], [235, 0.34, 0.2]], noise: 1500 },
+      ge: { tones: [[86, 0.78, 0.48]], noise: 850 },
+      na: { tones: [[280, 0.42, 0.24]], noise: 2300 },
+      tak: { tones: [[360, 0.32, 0.11]], noise: 3200 }
+    };
+    const hit = strokes[stroke];
+    if (!hit) return;
+
+    hit.tones.forEach(([frequency, level, decay]) => {
+      const body = audioCtx.createOscillator();
+      const bodyGain = audioCtx.createGain();
+      const overtone = audioCtx.createOscillator();
+      const overtoneGain = audioCtx.createGain();
+
+      body.type = 'sine';
+      body.frequency.setValueAtTime(frequency * 1.16, now);
+      body.frequency.exponentialRampToValueAtTime(frequency, now + 0.04);
+      bodyGain.gain.setValueAtTime(0.0001, now);
+      bodyGain.gain.linearRampToValueAtTime(level, now + 0.004);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, now + decay);
+
+      overtone.type = 'triangle';
+      overtone.frequency.setValueAtTime(frequency * 2.76, now);
+      overtoneGain.gain.setValueAtTime(0.0001, now);
+      overtoneGain.gain.linearRampToValueAtTime(level * 0.16, now + 0.003);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decay * 0.55);
+
+      body.connect(bodyGain);
+      bodyGain.connect(audioCtx.destination);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(audioCtx.destination);
+      body.start(now);
+      body.stop(now + decay);
+      overtone.start(now);
+      overtone.stop(now + decay * 0.55);
+    });
+
+    const noiseDuration = 0.045;
+    const noiseBuffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * noiseDuration), audioCtx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseData.length; i++) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noise = audioCtx.createBufferSource();
+    const filter = audioCtx.createBiquadFilter();
+    const noiseGain = audioCtx.createGain();
+    noise.buffer = noiseBuffer;
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(hit.noise, now);
+    filter.Q.setValueAtTime(0.9, now);
+    noiseGain.gain.setValueAtTime(0.12, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    noise.start(now);
+    noise.stop(now + noiseDuration);
+  }
+
   function playActiveInstrument(freq) {
     initAudio();
     const instrument = activeInstrument;
@@ -831,6 +901,15 @@
               : freq < 600 ? 'openHat'
                 : 'tom';
         playDrum(drum);
+        break;
+      }
+
+      case 'Dhol': {
+        const stroke = freq < 300 ? 'ge'
+          : freq < 400 ? 'dha'
+            : freq < 600 ? 'na'
+              : 'tak';
+        playDholStroke(stroke);
         break;
       }
 
@@ -1125,6 +1204,7 @@
   function selectInstrument(tabEl, name) {
     activeInstrument = name;
     const drumPads = document.getElementById('drumPads');
+    const dholPads = document.getElementById('dholPads');
     const drumSequencer = document.getElementById('drumSequencer');
     document.querySelectorAll('.vst-tab').forEach(t => {
       t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
@@ -1133,6 +1213,7 @@
     tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
     tabEl.classList.remove('hover:text-white', 'transition-colors');
     drumPads.classList.toggle('hidden', name !== 'Trap Drums');
+    dholPads.classList.toggle('hidden', name !== 'Dhol');
     drumSequencer.classList.toggle('hidden', name !== 'Trap Drums');
     if (soundfontPrograms[name]) {
       document.getElementById('instrumentStatus').innerText = `${name} selected · Loading realistic instrument samples…`;
@@ -1149,7 +1230,9 @@
     } else {
       document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
         ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
-        : `${name} selected · Click keys or use A–L to play`;
+        : name === 'Dhol'
+          ? 'Dhol selected · Play Dha, Ge, Na, and Tak pads or use A, S, D, F'
+          : `${name} selected · Click keys or use A–L to play`;
     }
     document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
   }
@@ -1359,11 +1442,16 @@
 
   const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
   const drumKeyMap = { 'a': 'kick', 's': 'snare', 'd': 'closedHat', 'f': 'openHat', 'g': 'tom' };
+  const dholKeyMap = { 'a': 'dha', 's': 'ge', 'd': 'na', 'f': 'tak' };
   window.addEventListener('keydown', (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     const key = e.key.toLowerCase();
     if (activeInstrument === 'Trap Drums' && drumKeyMap[key]) {
       playDrum(drumKeyMap[key]);
+      return;
+    }
+    if (activeInstrument === 'Dhol' && dholKeyMap[key]) {
+      playDholStroke(dholKeyMap[key]);
       return;
     }
     if (keyMap[key]) {
