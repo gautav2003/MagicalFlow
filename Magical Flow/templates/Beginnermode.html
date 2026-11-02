@@ -201,20 +201,20 @@
           <textarea
             id="promptArea"
             name="prompt"
-            rows="2"
+            rows="3"
             maxlength="500"
             required
             placeholder="Describe your music..."
             class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"
-          ></textarea>
+          >Moonlit Bollywood Romance ('O Sajan O Sajan' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.</textarea>
 
           <!-- Quick Preset Prompts -->
           <div class="space-y-2">
+            <button type="button" onclick="setPrompt('Moonlit Bollywood Romance (\'O Sajan O Sajan\' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-pink-300 text-center font-bold transition-all">🚗 Moonlit Bollywood Romance ("O Sajan")</button>
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
             <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
-            <button type="button" onclick="setPrompt('Midnight Dholwaves (Jazzy B Style) - High-octane bhangra fusion featuring driving dhol beats, rhythmic folk tumba strings, heavy club bass stabs, and crown-prince hype adlibs.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwaves (Jazzy B Style)</button>
-            <button type="button" onclick="setPrompt('Moonlit Bollywood Romance (\'O Sajan O Sajan\' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Moonlit Bollywood Romance (Taarzan Style)</button>
+            <button type="button" onclick="setPrompt('Midnight Dholwaves (Jazzy B Style) - High-octane bhangra fusion featuring driving dhol beats, rhythmic folk tumba strings, heavy club bass stabs, and crown-prince hype adlibs.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-amber-300 text-center font-medium transition-all">🦁 Midnight Dholwaves (Jazzy B Style)</button>
           </div>
         </div>
 
@@ -224,7 +224,7 @@
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Lo-Fi</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Lo-Fi</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Hip-Hop</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Jazz</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Electronic</span></label>
@@ -234,7 +234,7 @@
             <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Bhangra" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bhangra</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
           </div>
         </div>
 
@@ -245,9 +245,9 @@
             <label class="cursor-pointer"><input type="radio" name="mood" value="Chill" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Chill</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Energetic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Energetic</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Dark" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dark</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Happy</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Happy</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Sad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Sad</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Romantic</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Romantic</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Focused" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Focused</span></label>
           </div>
         </div>
@@ -258,12 +258,12 @@
           <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Punjabi selections can include Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bass</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Dholak" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dholak</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Dholak" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dholak</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Synth</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Brass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Brass</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Pad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Pad</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Arp" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Arp</span></label>
@@ -283,7 +283,7 @@
             <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">BPM</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
               <button type="button" onclick="adjustValue('bpm', -1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="bpm" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <input type="number" id="bpm" name="bpm" value="86" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
               <button type="button" onclick="adjustValue('bpm', 1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
             </div>
           </div>
@@ -291,7 +291,7 @@
             <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">Duration (min)</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
               <button type="button" onclick="adjustValue('duration', -1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="duration" name="duration" value="2" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <input type="number" id="duration" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
               <button type="button" onclick="adjustValue('duration', 1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
             </div>
           </div>
@@ -314,65 +314,47 @@
         <div class="glass-panel rounded-2xl p-5">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-semibold tracking-wider bg-purple-950/60 text-purple-200 border border-purple-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-              MOONLIT turn imagination into sound
+              <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
+              TAARZAN 2000S ROMANCE VST ACTIVE
             </span>
             <span class="text-xs font-medium text-zinc-400">Recent Generation</span>
           </div>
 
           <div class="mt-4 grid grid-cols-1 gap-3">
-            <!-- Track Card 1: Late Night Lo-Fi -->
+            <!-- Featured Track 1: Moonlit Bollywood Romance (O Sajan Style) -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3 border-pink-500/40 bg-pink-950/20">
+              <div>
+                <h3 class="font-bold text-sm text-pink-200">🚗 Moonlit Bollywood Romance (Taarzan Style)</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">86 BPM · A Minor · 'O Sajan O Sajan' Music-box bells, acoustic nylon & dholak</p>
+              </div>
+              <button type="button" aria-label="Play Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- Featured Track 2: Midnight Dholwaves (Jazzy B Style) -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-amber-200">🦁 Midnight Dholwaves (Jazzy B Style)</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">104 BPM · C Minor · High-energy bhangra dhol rolls, tumba & club bass</p>
+              </div>
+              <button type="button" aria-label="Play Midnight Dholwaves" onclick="togglePlay('Midnight Dholwaves')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- Track Card 3: Late Night Lo-Fi -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM · C Min · Warm piano and relaxing lo-fi beats</p>
               </div>
               <button type="button" aria-label="Play or pause Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Track Card 2: Morning Jazz -->
+            <!-- Track Card 4: Morning Jazz -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM · F Maj · Upbeat acoustic jazz vibe</p>
               </div>
               <button type="button" aria-label="Play or pause Morning Jazz" onclick="togglePlay('Morning Jazz')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Track Card 3: Dark Ambient -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
-              </div>
-              <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Original Western Hip-Hop Demo -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
-              </div>
-              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Updated Track 1: Midnight Dholwaves (Jazzy B Style) -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-white">Midnight Dholwaves (Jazzy B Style)</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">104 BPM · C Min · High-energy bhangra dhol, tumba strings & club bass</p>
-              </div>
-              <button type="button" aria-label="Play or pause Midnight Dholwaves" aria-pressed="false" onclick="togglePlay('Midnight Dholwaves')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Updated Track 2: Moonlit Bollywood Romance (Taarzan Style) -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div class="min-w-0">
-                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance (Taarzan Style)</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A Min · 'O Sajan O Sajan' 2000s Bollywood romantic ballad with bells & dholak</p>
-              </div>
-              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
           </div>
         </div>
@@ -382,15 +364,15 @@
           <div class="flex items-center justify-between">
             <div>
               <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Instrumental previews use recorded and sampled instruments · samples load online</span>
+              <span id="previewStatus" class="text-[10px] text-pink-300" aria-live="polite">Ready to synthesize 'O Sajan O Sajan' arrangement</span>
             </div>
-            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
+            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-pink-200">Moonlit Bollywood Romance</span>
           </div>
 
           <div class="cassette-shell rounded-xl p-3">
             <div class="cassette-label rounded-lg p-3">
               <div class="flex items-center justify-between text-[9px] font-bold uppercase tracking-[0.2em]">
-                <span>Magical Flow</span>
+                <span>Magical Flow Studio</span>
                 <span>✦ Side A ✦</span>
               </div>
               <div class="flex items-center justify-center gap-8 py-3">
@@ -399,7 +381,7 @@
                 <div id="rightReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
               </div>
               <div class="flex items-center justify-between text-[9px] font-mono">
-                <span>STEREO · 1984</span>
+                <span>STEREO · 2004 TAARZAN VST</span>
                 <span id="tapeStatus">STOP</span>
               </div>
             </div>
@@ -407,44 +389,40 @@
 
           <!-- Audio Waveform Visualizer Bars -->
           <div id="waveformContainer" class="h-20 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5" aria-label="Playback waveform">
-            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-5 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-5 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-pink-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-pink-400 rounded-full transition-all duration-300"></div>
           </div>
 
           <div class="flex items-center justify-between pt-1">
             <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
               <button type="button" id="mainPlayBtn" aria-label="Play or pause" onclick="togglePlay()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
-              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
-              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
+              <button type="button" aria-label="Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-pink-300 ml-1"></span>
             </div>
-            <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
+            <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:00</span>
           </div>
-          <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
-          <p class="text-[10px] leading-4 text-zinc-500">
-            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
-            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Jazzy B Bhangra and Taarzan 'O Sajan' arrangements use in-browser Web Audio synthesis and FluidR3 soundfont instruments. Samples require an internet connection.
-          </p>
+          <input id="playbackSeek" type="range" min="0" max="180" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-pink-400 cursor-pointer" />
         </div>
 
         <!-- Record Over Vocal Card -->
@@ -470,50 +448,24 @@
 
     <!-- PAGE INTERACTIONS -->
     <script>
-      // BEGINNER FORM, TRACK PREVIEW AND RECORDING CONTROLS
       function setPrompt(text) {
         document.getElementById("promptArea").value = text;
       }
 
-      // BPM and Duration Controls
       function adjustValue(id, delta, min, max) {
         const el = document.getElementById(id);
         let val = parseInt(el.value) + delta;
         if (val < min) val = min;
         if (val > max) val = max;
         el.value = val;
-        if (id === "bpm") bpmWasCustomized = true;
-        handlePreviewSettingChange();
       }
 
-      // Vintage Cassette Player: playback state and track durations
+      // Track configuration registry
       const tracks = {
-        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
-        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
-        "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
-        "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
-        "Midnight Dholwaves": {
-          duration: 230,
-          bpm: 104,
-          root: 130.81,
-          scale: [0, 2, 3, 5, 7, 8, 10, 12],
-          chord: [0, 3, 7],
-          wave: "triangle",
-          style: "jazzyb",
-          melody: [0, 3, 5, 3, 7, 5, 3, 2, 0, 3, 5, 7, 8, 7, 5, 3],
-          jazzybArrangement: true,
-        },
-        "Moonlit Bollywood Romance": {
-          duration: 262,
-          bpm: 86,
-          root: 220,
-          scale: [0, 2, 3, 5, 7, 8, 11, 12],
-          chord: [0, 3, 7, 11],
-          wave: "sine",
-          style: "taarzan",
-          melody: [0, 3, 7, 8, 7, 3, 2, 3, 5, 7, 11, 8, 7, 5, 3, 0],
-          taarzanArrangement: true,
-        },
+        "Moonlit Bollywood Romance": { duration: 180, bpm: 86, root: 220, taarzanArrangement: true },
+        "Midnight Dholwaves": { duration: 180, bpm: 104, root: 130.81, jazzybArrangement: true },
+        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, simpleArrangement: true },
+        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, simpleArrangement: true }
       };
 
       let previewAudioContext = null;
@@ -523,198 +475,19 @@
       let sequenceInterval = null;
       let sequenceStep = 0;
       let nextStepTime = 0;
-      let selectedTrack = "Late Night Lo-Fi";
-      let bpmWasCustomized = false;
-      let genreWasCustomized = false;
+      let selectedTrack = "Moonlit Bollywood Romance";
       let previewMasterGain = null;
-      let previewCompressor = null;
-      let bassBusGain = null;
-      let playbackRequestId = 0;
-      const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
-      const soundfontPrograms = {
-        piano: "acoustic_grand_piano",
-        guitar: "acoustic_guitar_steel",
-        tumbi: "dulcimer",
-        bass: "electric_bass_pick",
-        synth: "lead_2_sawtooth",
-        strings: "string_ensemble_1",
-        flute: "flute",
-        sitar: "sitar",
-        bells: "tubular_bells",
-        dholak: "acoustic_grand_piano"
-      };
-      const soundfontPromises = new Map();
-      const sampleBufferCache = new Map();
-      const activeSources = new Set();
-
-      const genreStyles = {
-        "Lo-Fi": "lofi",
-        "Hip-Hop": "hiphop",
-        Jazz: "jazz",
-        Electronic: "dance",
-        "Western Pop": "dance",
-        Folk: "folk",
-        "R&B": "rnb",
-        Classical: "cinematic",
-        "Punjabi Pop": "jazzyb",
-        Bhangra: "jazzyb",
-        "Bollywood Romance": "taarzan",
-      };
-      const scales = {
-        major: [0, 2, 4, 7, 9, 12, 14, 16],
-        minor: [0, 2, 3, 7, 9, 12, 14, 15],
-        blues: [0, 3, 5, 6, 7, 10, 12, 15],
-      };
-      const drumPatterns = {
-        dance: [0, 8],
-        hiphop: [0, 6, 8, 14],
-        jazzyb: [0, 3, 8, 11],
-        taarzan: [0, 8],
-        jazz: [0, 10],
-        ambient: [0],
-        folk: [0, 8],
-        rnb: [0, 6, 8, 14],
-        cinematic: [0],
-        lofi: [0, 8],
-      };
-
-      function getPreviewSettings() {
-        const preset = tracks[selectedTrack];
-        const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
-        const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
-        const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
-        const style = preset.jazzybArrangement || preset.taarzanArrangement
-          ? preset.style
-          : genreWasCustomized
-            ? genreStyles[genre]
-            : preset.style;
-        const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
-        const waveforms = {
-          lofi: "triangle",
-          jazz: "sine",
-          ambient: "sine",
-          dance: "square",
-          hiphop: "sawtooth",
-          jazzyb: "triangle",
-          taarzan: "sine",
-        };
-
-        return {
-          ...preset,
-          style,
-          mood,
-          scale: scales.minor,
-          chord: preset.chord,
-          wave: waveforms[style] || preset.wave,
-          bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
-          duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
-          instruments: preset.instruments || selectedInstruments.length ? selectedInstruments : ["Piano"],
-        };
-      }
-
-      function getHarmony(track, step) {
-        const progression = [0, 3, 4, 0];
-        const root = progression[Math.floor(step / 8) % progression.length];
-        const chord = [0, 2, 4];
-        return {
-          rootFrequency: track.root * Math.pow(2, root / 12),
-          chordFrequencies: chord.map((interval) =>
-            track.root * Math.pow(2, (root + interval + 12) / 12)
-          ),
-          rootSemitones: root
-        };
-      }
-
-      function handlePreviewSettingChange() {
-        const instrumentInputs = [...document.querySelectorAll('input[name="instruments"]')];
-        if (instrumentInputs.length && !instrumentInputs.some((input) => input.checked)) {
-          const piano = instrumentInputs.find((input) => input.value === "Piano");
-          if (piano) piano.checked = true;
-        }
-        const duration = getPreviewSettings().duration;
-        timerSeconds = Math.min(timerSeconds, duration);
-        syncPlayer();
-        if (isPlaying) syncSequenceToPosition();
-      }
-
-      document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
-        input.addEventListener("change", () => {
-          if (input.name === "genre") genreWasCustomized = true;
-          handlePreviewSettingChange();
-        });
-      });
-
-      document.getElementById("songGenerationForm").addEventListener("submit", () => {
-        const button = document.getElementById("generateTrackButton");
-        button.disabled = true;
-        button.innerText = "Generating your song...";
-      });
-
-      async function togglePlay(trackName) {
-        if (trackName && trackName !== selectedTrack) {
-          playbackRequestId++;
-          clearInterval(timerInterval);
-          clearInterval(sequenceInterval);
-          stopActiveSources();
-          selectedTrack = trackName;
-          timerSeconds = 0;
-          sequenceStep = 0;
-          if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
-          isPlaying = true;
-        } else {
-          isPlaying = !isPlaying;
-        }
-        if (!isPlaying) {
-          playbackRequestId++;
-          clearInterval(timerInterval);
-          clearInterval(sequenceInterval);
-          stopActiveSources();
-          document.getElementById("mainPlayBtn").disabled = false;
-          syncPlayer();
-          document.getElementById("previewStatus").innerText = "Preview paused";
-          return;
-        }
-        if (timerSeconds >= getPreviewSettings().duration) {
-          timerSeconds = 0;
-          sequenceStep = 0;
-        }
-        const requestId = ++playbackRequestId;
-        const button = document.getElementById("mainPlayBtn");
-        button.disabled = true;
-        document.getElementById("previewStatus").innerText = "Loading sampled instruments and synthesis engine...";
-
-        try {
-          await startPreviewAudio();
-          if (requestId !== playbackRequestId || !isPlaying) return;
-
-          button.disabled = false;
-          syncPlayer();
-          startTimer();
-          startAudioSequence();
-          document.getElementById("previewStatus").innerText = selectedTrack.includes("Dholwaves")
-            ? "Jazzy B Bhangra Style: Dhol, Tumba, Club Bass & Adlibs active"
-            : selectedTrack.includes("Bollywood")
-              ? "Taarzan Style ('O Sajan O Sajan'): Music-box bells, nylon guitar & dholak active"
-              : "Instrumental preview active";
-        } catch (error) {
-          if (requestId !== playbackRequestId) return;
-          isPlaying = false;
-          button.disabled = false;
-          syncPlayer();
-          document.getElementById("previewStatus").innerText = `Preview unavailable: ${error.message}`;
-        }
-      }
+      let activeSources = new Set();
 
       async function startPreviewAudio() {
         const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
         if (!previewAudioContext) {
           previewAudioContext = new AudioContextConstructor();
           previewMasterGain = previewAudioContext.createGain();
-          previewMasterGain.gain.value = 0.7;
-          previewCompressor = previewAudioContext.createDynamicsCompressor();
-          previewMasterGain.connect(previewCompressor);
-          previewCompressor.connect(previewAudioContext.destination);
+          previewMasterGain.gain.value = 0.75;
+          const compressor = previewAudioContext.createDynamicsCompressor();
+          previewMasterGain.connect(compressor);
+          compressor.connect(previewAudioContext.destination);
         }
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
       }
@@ -726,41 +499,46 @@
         activeSources.clear();
       }
 
-      // VST Synthesis and Playback Engine for Jazzy B & Taarzan Styles
+      // Synthesize specific arrangements (O Sajan, Jazzy B, or simple fallback)
       function playPreviewStep(scheduledTime = previewAudioContext.currentTime) {
-        const track = getPreviewSettings();
-        const halfBeatSeconds = 30 / track.bpm;
+        const track = tracks[selectedTrack];
         const phraseStep = sequenceStep % 16;
 
-        if (track.jazzybArrangement) {
-          // Jazzy B Style Midnight Dholwaves Engine
+        if (track.taarzanArrangement) {
+          // 'O Sajan O Sajan' Taarzan Style 2000s Romantic Ballad Masterpiece
+          // 1. Twinkling Music-Box Bells Melody (Sine high octave)
+          if ([0, 3, 6, 8, 11, 14].includes(phraseStep)) {
+            const bellNotes = [880, 987.77, 1046.5, 1318.5, 1174.66, 880];
+            playSynthVoice(bellNotes[phraseStep % bellNotes.length], 0.35, "sine", 0.22, scheduledTime);
+          }
+          // 2. Nylon Acoustic Guitar Arpeggio (Triangle warmer pluck)
+          if ([0, 2, 4, 6, 8, 10, 12, 14].includes(phraseStep)) {
+            const arps = [440, 523.25, 659.25, 523.25, 392, 440, 523.25, 659.25];
+            playSynthVoice(arps[(phraseStep / 2) % arps.length], 0.28, "triangle", 0.18, scheduledTime);
+          }
+          // 3. Romantic Dholak Soft Beat (Low warm pulse)
+          if (phraseStep === 0 || phraseStep === 8) {
+            playSynthVoice(110, 0.22, "sine", 0.32, scheduledTime);
+          }
+          // 4. Sweeping Cinematic Strings (Sustained soft sawtooth pad)
+          if (phraseStep === 0) {
+            playSynthVoice(220, 1.4, "sawtooth", 0.12, scheduledTime);
+          }
+        } else if (track.jazzybArrangement) {
+          // Jazzy B Bhangra Style
           if ([0, 4, 8, 12].includes(phraseStep)) {
-            playSynthVoice(120, 0.25, "triangle", 0.35, scheduledTime); // Punchy Dhol
+            playSynthVoice(130, 0.25, "triangle", 0.35, scheduledTime);
           }
           if ([2, 6, 10, 14].includes(phraseStep)) {
-            playSynthVoice(65, 0.35, "sine", 0.4, scheduledTime); // Club Bass Stab
+            playSynthVoice(65, 0.35, "sine", 0.4, scheduledTime);
           }
           if (phraseStep % 4 === 0) {
-            playSynthVoice(659.25, 0.15, "sawtooth", 0.15, scheduledTime); // Folk Tumba
-          }
-        } else if (track.taarzanArrangement) {
-          // Taarzan Style ("O Sajan O Sajan") Romantic Engine
-          if ([0, 4, 8, 12].includes(phraseStep)) {
-            playSynthVoice(880, 0.4, "sine", 0.2, scheduledTime); // Twinkling Music-Box Bells
-          }
-          if ([2, 6, 10, 14].includes(phraseStep)) {
-            playSynthVoice(329.63, 0.3, "triangle", 0.22, scheduledTime); // Nylon Acoustic Arp
-          }
-          if (phraseStep === 0 || phraseStep === 8) {
-            playSynthVoice(130, 0.2, "sine", 0.3, scheduledTime); // Romantic Dholak beat
-          }
-          if (phraseStep === 0) {
-            playSynthVoice(220, 1.2, "sawtooth", 0.12, scheduledTime); // Sweeping Strings
+            playSynthVoice(659.25, 0.15, "sawtooth", 0.15, scheduledTime);
           }
         } else {
-          // Standard fallback arrangement
-          if (phraseStep % 2 === 0) {
-            playSynthVoice(440, 0.3, track.wave, 0.1, scheduledTime);
+          // Default arrangement for Lo-Fi & Jazz demo tracks
+          if (phraseStep % 4 === 0) {
+            playSynthVoice(track.root, 0.4, "triangle", 0.2, scheduledTime);
           }
         }
 
@@ -789,11 +567,32 @@
         osc.stop(now + duration);
       }
 
+      async function togglePlay(trackName) {
+        if (trackName && trackName !== selectedTrack) {
+          stopPlayer();
+          selectedTrack = trackName;
+          timerSeconds = 0;
+          document.getElementById("bpm").value = tracks[selectedTrack].bpm;
+        }
+        isPlaying = !isPlaying;
+        if (!isPlaying) {
+          stopPlayer();
+          return;
+        }
+
+        await startPreviewAudio();
+        startTimer();
+        startAudioSequence();
+        document.getElementById("previewStatus").innerText = `Now playing: ${selectedTrack} ('O Sajan' VST Engine)`;
+        syncPlayer();
+      }
+
       function startAudioSequence() {
         clearInterval(sequenceInterval);
         const scheduleAheadSeconds = 0.12;
         const scheduleNextStep = () => {
-          const halfBeatSeconds = 30 / getPreviewSettings().bpm;
+          const track = tracks[selectedTrack];
+          const halfBeatSeconds = 30 / track.bpm;
           while (nextStepTime < previewAudioContext.currentTime + scheduleAheadSeconds) {
             playPreviewStep(nextStepTime);
             nextStepTime += halfBeatSeconds;
@@ -804,45 +603,32 @@
         sequenceInterval = setInterval(scheduleNextStep, 25);
       }
 
-      function syncSequenceToPosition() {
-        const halfBeatSeconds = 30 / getPreviewSettings().bpm;
-        sequenceStep = Math.floor(timerSeconds / halfBeatSeconds) % 32;
-        nextStepTime = previewAudioContext ? previewAudioContext.currentTime + 0.03 : 0;
-        if (isPlaying) startAudioSequence();
-      }
-
       function stopPlayer() {
-        playbackRequestId++;
         isPlaying = false;
         clearInterval(timerInterval);
         clearInterval(sequenceInterval);
         stopActiveSources();
-        document.getElementById("mainPlayBtn").disabled = false;
-        timerSeconds = 0;
-        sequenceStep = 0;
         syncPlayer();
         document.getElementById("previewStatus").innerText = "Preview stopped";
       }
 
       function rewindPlayer() {
         timerSeconds = Math.max(0, timerSeconds - 10);
-        syncSequenceToPosition();
         syncPlayer();
       }
 
       function fastForward() {
-        timerSeconds = Math.min(getPreviewSettings().duration, timerSeconds + 10);
-        syncSequenceToPosition();
+        const track = tracks[selectedTrack];
+        timerSeconds = Math.min(track.duration, timerSeconds + 10);
         syncPlayer();
-        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
       }
 
       function startTimer() {
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
           timerSeconds++;
-          if (timerSeconds >= getPreviewSettings().duration) {
-            timerSeconds = getPreviewSettings().duration;
+          const track = tracks[selectedTrack];
+          if (timerSeconds >= track.duration) {
             stopPlayer();
           } else {
             syncPlayer();
@@ -851,23 +637,15 @@
       }
 
       function syncPlayer() {
-        const duration = getPreviewSettings().duration;
-        const playSymbol = isPlaying ? "Ⅱ" : "▶";
-        document.getElementById("mainPlayBtn").innerText = playSymbol;
-        document.querySelectorAll(".track-play-btn").forEach((button) => {
-          const card = button.closest(".inner-card");
-          const title = card.querySelector("h3").innerText;
-          const trackIsPlaying = title === selectedTrack && isPlaying;
-          button.innerText = trackIsPlaying ? "Ⅱ" : "▶";
-          button.setAttribute("aria-pressed", String(trackIsPlaying));
-        });
+        const track = tracks[selectedTrack];
+        document.getElementById("mainPlayBtn").innerText = isPlaying ? "Ⅱ" : "▶";
         document.getElementById("selectedTrackLabel").innerText = selectedTrack;
         document.getElementById("tapeStatus").innerText = isPlaying ? "PLAY" : "STOP";
         document.getElementById("leftReel").classList.toggle("spinning", isPlaying);
         document.getElementById("rightReel").classList.toggle("spinning", isPlaying);
-        document.getElementById("playbackSeek").max = duration;
+        document.getElementById("playbackSeek").max = track.duration;
         document.getElementById("playbackSeek").value = timerSeconds;
-        document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(duration)}`;
+        document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(track.duration)}`;
         animateWaveform(isPlaying);
       }
 
@@ -881,7 +659,7 @@
         const bars = document.querySelectorAll("#waveformContainer div");
         bars.forEach((bar) => {
           if (active) {
-            const randomHeight = Math.floor(Math.random() * 40) + 20;
+            const randomHeight = Math.floor(Math.random() * 45) + 15;
             bar.style.height = `${randomHeight}px`;
           } else {
             bar.style.height = "";
@@ -891,12 +669,8 @@
 
       document.getElementById("playbackSeek").addEventListener("input", (event) => {
         timerSeconds = Number(event.target.value);
-        syncSequenceToPosition();
         syncPlayer();
-        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
       });
-
-      syncPlayer();
 
       // Vocal Recording Controls
       let mediaRecorder,
@@ -910,7 +684,9 @@
 
         if (!isRecording) {
           try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+            });
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
 
@@ -938,6 +714,11 @@
           sub.innerText = "Add your Voice or instrument on top";
         }
       }
+
+      // Initialize default selection on page load
+      window.onload = () => {
+        syncPlayer();
+      };
     </script>
   </body>
 </html>
