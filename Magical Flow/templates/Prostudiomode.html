@@ -324,7 +324,7 @@
                 <button type="button" onclick="selectInstrument(this, 'Electric Bass')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Bass</button>
                 <button type="button" onclick="selectInstrument(this, '808 Sub')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">808 Sub</button>
                 <button type="button" onclick="selectInstrument(this, 'Trap Drums')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Trap Drums</button>
-                <button type="button" onclick="selectInstrument(this, 'Dhol')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Dhol</button>
+                <button type="button" onclick="selectInstrument(this, 'Dhol')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Punjabi Dhol</button>
                 <button type="button" onclick="selectInstrument(this, 'Lead Synth')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Lead Synth</button>
                 <button type="button" onclick="selectInstrument(this, 'Supersaw')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Supersaw</button>
                 <button type="button" onclick="selectInstrument(this, 'Cinematic Strings')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Cinematic Strings</button>
@@ -345,10 +345,10 @@
               <button type="button" onclick="playDrum('tom')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tom <span class="opacity-70">G</span></button>
             </div>
             <div id="dholPads" class="hidden flex flex-wrap gap-2" aria-label="Dhol pads">
-              <button type="button" onclick="playDholStroke('dha')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Dha <span class="opacity-70">A · bass + treble</span></button>
-              <button type="button" onclick="playDholStroke('ge')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Ge <span class="opacity-70">S · bass</span></button>
-              <button type="button" onclick="playDholStroke('na')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Na <span class="opacity-70">D · bright</span></button>
-              <button type="button" onclick="playDholStroke('tak')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tak <span class="opacity-70">F · muted</span></button>
+              <button type="button" onclick="playDholStroke('dha')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Dha <span class="opacity-70">A · both heads</span></button>
+              <button type="button" onclick="playDholStroke('ge')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Ge <span class="opacity-70">S · deep bass</span></button>
+              <button type="button" onclick="playDholStroke('na')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Na <span class="opacity-70">D · treble head</span></button>
+              <button type="button" onclick="playDholStroke('tak')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tak <span class="opacity-70">F · sharp slap</span></button>
             </div>
             <div id="drumSequencer" class="hidden space-y-2">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -686,32 +686,32 @@
     initAudio();
     const now = audioCtx.currentTime;
     const strokes = {
-      dha: { tones: [[105, 0.72, 0.42], [235, 0.34, 0.2]], noise: 1500 },
-      ge: { tones: [[86, 0.78, 0.48]], noise: 850 },
-      na: { tones: [[280, 0.42, 0.24]], noise: 2300 },
-      tak: { tones: [[360, 0.32, 0.11]], noise: 3200 }
+      dha: { tones: [[82, 0.95, 0.36, 1.75], [260, 0.58, 0.16, 1.3]], noise: 1700, noiseLevel: 0.2, noiseDuration: 0.04 },
+      ge: { tones: [[72, 1, 0.44, 1.9]], noise: 950, noiseLevel: 0.13, noiseDuration: 0.035 },
+      na: { tones: [[345, 0.62, 0.18, 1.35]], noise: 2600, noiseLevel: 0.22, noiseDuration: 0.035 },
+      tak: { tones: [[430, 0.48, 0.095, 1.55]], noise: 3600, noiseLevel: 0.28, noiseDuration: 0.025 }
     };
     const hit = strokes[stroke];
     if (!hit) return;
 
-    hit.tones.forEach(([frequency, level, decay]) => {
+    hit.tones.forEach(([frequency, level, decay, pitchDrop]) => {
       const body = audioCtx.createOscillator();
       const bodyGain = audioCtx.createGain();
       const overtone = audioCtx.createOscillator();
       const overtoneGain = audioCtx.createGain();
 
       body.type = 'sine';
-      body.frequency.setValueAtTime(frequency * 1.16, now);
-      body.frequency.exponentialRampToValueAtTime(frequency, now + 0.04);
+      body.frequency.setValueAtTime(frequency * pitchDrop, now);
+      body.frequency.exponentialRampToValueAtTime(frequency, now + 0.035);
       bodyGain.gain.setValueAtTime(0.0001, now);
       bodyGain.gain.linearRampToValueAtTime(level, now + 0.004);
       bodyGain.gain.exponentialRampToValueAtTime(0.001, now + decay);
 
       overtone.type = 'triangle';
-      overtone.frequency.setValueAtTime(frequency * 2.76, now);
+      overtone.frequency.setValueAtTime(frequency * 2.4, now);
       overtoneGain.gain.setValueAtTime(0.0001, now);
-      overtoneGain.gain.linearRampToValueAtTime(level * 0.16, now + 0.003);
-      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decay * 0.55);
+      overtoneGain.gain.linearRampToValueAtTime(level * 0.2, now + 0.003);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decay * 0.45);
 
       body.connect(bodyGain);
       bodyGain.connect(audioCtx.destination);
@@ -723,7 +723,7 @@
       overtone.stop(now + decay * 0.55);
     });
 
-    const noiseDuration = 0.045;
+    const noiseDuration = hit.noiseDuration;
     const noiseBuffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * noiseDuration), audioCtx.sampleRate);
     const noiseData = noiseBuffer.getChannelData(0);
     for (let i = 0; i < noiseData.length; i++) {
@@ -736,7 +736,7 @@
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(hit.noise, now);
     filter.Q.setValueAtTime(0.9, now);
-    noiseGain.gain.setValueAtTime(0.12, now);
+    noiseGain.gain.setValueAtTime(hit.noiseLevel, now);
     noiseGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
     noise.connect(filter);
     filter.connect(noiseGain);
@@ -1231,7 +1231,7 @@
       document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
         ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
         : name === 'Dhol'
-          ? 'Dhol selected · Play Dha, Ge, Na, and Tak pads or use A, S, D, F'
+            ? 'Punjabi Dhol selected · Play Dha, Ge, Na, and Tak pads or use A, S, D, F'
           : `${name} selected · Click keys or use A–L to play`;
     }
     document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
@@ -1430,7 +1430,10 @@
       renderDrumSequencer();
 
       if (typeof project.instrument === 'string') {
-        const tab = [...document.querySelectorAll('.vst-tab')].find(item => item.textContent.trim() === project.instrument);
+        const tab = [...document.querySelectorAll('.vst-tab')].find(item =>
+          item.textContent.trim() === project.instrument ||
+          (project.instrument === 'Dhol' && item.textContent.trim() === 'Punjabi Dhol')
+        );
         if (tab) selectInstrument(tab, project.instrument);
       }
       document.getElementById('projectStatus').innerText = 'Saved project restored from this browser.';
