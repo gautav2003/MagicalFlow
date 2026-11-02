@@ -201,20 +201,19 @@
           <textarea
             id="promptArea"
             name="prompt"
-            rows="3"
+            rows="2"
             maxlength="500"
             required
             placeholder="Describe your music..."
             class="w-full bg-[#080214] border border-purple-800/50 rounded-xl p-3 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 transition-all resize-none mb-3"
-          >Moonlit Bollywood Romance ('O Sajan O Sajan' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.</textarea>
+          ></textarea>
 
           <!-- Quick Preset Prompts -->
           <div class="space-y-2">
-            <button type="button" onclick="setPrompt('Moonlit Bollywood Romance (\'O Sajan O Sajan\' - Taarzan Style) - 2000s melodic romantic masterpiece with twinkling music-box bells, nylon acoustic guitar, romantic dholak, and sweeping strings.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-pink-300 text-center font-bold transition-all">🚗 Moonlit Bollywood Romance ("O Sajan")</button>
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
             <button type="button" onclick="setPrompt('Dark cinematic synth atmosphere')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Dark cinematic synth atmosphere</button>
-            <button type="button" onclick="setPrompt('Midnight Dholwaves (Jazzy B Style) - High-octane bhangra fusion featuring driving dhol beats, rhythmic folk tumba strings, heavy club bass stabs, and crown-prince hype adlibs.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-amber-300 text-center font-medium transition-all">🦁 Midnight Dholwaves (Jazzy B Style)</button>
+            <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
 
@@ -224,7 +223,7 @@
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Genre</label>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Lo-Fi</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Lo-Fi" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Lo-Fi</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Hip-Hop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Hip-Hop</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Jazz" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Jazz</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Electronic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Electronic</span></label>
@@ -234,7 +233,7 @@
             <label class="cursor-pointer"><input type="radio" name="genre" value="Classical" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Classical</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Punjabi Pop" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Punjabi</span></label>
             <label class="cursor-pointer"><input type="radio" name="genre" value="Bhangra" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bhangra</span></label>
-            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
+            <label class="cursor-pointer"><input type="radio" name="genre" value="Bollywood Romance" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bollywood Romance</span></label>
           </div>
         </div>
 
@@ -245,9 +244,9 @@
             <label class="cursor-pointer"><input type="radio" name="mood" value="Chill" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Chill</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Energetic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Energetic</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Dark" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dark</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Happy</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Happy" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Happy</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Sad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Sad</span></label>
-            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Romantic</span></label>
+            <label class="cursor-pointer"><input type="radio" name="mood" value="Romantic" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Romantic</span></label>
             <label class="cursor-pointer"><input type="radio" name="mood" value="Focused" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Focused</span></label>
           </div>
         </div>
@@ -258,12 +257,12 @@
           <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Punjabi selections can include Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Bass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Bass</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Dholak" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dholak</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Drums" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Drums</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Dholak" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Dholak</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Synth" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Synth</span></label>
-            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
+            <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Strings" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Strings</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Brass" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Brass</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Pad" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Pad</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Arp" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Arp</span></label>
@@ -283,7 +282,7 @@
             <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">BPM</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
               <button type="button" onclick="adjustValue('bpm', -1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="bpm" name="bpm" value="86" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <input type="number" id="bpm" name="bpm" value="90" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
               <button type="button" onclick="adjustValue('bpm', 1, 60, 180)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
             </div>
           </div>
@@ -291,7 +290,7 @@
             <label class="block text-[10px] font-bold text-zinc-400 mb-1 tracking-wider">Duration (min)</label>
             <div class="flex items-center justify-between bg-[#080214] border border-purple-800/40 rounded-xl py-1 px-2">
               <button type="button" onclick="adjustValue('duration', -1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">-</button>
-              <input type="number" id="duration" name="duration" value="3" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
+              <input type="number" id="duration" name="duration" value="2" readonly class="w-10 text-center bg-transparent font-extrabold text-sm text-white focus:outline-none" />
               <button type="button" onclick="adjustValue('duration', 1, 1, 3)" class="w-8 h-8 bg-[#1f0b48] border border-purple-600/30 rounded-lg text-lg font-bold text-zinc-300 hover:text-white flex items-center justify-center">+</button>
             </div>
           </div>
@@ -314,47 +313,65 @@
         <div class="glass-panel rounded-2xl p-5">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-semibold tracking-wider bg-purple-950/60 text-purple-200 border border-purple-500/30 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
-              TAARZAN 2000S ROMANCE VST ACTIVE
+              <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              MOONLIT turn imagination into sound
             </span>
             <span class="text-xs font-medium text-zinc-400">Recent Generation</span>
           </div>
 
           <div class="mt-4 grid grid-cols-1 gap-3">
-            <!-- Featured Track 1: Moonlit Bollywood Romance (O Sajan Style) -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3 border-pink-500/40 bg-pink-950/20">
-              <div>
-                <h3 class="font-bold text-sm text-pink-200">🚗 Moonlit Bollywood Romance (Taarzan Style)</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">86 BPM · A Minor · 'O Sajan O Sajan' Music-box bells, acoustic nylon & dholak</p>
-              </div>
-              <button type="button" aria-label="Play Moonlit Bollywood Romance" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Featured Track 2: Midnight Dholwaves (Jazzy B Style) -->
-            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
-              <div>
-                <h3 class="font-bold text-sm text-amber-200">🦁 Midnight Dholwaves (Jazzy B Style)</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">104 BPM · C Minor · High-energy bhangra dhol rolls, tumba & club bass</p>
-              </div>
-              <button type="button" aria-label="Play Midnight Dholwaves" onclick="togglePlay('Midnight Dholwaves')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
-            </div>
-
-            <!-- Track Card 3: Late Night Lo-Fi -->
+            <!-- Track Card 1: Late Night Lo-Fi -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Late Night Lo-Fi</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM · C Min · Warm piano and relaxing lo-fi beats</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">90 BPM . C Min . 3:24</p>
               </div>
               <button type="button" aria-label="Play or pause Late Night Lo-Fi" onclick="togglePlay('Late Night Lo-Fi')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Track Card 4: Morning Jazz -->
+            <!-- Track Card 2: Morning Jazz -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Morning Jazz</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM · F Maj · Upbeat acoustic jazz vibe</p>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">110 BPM . F Maj . 2:58</p>
               </div>
               <button type="button" aria-label="Play or pause Morning Jazz" onclick="togglePlay('Morning Jazz')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- Track Card 3: Dark Ambient -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">70 BPM . B Min . 4:10</p>
+              </div>
+              <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- Original Western Hip-Hop Demo -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
+              </div>
+              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- Original Punjabi folk instrumental -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-sm text-white">Midnight Dholwave</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · Punjabi folk × modern Punjabi groove · Dhol, Dholak, Algoza, Tumbi, Ektara, Tabla &amp; bass</p>
+              </div>
+              <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+            </div>
+
+            <!-- TRACK: Moonlit Bollywood Romance · full-length 90s Bollywood-style arrangement -->
+            <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">92 BPM · A minor · Piano, nylon guitar, harmonium, sitar, bansuri, strings, bass and tabla</p>
+              </div>
+              <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
           </div>
         </div>
@@ -364,15 +381,15 @@
           <div class="flex items-center justify-between">
             <div>
               <span class="block text-xs font-semibold text-zinc-300">Vintage Tape Deck</span>
-              <span id="previewStatus" class="text-[10px] text-pink-300" aria-live="polite">Ready to synthesize 'O Sajan O Sajan' arrangement</span>
+              <span id="previewStatus" class="text-[10px] text-purple-300" aria-live="polite">Instrumental previews use recorded and sampled instruments · samples load online</span>
             </div>
-            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-pink-200">Moonlit Bollywood Romance</span>
+            <span id="selectedTrackLabel" class="text-[10px] uppercase tracking-widest text-purple-200">Late Night Lo-Fi</span>
           </div>
 
           <div class="cassette-shell rounded-xl p-3">
             <div class="cassette-label rounded-lg p-3">
               <div class="flex items-center justify-between text-[9px] font-bold uppercase tracking-[0.2em]">
-                <span>Magical Flow Studio</span>
+                <span>Magical Flow</span>
                 <span>✦ Side A ✦</span>
               </div>
               <div class="flex items-center justify-center gap-8 py-3">
@@ -381,7 +398,7 @@
                 <div id="rightReel" class="cassette-reel relative w-12 h-12 rounded-full"></div>
               </div>
               <div class="flex items-center justify-between text-[9px] font-mono">
-                <span>STEREO · 2004 TAARZAN VST</span>
+                <span>STEREO · 1984</span>
                 <span id="tapeStatus">STOP</span>
               </div>
             </div>
@@ -389,40 +406,44 @@
 
           <!-- Audio Waveform Visualizer Bars -->
           <div id="waveformContainer" class="h-20 bg-[#080214] rounded-xl border border-purple-800/30 px-6 flex items-center justify-between gap-1.5" aria-label="Playback waveform">
-            <div class="w-1.5 h-10 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-5 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-10 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-14 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-6 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-12 bg-pink-400 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-16 bg-pink-500 rounded-full transition-all duration-300"></div>
-            <div class="w-1.5 h-8 bg-pink-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-5 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-10 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-14 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-6 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-16 bg-blue-500 rounded-full transition-all duration-300"></div>
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all duration-300"></div>
           </div>
 
           <div class="flex items-center justify-between pt-1">
             <div class="flex items-center gap-2">
-              <button type="button" aria-label="Rewind" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+              <button type="button" aria-label="Rewind 10 seconds" title="Rewind 10 seconds" onclick="rewindPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
               <button type="button" id="mainPlayBtn" aria-label="Play or pause" onclick="togglePlay()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">▶</button>
-              <button type="button" aria-label="Forward" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
-              <button type="button" aria-label="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
-              <span class="w-2.5 h-2.5 rounded-full bg-pink-300 ml-1"></span>
+              <button type="button" aria-label="Forward 10 seconds" title="Forward 10 seconds" onclick="fastForward()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+              <button type="button" aria-label="Stop playback" title="Stop" onclick="stopPlayer()" class="transport-btn w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-200 ml-1"></span>
             </div>
-            <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:00</span>
+            <span id="timerDisplay" class="text-xs font-mono text-zinc-400">0:00 / 3:24</span>
           </div>
-          <input id="playbackSeek" type="range" min="0" max="180" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-pink-400 cursor-pointer" />
+          <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
+          <p class="text-[10px] leading-4 text-zinc-500">
+            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi- and Ektara-style plucks use its dulcimer patch, Punjabi Algoza-style double-flute parts use its sampled flute patch, picked bass uses its electric bass patch, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
+          </p>
         </div>
 
         <!-- Record Over Vocal Card -->
@@ -448,26 +469,40 @@
 
     <!-- PAGE INTERACTIONS -->
     <script>
+      // BEGINNER FORM, TRACK PREVIEW AND RECORDING CONTROLS
       function setPrompt(text) {
         document.getElementById("promptArea").value = text;
       }
 
+      // BPM and Duration Controls
       function adjustValue(id, delta, min, max) {
         const el = document.getElementById(id);
         let val = parseInt(el.value) + delta;
         if (val < min) val = min;
         if (val > max) val = max;
         el.value = val;
+        if (id === "bpm") bpmWasCustomized = true;
+        handlePreviewSettingChange();
       }
 
-      // Track configuration registry
+      // Vintage Cassette Player: playback state and track durations
       const tracks = {
-        "Moonlit Bollywood Romance": { duration: 180, bpm: 86, root: 220, taarzanArrangement: true },
-        "Midnight Dholwaves": { duration: 180, bpm: 104, root: 130.81, jazzybArrangement: true },
-        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, simpleArrangement: true },
-        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, simpleArrangement: true }
+        "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
+        "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
+        "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
+        "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
+        "Midnight Dholwave": {
+          duration: 196,
+          bpm: 96,
+          root: 146.83,
+          scale: [0, 2, 3, 7, 9, 12, 14, 15],
+          chord: [0, 3, 7],
+          wave: "triangle",
+          style: "punjabi",
+          melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
+          punjabiArrangement: true,
+        },
       };
-
       let previewAudioContext = null;
       let isPlaying = false;
       let timerSeconds = 0;
@@ -475,124 +510,1004 @@
       let sequenceInterval = null;
       let sequenceStep = 0;
       let nextStepTime = 0;
-      let selectedTrack = "Moonlit Bollywood Romance";
+      let selectedTrack = "Late Night Lo-Fi";
+      let bpmWasCustomized = false;
+      let genreWasCustomized = false;
       let previewMasterGain = null;
-      let activeSources = new Set();
+      let previewCompressor = null;
+      let bassBusGain = null;
+      let liveDholBufferPromise = null;
+      let liveDholGainNode = null;
+      let liveDholTarget = null;
+      let playbackRequestId = 0;
+      const soundfontBaseUrl = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+      const liveDholUrl = "https://upload.wikimedia.org/wikipedia/commons/0/09/DHOL_BEAT.wav";
+      const liveDholakUrl = "{{ url_for('static', filename='audio/dholak_treble_skin.mp3') }}";
+      const soundfontPrograms = {
+        piano: "acoustic_grand_piano",
+        guitar: "acoustic_guitar_steel",
+        tumbi: "dulcimer",
+        ektara: "dulcimer",
+        bass: "electric_bass_pick",
+        synth: "lead_2_sawtooth",
+        strings: "string_ensemble_1",
+        sarangi: "violin",
+        flute: "flute",
+        algoza: "pan_flute",
+        harmonium: "reed_organ",
+        sitar: "sitar",
+        brass: "brass_section",
+        pad: "pad_2_warm",
+        arp: "vibraphone",
+        vocals: "choir_aahs"
+      };
+      const punjabiInstrumentProfiles = {
+        sitar: { gain: 0.48, pan: -0.24, lowpass: 6500, highpass: 150 },
+        tumbi: { gain: 0.68, pan: 0.18, lowpass: 7800, highpass: 240 },
+        ektara: { gain: 0.34, pan: -0.12, lowpass: 4200, highpass: 180, attack: 0.008, release: 0.20 },
+        algoza: { gain: 0.68, pan: 0.20, lowpass: 6100, highpass: 260, attack: 0.035, release: 0.22 },
+        harmonium: { gain: 0.34, pan: -0.08, lowpass: 3600, highpass: 140 },
+        sarangi: { gain: 0.38, pan: -0.20, lowpass: 4400, highpass: 210 },
+        bass: { gain: 0.72, pan: 0, lowpass: 1800, highpass: 42, attack: 0.008, release: 0.12 },
+      };
+      const soundfontPromises = new Map();
+      const sampleBufferCache = new Map();
+      const activeSources = new Set();
+      let liveDholakBuffer = null;
+      let liveDholakBufferPromise = null;
 
+      const genreStyles = {
+        "Lo-Fi": "lofi",
+        "Hip-Hop": "hiphop",
+        Jazz: "jazz",
+        Electronic: "dance",
+        Pop: "dance",
+        "Western Pop": "dance",
+        Folk: "folk",
+        "R&B": "rnb",
+        Classical: "cinematic",
+        "Punjabi Pop": "punjabi",
+        Bhangra: "punjabi",
+        "Bollywood Sufi": "bollywood",
+        "Bollywood Romance": "bollywood",
+      };
+      const scales = {
+        major: [0, 2, 4, 7, 9, 12, 14, 16],
+        minor: [0, 2, 3, 7, 9, 12, 14, 15],
+        blues: [0, 3, 5, 6, 7, 10, 12, 15],
+      };
+      const drumPatterns = {
+        dance: [0, 8],
+        hiphop: [0, 6, 8, 14],
+        punjabi: [0, 3, 8, 11],
+        bollywood: [0, 8],
+        jazz: [0, 10],
+        ambient: [0],
+        folk: [0, 8],
+        rnb: [0, 6, 8, 14],
+        cinematic: [0],
+        lofi: [0, 8],
+      };
+
+      function getPreviewSettings() {
+        const preset = tracks[selectedTrack];
+        const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
+        const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
+        const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
+        const style = preset.punjabiArrangement
+          ? preset.style
+          : genreWasCustomized
+            ? genreStyles[genre]
+            : preset.style;
+        const styleArrangements = {
+          bollywood: ["Piano", "Strings", "Flute", "Sitar", "Bass", "Drums", "Pad"],
+          punjabi: ["Dholak", "Sitar", "Tumbi", "Algoza", "Bass", "Drums"],
+        };
+        const instruments = preset.punjabiArrangement
+          ? []
+          : styleArrangements[style]
+            ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
+            : genreWasCustomized
+              ? selectedInstruments
+              : preset.arrangement || selectedInstruments;
+        const minorMood =
+          ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
+          style === "bollywood" ||
+          style === "punjabi";
+        const scale = style === "jazz" ? scales.blues : minorMood ? scales.minor : scales.major;
+        const chord = mood === "Romantic" ? [0, 4, 7, 11] : minorMood ? [0, 3, 7] : [0, 4, 7];
+        const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
+        const waveforms = {
+          lofi: "triangle",
+          jazz: "sine",
+          ambient: "sine",
+          dance: "square",
+          hiphop: "sawtooth",
+          punjabi: "triangle",
+          bollywood: "sine",
+          folk: "triangle",
+          rnb: "sawtooth",
+          cinematic: "sine",
+        };
+
+        return {
+          ...preset,
+          style,
+          mood,
+          scale,
+          chord,
+          wave: waveforms[style] || preset.wave,
+          bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
+          duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
+          instruments: preset.punjabiArrangement ? [] : instruments.length ? instruments : ["Piano"],
+        };
+      }
+
+      function getSongSection(duration) {
+        const progress = timerSeconds / duration;
+        if (progress < 0.12) return "intro";
+        if (progress < 0.36) return "verse";
+        if (progress < 0.48) return "build";
+        if (progress < 0.72) return "hook";
+        if (progress < 0.88) return "bridge";
+        return "outro";
+      }
+
+      function getPunjabiMix(track, section) {
+        if (section === "intro") return { dhol: 0.032, dholak: 0.020, sitar: 0.016 };
+        if (section === "build") return { dhol: 0.064, dholak: 0.044, sitar: 0.022 };
+        if (section === "hook") return { dhol: 0.095, dholak: 0.058, sitar: 0.026 };
+        if (section === "bridge") return { dhol: 0.050, dholak: 0.034, sitar: 0.020 };
+        if (section === "outro") return { dhol: 0.028, dholak: 0.020, sitar: 0.014 };
+        return { dhol: 0.056, dholak: 0.038, sitar: 0.022 };
+      }
+
+      function updateLiveDholMix(track, section) {
+        if (!liveDholGainNode) return;
+        const target = getPunjabiMix(track, section).dhol;
+        if (liveDholTarget !== null && Math.abs(target - liveDholTarget) < 0.001) return;
+        const now = previewAudioContext.currentTime;
+        liveDholGainNode.gain.cancelScheduledValues(now);
+        liveDholGainNode.gain.setValueAtTime(Math.max(liveDholGainNode.gain.value, 0.0001), now);
+        liveDholGainNode.gain.linearRampToValueAtTime(target, now + 0.8);
+        liveDholTarget = target;
+      }
+
+      function getHarmony(track, step) {
+        const isMinor = track.chord[1] === 3;
+        const scale = isMinor
+          ? [0, 2, 3, 5, 7, 8, 10]
+          : [0, 2, 4, 5, 7, 9, 11];
+        const progression = isMinor ? [0, 5, 3, 6] : [0, 4, 5, 3];
+        const degree = progression[Math.floor(step / 8) % progression.length];
+        const root = scale[degree];
+        const chord = [0, 2, 4].map((offset) => {
+          const chordDegree = degree + offset;
+          const octave = Math.floor(chordDegree / scale.length);
+          return scale[chordDegree % scale.length] + octave * 12 - root;
+        });
+
+        return {
+          rootFrequency: track.root * Math.pow(2, root / 12),
+          chordFrequencies: chord.map((interval) =>
+            track.root * Math.pow(2, (root + interval + 12) / 12)
+          ),
+          rootSemitones: root
+        };
+      }
+
+      function handlePreviewSettingChange() {
+        const instrumentInputs = [...document.querySelectorAll('input[name="instruments"]')];
+        if (instrumentInputs.length && !instrumentInputs.some((input) => input.checked)) {
+          const piano = instrumentInputs.find((input) => input.value === "Piano");
+          if (piano) piano.checked = true;
+        }
+        const duration = getPreviewSettings().duration;
+        timerSeconds = Math.min(timerSeconds, duration);
+        syncPlayer();
+        if (isPlaying) syncSequenceToPosition();
+      }
+
+      document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
+        input.addEventListener("change", () => {
+          if (input.name === "genre") {
+            genreWasCustomized = true;
+            if (["Punjabi Pop", "Bhangra"].includes(input.value)) {
+              const piano = document.querySelector('input[name="instruments"][value="Piano"]');
+              if (piano) piano.checked = false;
+            }
+          }
+          handlePreviewSettingChange();
+        });
+      });
+
+      document.getElementById("songGenerationForm").addEventListener("submit", () => {
+        const button = document.getElementById("generateTrackButton");
+        button.disabled = true;
+        button.innerText = "Generating your song...";
+      });
+
+      async function togglePlay(trackName) {
+        if (trackName && trackName !== selectedTrack) {
+          playbackRequestId++;
+          clearInterval(timerInterval);
+          clearInterval(sequenceInterval);
+          stopActiveSources();
+          selectedTrack = trackName;
+          timerSeconds = 0;
+          sequenceStep = 0;
+          if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
+          isPlaying = true;
+        } else {
+          isPlaying = !isPlaying;
+        }
+        if (!isPlaying) {
+          playbackRequestId++;
+          clearInterval(timerInterval);
+          clearInterval(sequenceInterval);
+          stopActiveSources();
+          document.getElementById("mainPlayBtn").disabled = false;
+          syncPlayer();
+          document.getElementById("previewStatus").innerText = "Preview paused";
+          return;
+        }
+        if (timerSeconds >= getPreviewSettings().duration) {
+          timerSeconds = 0;
+          sequenceStep = 0;
+        }
+        const requestId = ++playbackRequestId;
+        const button = document.getElementById("mainPlayBtn");
+        button.disabled = true;
+        const loadingTrack = getPreviewSettings();
+        document.getElementById("previewStatus").innerText = loadingTrack.punjabiArrangement
+          ? "Mixing live Punjabi percussion, folk strings, Algoza flute and melodic bass..."
+          : loadingTrack.style === "punjabi"
+            ? "Loading live dhol recording and sampled instruments..."
+            : "Loading sampled instruments...";
+
+        try {
+          await startPreviewAudio();
+          await preparePreviewSamples();
+          if (requestId !== playbackRequestId || !isPlaying) return;
+
+          button.disabled = false;
+          syncPlayer();
+          await startLiveDholBacking(getPreviewSettings());
+          if (requestId !== playbackRequestId || !isPlaying) return;
+          startTimer();
+          startAudioSequence();
+          document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
+            ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
+            : "Instrumental preview from sampled instruments · vocals are not sung";
+        } catch (error) {
+          if (requestId !== playbackRequestId) return;
+
+          isPlaying = false;
+          button.disabled = false;
+          syncPlayer();
+          document.getElementById("previewStatus").innerText =
+            `Preview unavailable: ${error.message}`;
+          console.error("Unable to start the browser audio preview:", error);
+        }
+      }
+
+      // Audio setup and online instrument samples
       async function startPreviewAudio() {
         const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
         if (!previewAudioContext) {
           previewAudioContext = new AudioContextConstructor();
           previewMasterGain = previewAudioContext.createGain();
-          previewMasterGain.gain.value = 0.75;
-          const compressor = previewAudioContext.createDynamicsCompressor();
-          previewMasterGain.connect(compressor);
-          compressor.connect(previewAudioContext.destination);
+          previewMasterGain.gain.value = 0.68;
+          bassBusGain = previewAudioContext.createGain();
+          bassBusGain.gain.value = 0.90;
+          bassBusGain.connect(previewMasterGain);
+
+          previewCompressor = previewAudioContext.createDynamicsCompressor();
+          previewCompressor.threshold.value = -18;
+          previewCompressor.knee.value = 16;
+          previewCompressor.ratio.value = 3;
+          previewCompressor.attack.value = 0.005;
+          previewCompressor.release.value = 0.18;
+          previewMasterGain.connect(previewCompressor);
+
+          const reverb = previewAudioContext.createConvolver();
+          const reverbGain = previewAudioContext.createGain();
+          const reverbDuration = 1.6;
+          const impulse = previewAudioContext.createBuffer(
+            2,
+            Math.floor(previewAudioContext.sampleRate * reverbDuration),
+            previewAudioContext.sampleRate
+          );
+          for (let channel = 0; channel < impulse.numberOfChannels; channel += 1) {
+            const samples = impulse.getChannelData(channel);
+            for (let index = 0; index < samples.length; index += 1) {
+              const decay = Math.pow(1 - index / samples.length, 2.4);
+              samples[index] = (Math.random() * 2 - 1) * decay;
+            }
+          }
+          reverb.buffer = impulse;
+          reverbGain.gain.value = 0.055;
+          previewMasterGain.connect(reverb);
+          reverb.connect(reverbGain);
+          reverbGain.connect(previewCompressor);
+          previewCompressor.connect(previewAudioContext.destination);
         }
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
       }
 
-      function stopActiveSources() {
-        activeSources.forEach((source) => {
-          try { source.stop(); } catch(e) {}
+      function loadPreviewSoundfont(instrument) {
+        const program = soundfontPrograms[instrument];
+        if (!program) {
+          return Promise.reject(new Error(`Unknown preview instrument: ${instrument}`));
+        }
+        if (window.MIDI?.Soundfont?.[program]) {
+          return Promise.resolve(window.MIDI.Soundfont[program]);
+        }
+        if (soundfontPromises.has(program)) {
+          return soundfontPromises.get(program);
+        }
+
+        const loadPromise = new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+          script.async = true;
+          script.onload = () => {
+            const soundfont = window.MIDI?.Soundfont?.[program];
+            if (soundfont) {
+              resolve(soundfont);
+            } else {
+              reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+            }
+          };
+          script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
+          document.head.appendChild(script);
         });
-        activeSources.clear();
+
+        soundfontPromises.set(program, loadPromise);
+        loadPromise.catch(() => soundfontPromises.delete(program));
+        return loadPromise;
       }
 
-      // Synthesize specific arrangements (O Sajan, Jazzy B, or simple fallback)
-      function playPreviewStep(scheduledTime = previewAudioContext.currentTime) {
-        const track = tracks[selectedTrack];
-        const phraseStep = sequenceStep % 16;
+      function midiNoteNumber(noteName) {
+        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(noteName);
+        if (!match) return null;
 
-        if (track.taarzanArrangement) {
-          // 'O Sajan O Sajan' Taarzan Style 2000s Romantic Ballad Masterpiece
-          // 1. Twinkling Music-Box Bells Melody (Sine high octave)
-          if ([0, 3, 6, 8, 11, 14].includes(phraseStep)) {
-            const bellNotes = [880, 987.77, 1046.5, 1318.5, 1174.66, 880];
-            playSynthVoice(bellNotes[phraseStep % bellNotes.length], 0.35, "sine", 0.22, scheduledTime);
-          }
-          // 2. Nylon Acoustic Guitar Arpeggio (Triangle warmer pluck)
-          if ([0, 2, 4, 6, 8, 10, 12, 14].includes(phraseStep)) {
-            const arps = [440, 523.25, 659.25, 523.25, 392, 440, 523.25, 659.25];
-            playSynthVoice(arps[(phraseStep / 2) % arps.length], 0.28, "triangle", 0.18, scheduledTime);
-          }
-          // 3. Romantic Dholak Soft Beat (Low warm pulse)
-          if (phraseStep === 0 || phraseStep === 8) {
-            playSynthVoice(110, 0.22, "sine", 0.32, scheduledTime);
-          }
-          // 4. Sweeping Cinematic Strings (Sustained soft sawtooth pad)
-          if (phraseStep === 0) {
-            playSynthVoice(220, 1.4, "sawtooth", 0.12, scheduledTime);
-          }
-        } else if (track.jazzybArrangement) {
-          // Jazzy B Bhangra Style
-          if ([0, 4, 8, 12].includes(phraseStep)) {
-            playSynthVoice(130, 0.25, "triangle", 0.35, scheduledTime);
-          }
-          if ([2, 6, 10, 14].includes(phraseStep)) {
-            playSynthVoice(65, 0.35, "sine", 0.4, scheduledTime);
-          }
-          if (phraseStep % 4 === 0) {
-            playSynthVoice(659.25, 0.15, "sawtooth", 0.15, scheduledTime);
-          }
-        } else {
-          // Default arrangement for Lo-Fi & Jazz demo tracks
-          if (phraseStep % 4 === 0) {
-            playSynthVoice(track.root, 0.4, "triangle", 0.2, scheduledTime);
-          }
+        const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+        const accidental = match[2] === "#" ? 1 : match[2] === "b" ? -1 : 0;
+        return (Number(match[3]) + 1) * 12 + semitones[match[1]] + accidental;
+      }
+
+      async function loadPreviewSample(instrument, targetNote) {
+        const soundfont = await loadPreviewSoundfont(instrument);
+        const sampleName = Object.keys(soundfont)
+          .filter((name) => midiNoteNumber(name) !== null)
+          .sort((a, b) => {
+            const distanceA = Math.abs(midiNoteNumber(a) - targetNote);
+            const distanceB = Math.abs(midiNoteNumber(b) - targetNote);
+            return distanceA - distanceB;
+          })[0];
+
+        if (!sampleName) {
+          throw new Error(`No playable samples were found for ${instrument}.`);
         }
 
-        sequenceStep = (sequenceStep + 1) % 32;
+        const cacheKey = `${soundfontPrograms[instrument]}:${sampleName}`;
+        let bufferPromise = sampleBufferCache.get(cacheKey);
+        if (!bufferPromise) {
+          bufferPromise = fetch(soundfont[sampleName])
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Could not download the ${instrument} sample (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then((data) => previewAudioContext.decodeAudioData(data));
+
+          sampleBufferCache.set(cacheKey, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
+        }
+
+        return {
+          buffer: await bufferPromise,
+          sampleNote: midiNoteNumber(sampleName)
+        };
       }
 
-      function playSynthVoice(frequency, duration, type, volume, scheduledTime) {
-        if (!previewAudioContext) return;
-        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
-        const osc = previewAudioContext.createOscillator();
+      function getSelectedSampleInstruments(track) {
+        if (track.punjabiArrangement) return ["sitar", "tumbi", "ektara", "algoza", "harmonium", "sarangi", "bass"];
+        return track.instruments
+          .map((instrument) => instrument.toLowerCase())
+          .filter((instrument) => soundfontPrograms[instrument]);
+      }
+
+      async function preparePreviewSamples() {
+        const track = getPreviewSettings();
+        const selectedInstruments = getSelectedSampleInstruments(track);
+        const targetNotes = new Set(
+          track.melody.flatMap((noteIndex) =>
+            [0, 5, 7, 8, 9, 10].map((rootOffset) =>
+              Math.round(69 + 12 * Math.log2(
+                track.root * Math.pow(2, (track.scale[noteIndex] + rootOffset) / 12) / 440
+              ))
+            )
+          )
+        );
+        [...targetNotes].forEach((note) => {
+          targetNotes.add(note + 7);
+          targetNotes.add(note + 12);
+        });
+
+        for (let step = 0; step < 32; step += 1) {
+          const harmony = getHarmony(track, step);
+          targetNotes.add(Math.round(69 + 12 * Math.log2(harmony.rootFrequency / 2 / 440)));
+          harmony.chordFrequencies.forEach((frequency) => {
+            targetNotes.add(Math.round(69 + 12 * Math.log2(frequency / 440)));
+          });
+        }
+
+        const sampleLoads = selectedInstruments.flatMap((instrument) =>
+          [...targetNotes].map((note) => loadPreviewSample(instrument, note))
+        );
+        if (track.style === "punjabi") {
+          sampleLoads.push(loadLiveDholRecording());
+          sampleLoads.push(loadLiveDholakRecording());
+        }
+
+        await Promise.all(sampleLoads);
+      }
+
+      function loadLiveDholakRecording() {
+        if (!liveDholakBufferPromise) {
+          liveDholakBufferPromise = fetch(liveDholakUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Could not download the live dholak recording (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then((data) => previewAudioContext.decodeAudioData(data))
+            .then((buffer) => {
+              liveDholakBuffer = buffer;
+              return buffer;
+            })
+            .catch((error) => {
+              liveDholakBufferPromise = null;
+              throw error;
+            });
+        }
+        return liveDholakBufferPromise;
+      }
+
+      function loadLiveDholRecording() {
+        if (!liveDholBufferPromise) {
+          liveDholBufferPromise = fetch(liveDholUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Could not download the live dhol recording (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then((data) => previewAudioContext.decodeAudioData(data))
+            .catch((error) => {
+              liveDholBufferPromise = null;
+              throw error;
+            });
+        }
+        return liveDholBufferPromise;
+      }
+
+      async function startLiveDholBacking(track) {
+        if (track.style !== "punjabi") return;
+
+        const buffer = await loadLiveDholRecording();
+        if (!isPlaying) return;
+
+        const source = previewAudioContext.createBufferSource();
         const gain = previewAudioContext.createGain();
-
-        osc.type = type;
-        osc.frequency.setValueAtTime(frequency, now);
-
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-        osc.connect(gain);
+        const playbackRate = track.bpm / 96;
+        source.buffer = buffer;
+        source.loop = true;
+        source.playbackRate.value = playbackRate;
+        gain.gain.setValueAtTime(0.0001, previewAudioContext.currentTime);
+        gain.gain.linearRampToValueAtTime(0.025, previewAudioContext.currentTime + 1.2);
+        gain.gain.linearRampToValueAtTime(getPunjabiMix(track, getSongSection(track.duration)).dhol, previewAudioContext.currentTime + 2.8);
+        const lowCut = previewAudioContext.createBiquadFilter();
+        const pan = previewAudioContext.createStereoPanner();
+        lowCut.type = "highpass";
+        lowCut.frequency.setValueAtTime(38, previewAudioContext.currentTime);
+        pan.pan.setValueAtTime(-0.08, previewAudioContext.currentTime);
+        source.connect(lowCut);
+        lowCut.connect(pan);
+        pan.connect(gain);
         gain.connect(previewMasterGain);
-
-        activeSources.add(osc);
-        osc.onended = () => activeSources.delete(osc);
-        osc.start(now);
-        osc.stop(now + duration);
+        liveDholGainNode = gain;
+        liveDholTarget = getPunjabiMix(track, getSongSection(track.duration)).dhol;
+        activeSources.add(source);
+        source.onended = () => {
+          activeSources.delete(source);
+          if (liveDholGainNode === gain) {
+            liveDholGainNode = null;
+            liveDholTarget = null;
+          }
+        };
+        const offset = (timerSeconds * playbackRate) % buffer.duration;
+        source.start(0, offset);
       }
 
-      async function togglePlay(trackName) {
-        if (trackName && trackName !== selectedTrack) {
-          stopPlayer();
-          selectedTrack = trackName;
-          timerSeconds = 0;
-          document.getElementById("bpm").value = tracks[selectedTrack].bpm;
-        }
-        isPlaying = !isPlaying;
-        if (!isPlaying) {
-          stopPlayer();
+      function playPreviewDrum(frequency, duration, volume, scheduledTime) {
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const style = getPreviewSettings().style;
+        if (
+          (style === "punjabi" || style === "bollywood") &&
+          frequency >= 120 &&
+          frequency < 1000
+        ) {
+          const isDhol = style === "punjabi";
+          const fundamental = previewAudioContext.createOscillator();
+          const overtone = previewAudioContext.createOscillator();
+          const fundamentalGain = previewAudioContext.createGain();
+          const overtoneGain = previewAudioContext.createGain();
+          const hitDuration = Math.max(duration, isDhol ? 0.09 : 0.12);
+          const startFrequency = frequency * (isDhol ? 1.35 : 1.2);
+          fundamental.type = "sine";
+          overtone.type = "triangle";
+          fundamental.frequency.setValueAtTime(startFrequency, now);
+          fundamental.frequency.exponentialRampToValueAtTime(
+            frequency * (isDhol ? 0.72 : 0.84),
+            now + hitDuration
+          );
+          overtone.frequency.setValueAtTime(startFrequency * 2.01, now);
+          overtone.frequency.exponentialRampToValueAtTime(
+            frequency * (isDhol ? 1.45 : 1.65),
+            now + hitDuration * 0.7
+          );
+          fundamentalGain.gain.setValueAtTime(0.0001, now);
+          fundamentalGain.gain.linearRampToValueAtTime(volume, now + 0.004);
+          fundamentalGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration);
+          overtoneGain.gain.setValueAtTime(0.0001, now);
+          overtoneGain.gain.linearRampToValueAtTime(volume * (isDhol ? 0.42 : 0.28), now + 0.003);
+          overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + hitDuration * 0.55);
+          fundamental.connect(fundamentalGain);
+          overtone.connect(overtoneGain);
+          fundamentalGain.connect(previewMasterGain);
+          overtoneGain.connect(previewMasterGain);
+          activeSources.add(fundamental);
+          activeSources.add(overtone);
+          fundamental.onended = () => activeSources.delete(fundamental);
+          overtone.onended = () => activeSources.delete(overtone);
+          fundamental.start(now);
+          overtone.start(now);
+          fundamental.stop(now + hitDuration);
+          overtone.stop(now + hitDuration * 0.55);
           return;
         }
 
-        await startPreviewAudio();
-        startTimer();
-        startAudioSequence();
-        document.getElementById("previewStatus").innerText = `Now playing: ${selectedTrack} ('O Sajan' VST Engine)`;
+        if (frequency < 120) {
+          const oscillator = previewAudioContext.createOscillator();
+          const gain = previewAudioContext.createGain();
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(140, now);
+          oscillator.frequency.exponentialRampToValueAtTime(42, now + duration);
+          gain.gain.setValueAtTime(volume, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          oscillator.connect(gain);
+          gain.connect(previewMasterGain);
+          activeSources.add(oscillator);
+          oscillator.onended = () => activeSources.delete(oscillator);
+          oscillator.start(now);
+          oscillator.stop(now + duration);
+          return;
+        }
+
+        const length = Math.max(1, Math.floor(previewAudioContext.sampleRate * duration));
+        const buffer = previewAudioContext.createBuffer(1, length, previewAudioContext.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index++) {
+          data[index] = Math.random() * 2 - 1;
+        }
+
+        const source = previewAudioContext.createBufferSource();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+        source.buffer = buffer;
+        filter.type = frequency > 1000 ? "highpass" : "bandpass";
+        filter.frequency.setValueAtTime(frequency > 1000 ? 7000 : frequency, now);
+        gain.gain.setValueAtTime(volume, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        source.start(now);
+        source.stop(now + duration);
+      }
+
+      function playPreviewTone(
+        frequency,
+        duration,
+        waveform = "triangle",
+        volume = 0.08,
+        instrument = "piano",
+        scheduledTime = previewAudioContext.currentTime
+      ) {
+        if (instrument === "drums") {
+          playPreviewDrum(frequency, duration, volume, scheduledTime);
+          return;
+        }
+
+        const requestId = playbackRequestId;
+        const targetNote = Math.round(69 + 12 * Math.log2(frequency / 440));
+        loadPreviewSample(instrument, targetNote)
+          .then(({ buffer, sampleNote }) => {
+            if (!isPlaying || requestId !== playbackRequestId) return;
+
+            const source = previewAudioContext.createBufferSource();
+            const gain = previewAudioContext.createGain();
+            const panner = previewAudioContext.createStereoPanner();
+            const filter = previewAudioContext.createBiquadFilter();
+            const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+            const noteDuration = Math.max(duration, 0.02);
+            const isPunjabiMix = tracks[selectedTrack].style === "punjabi" ||
+              (genreWasCustomized && ["Punjabi Pop", "Bhangra"].includes(
+                document.querySelector('input[name="genre"]:checked')?.value
+              ));
+            const profile = isPunjabiMix ? punjabiInstrumentProfiles[instrument] : null;
+            const releaseDuration = profile?.release || 0.14;
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(
+              Math.pow(2, (targetNote - sampleNote) / 12),
+              startTime
+            );
+            filter.type = "lowpass";
+            filter.frequency.setValueAtTime(profile?.lowpass || 16000, startTime);
+            panner.pan.setValueAtTime(profile?.pan || 0, startTime);
+            const highpass = profile ? previewAudioContext.createBiquadFilter() : null;
+            if (highpass) {
+              highpass.type = "highpass";
+              highpass.frequency.setValueAtTime(profile.highpass, startTime);
+            }
+            const layerVolume = volume * (profile?.gain || 1);
+            gain.gain.setValueAtTime(0.0001, startTime);
+            const attackDuration = profile?.attack || (instrument === "tumbi" || instrument === "bass" ? 0.004 : 0.012);
+            gain.gain.linearRampToValueAtTime(layerVolume, startTime + attackDuration);
+            gain.gain.setValueAtTime(layerVolume, startTime + noteDuration);
+            gain.gain.exponentialRampToValueAtTime(
+              0.0001,
+              startTime + noteDuration + releaseDuration
+            );
+            source.connect(filter);
+            if (highpass) {
+              filter.connect(highpass);
+              highpass.connect(panner);
+            } else {
+              filter.connect(panner);
+            }
+            panner.connect(gain);
+            gain.connect(instrument === "bass" && bassBusGain ? bassBusGain : previewMasterGain);
+            if (instrument === "algoza") {
+              const vibrato = previewAudioContext.createOscillator();
+              const vibratoDepth = previewAudioContext.createGain();
+              vibrato.frequency.setValueAtTime(5.2, startTime);
+              vibratoDepth.gain.setValueAtTime(0, startTime);
+              vibratoDepth.gain.linearRampToValueAtTime(4, startTime + 0.16);
+              vibrato.connect(vibratoDepth);
+              vibratoDepth.connect(source.detune);
+              activeSources.add(vibrato);
+              vibrato.onended = () => activeSources.delete(vibrato);
+              vibrato.start(startTime);
+              vibrato.stop(startTime + noteDuration + releaseDuration);
+            }
+            activeSources.add(source);
+            source.onended = () => activeSources.delete(source);
+            source.start(startTime);
+            source.stop(startTime + noteDuration + releaseDuration);
+          })
+          .catch((error) => {
+            if (isPlaying && requestId === playbackRequestId) {
+              showPreviewError(error);
+            }
+          });
+      }
+
+      function stopActiveSources() {
+        activeSources.forEach((source) => source.stop());
+        activeSources.clear();
+      }
+
+      function showPreviewError(error) {
+        isPlaying = false;
+        playbackRequestId++;
+        clearInterval(timerInterval);
+        clearInterval(sequenceInterval);
+        stopActiveSources();
         syncPlayer();
+        document.getElementById("previewStatus").innerText =
+          `Preview unavailable: ${error.message}`;
+        console.error("Unable to play the sampled music preview:", error);
+      }
+
+      // Genre, mood, and instrument arrangement
+      function playPreviewStep(scheduledTime = previewAudioContext.currentTime) {
+        const track = getPreviewSettings();
+        const noteIndex = track.melody[sequenceStep % track.melody.length];
+        const harmony = getHarmony(track, sequenceStep);
+        const melodyFrequency =
+          track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones) / 12);
+        const halfBeatSeconds = 30 / track.bpm;
+        const step = sequenceStep;
+        const section = getSongSection(track.duration);
+        const instruments = track.instruments;
+        const isHook = section === "hook";
+        const isBuild = section === "build";
+        const isIntro = section === "intro";
+        const isOutro = section === "outro";
+        const isSparseMood = ["Chill", "Focused"].includes(track.mood);
+        const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
+        const phraseStep = step % 16;
+
+        if (track.punjabiArrangement) {
+          updateLiveDholMix(track, section);
+          const mix = getPunjabiMix(track, section);
+          const dholakPattern = isHook
+            ? [1, 3, 9, 11]
+            : isBuild
+              ? [3, 7, 11, 15]
+              : section === "bridge"
+                ? [3, 11]
+                : [3, 11];
+
+          if (!isIntro && dholakPattern.includes(phraseStep)) {
+            const accent = isHook
+              ? (phraseStep === 3 || phraseStep === 11 ? 0.88 : 0.72)
+              : isBuild
+                ? (phraseStep === 7 || phraseStep === 15 ? 0.62 : 0.76)
+                : section === "bridge"
+                  ? 0.48
+                  : 0.58;
+            const hit = Math.floor(phraseStep / 2) % 2 === 0 ? 185 : 132;
+            playPunjabiLayer("dholak", hit, mix.dholak * accent, scheduledTime, phraseStep % 4 === 3 ? 0.12 : -0.12);
+          }
+
+          const sitarPattern = isIntro || isOutro
+            ? [4]
+            : isHook
+              ? [5, 13]
+              : section === "bridge"
+                ? [5]
+              : [1, 9];
+          if (sitarPattern.includes(phraseStep)) {
+            const sitarOctave = isIntro || isOutro ? 2 : isHook ? 1 : 0;
+            const sitarNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + sitarOctave * 12) / 12);
+            const duration = isIntro || isOutro ? 0.20 : 0.15;
+            playPreviewTone(sitarNote, duration, "triangle", mix.sitar * 0.68, "sitar", scheduledTime);
+          }
+
+          const tumbiPattern = isHook || isBuild ? [7, 15] : [7];
+          if (!isIntro && !isOutro && tumbiPattern.includes(phraseStep)) {
+            const tumbiNote = track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(tumbiNote, 0.085, "triangle", isHook ? 0.052 : 0.040, "tumbi", scheduledTime);
+          }
+
+          if ((isIntro || isOutro) && phraseStep === 0) {
+            playPreviewTone(harmony.rootFrequency, 0.22, "triangle", 0.025, "ektara", scheduledTime);
+          }
+
+          const algozaPattern = isIntro || isOutro ? [8] : [4, 12];
+          if (algozaPattern.includes(phraseStep)) {
+            const algozaNote = melodyFrequency * 2;
+            const phraseDuration = section === "bridge" ? 1.25 : 1.05;
+            playPreviewTone(algozaNote, halfBeatSeconds * phraseDuration, "sine", isHook ? 0.046 : 0.032, "algoza", scheduledTime);
+
+            if (isHook && phraseStep === 12) {
+              const ornamentIndex = (noteIndex + 1) % track.scale.length;
+              const ornamentNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
+              playPreviewTone(ornamentNote, halfBeatSeconds * 0.24, "sine", 0.018, "algoza", scheduledTime + halfBeatSeconds * 0.86);
+            }
+          }
+
+          if (section === "bridge" && [1, 9].includes(phraseStep)) {
+            const ornamentIndex = (noteIndex + 1) % track.scale.length;
+            const sarangiNote = track.root * Math.pow(2, (track.scale[ornamentIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(sarangiNote, 0.22, "sine", 0.014, "sarangi", scheduledTime);
+          }
+
+          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
+            const bassAccent = isHook ? 0.074 : section === "bridge" ? 0.052 : 0.066;
+            playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 0.72, "triangle", bassAccent, "bass", scheduledTime);
+          }
+
+          const tablaSteps = section === "bridge" ? [2] : [2, 10];
+          if (!isIntro && !isOutro && tablaSteps.includes(phraseStep)) {
+            const tablaPitch = phraseStep === 2 ? 145 : 190;
+            const tablaAccent = isHook ? 0.024 : 0.018;
+            playPunjabiLayer("tabla", tablaPitch, tablaAccent, scheduledTime, phraseStep === 2 ? -0.10 : 0.10);
+          }
+
+          if (!isIntro && !isOutro && section !== "bridge" && [0, 8].includes(phraseStep)) {
+            const kickAccent = isHook ? 0.14 : isBuild ? 0.11 : 0.085;
+            playPunjabiLayer("punjabi-kick", 55, kickAccent, scheduledTime);
+          }
+
+          if (!isIntro && !isOutro && section !== "bridge" && [6, 14].includes(phraseStep)) {
+            const clapAccent = isHook ? 0.050 : isBuild ? 0.038 : 0.028;
+            playPunjabiLayer("punjabi-clap", 1700, clapAccent, scheduledTime, phraseStep === 6 ? -0.06 : 0.06);
+          }
+
+          if (!isIntro && isHook && [7, 15].includes(phraseStep)) {
+            playPunjabiLayer("chimta", 5200, 0.010, scheduledTime, phraseStep === 7 ? -0.18 : 0.18);
+          }
+
+          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
+            harmony.chordFrequencies.forEach((frequency, index) => {
+              playPreviewTone(frequency / 2, halfBeatSeconds * 2.8, "triangle", section === "bridge" ? 0.008 : 0.005, "harmonium", scheduledTime + index * 0.018);
+            });
+          }
+
+          sequenceStep = (sequenceStep + 1) % 32;
+          return;
+        }
+
+        if (instruments.includes("Piano") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.85, track.wave, isHook ? 0.065 : 0.045, "piano", scheduledTime);
+        }
+        if (instruments.includes("Piano") && [0, 6, 10, 14].includes(phraseStep) && !isBuild) {
+          harmony.chordFrequencies.forEach((frequency, index) => {
+            playPreviewTone(
+              frequency,
+              halfBeatSeconds * (index === 0 ? 1.8 : 1.5),
+              "triangle",
+              isHook ? 0.018 : 0.014,
+              "piano",
+              scheduledTime + index * 0.012
+            );
+          });
+        }
+        if (instruments.includes("Guitar") && phraseStep % 4 === 2 && !isIntro && !isOutro) {
+          harmony.chordFrequencies.forEach((frequency, index) => {
+            playPreviewTone(
+              frequency,
+              halfBeatSeconds * 0.7,
+              "triangle",
+              isHook ? 0.022 : 0.016,
+              "guitar",
+              scheduledTime + index * 0.025
+            );
+          });
+        }
+        if (instruments.includes("Guitar") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.4, "triangle", 0.025, "guitar", scheduledTime);
+        }
+        if (instruments.includes("Synth") && step % (isHook ? 1 : 2) === 0) {
+          playPreviewTone(melodyFrequency, halfBeatSeconds * 0.75, "sawtooth", 0.018, "synth", scheduledTime);
+        }
+        if (instruments.includes("Vocals") && step % melodyEvery === 0) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.9, "sine", 0.018, "vocals", scheduledTime);
+        }
+        if (instruments.includes("Flute") && track.style === "bollywood" && step % (isHook ? 1 : 2) === 0) {
+          const fluteNote = melodyFrequency * 2;
+          playPreviewTone(fluteNote, halfBeatSeconds * (isHook ? 0.82 : 0.68), "sine", isHook ? 0.038 : 0.03, "flute", scheduledTime);
+          if ([7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+            const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12) * 2;
+            playPreviewTone(graceNote, halfBeatSeconds * 0.22, "sine", 0.019, "flute", scheduledTime + halfBeatSeconds * 0.12);
+          }
+        }
+        if (instruments.includes("Sitar") && (track.style === "punjabi" || track.style === "bollywood")) {
+          const sitarStep = track.style === "punjabi" ? [2, 6, 10, 14].includes(phraseStep) : [3, 7, 11, 15].includes(phraseStep);
+          if (sitarStep && !isIntro && !isOutro) {
+            playPreviewTone(melodyFrequency, halfBeatSeconds * 0.38, "triangle", track.style === "punjabi" ? 0.036 : 0.022, "sitar", scheduledTime);
+          }
+        }
+        if (instruments.includes("Dholak") && track.style === "punjabi" && !isIntro && !isOutro && [1, 5, 9, 13].includes(phraseStep)) {
+          playPunjabiLayer("dholak", [1, 9].includes(phraseStep) ? 185 : 132, isHook ? 0.075 : 0.052, scheduledTime);
+        }
+        if (instruments.includes("Algoza") && track.style === "punjabi" && [0, 8].includes(phraseStep)) {
+          const algozaNote = melodyFrequency * 2;
+          playPreviewTone(algozaNote, halfBeatSeconds * 0.8, "sine", isHook ? 0.022 : 0.015, "algoza", scheduledTime);
+        }
+        if (instruments.includes("Tumbi") && track.style === "punjabi" && [1, 5, 9, 13].includes(phraseStep)) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.45, "triangle", isHook ? 0.04 : 0.028, "tumbi", scheduledTime);
+        }
+        if (instruments.includes("Harmonium") && track.style === "punjabi" && [0, 8].includes(phraseStep) && !isBuild) {
+          harmony.chordFrequencies.forEach((frequency, index) =>
+            playPreviewTone(frequency / 2, halfBeatSeconds * 2.8, "triangle", 0.012, "harmonium", scheduledTime + index * 0.012)
+          );
+        }
+        if (instruments.includes("Sarangi") && track.style === "punjabi" && [7, 15].includes(phraseStep)) {
+          playPreviewTone(melodyFrequency * 2, halfBeatSeconds * 0.65, "sine", 0.022, "sarangi", scheduledTime);
+        }
+        if (instruments.includes("Tabla") && track.style === "punjabi" && [4, 12].includes(phraseStep)) {
+          playPunjabiLayer("tabla", [0, 8].includes(phraseStep) ? 145 : 205, 0.045, scheduledTime);
+        }
+        if (instruments.includes("Chimta") && track.style === "punjabi" && [2, 6, 10, 14].includes(phraseStep)) {
+          playPunjabiLayer("chimta", 5200, 0.02, scheduledTime);
+        }
+
+        if (instruments.includes("Bass") && !isIntro && !isOutro && (step % 4 === 0 || ((track.style === "hiphop" || track.style === "punjabi") && [6, 14].includes(phraseStep)))) {
+          playPreviewTone(harmony.rootFrequency / 2, halfBeatSeconds * 1.5, "triangle", isHook ? 0.075 : 0.05, "bass", scheduledTime);
+        }
+        if (instruments.includes("Drums") && !isIntro && !isOutro) {
+          const kickSteps = drumPatterns[track.style] || [0, 8];
+          if (track.style === "punjabi") {
+            if ([0, 8].includes(phraseStep)) {
+              playPreviewTone(62, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
+            }
+            if ([4, 12].includes(phraseStep)) {
+              playPreviewTone(2400, 0.075, "triangle", isHook ? 0.024 : 0.018, "drums", scheduledTime);
+            }
+            if (isHook && phraseStep % 2 === 1) {
+              playPreviewTone(6200, 0.03, "square", 0.007, "drums", scheduledTime);
+            }
+          } else if (track.style === "bollywood") {
+            if ([0, 8].includes(phraseStep)) {
+              playPreviewTone(78, 0.2, "sine", isHook ? 0.055 : 0.04, "drums", scheduledTime);
+            }
+            if ([4, 12].includes(phraseStep)) {
+              playPreviewTone(245, 0.12, "triangle", 0.045, "drums", scheduledTime);
+            }
+            if ([3, 7, 11, 15].includes(phraseStep) && (isBuild || isHook)) {
+              playPreviewTone(390, 0.075, "triangle", 0.026, "drums", scheduledTime);
+            }
+          } else if (kickSteps.includes(phraseStep) && (isHook || phraseStep % 2 === 0)) {
+            playPreviewTone(track.style === "jazz" ? 92 : 62, 0.16, "sine", isHook ? 0.095 : 0.07, "drums", scheduledTime);
+          }
+          if (track.style !== "punjabi" && track.style !== "bollywood" && [4, 12].includes(phraseStep)) {
+            playPreviewTone(track.style === "jazz" ? 210 : 185, 0.09, "triangle", 0.035, "drums", scheduledTime);
+          }
+          if (track.style === "hiphop" && [2, 6, 10, 14].includes(phraseStep) && (isBuild || isHook)) {
+            playPreviewTone(220, 0.075, "triangle", 0.025, "drums", scheduledTime);
+          }
+          if ((track.style === "dance" || track.style === "hiphop") && phraseStep % 2 === 1 && (isBuild || isHook)) {
+            playPreviewTone(6200, 0.035, "square", 0.009, "drums", scheduledTime);
+          }
+        }
+
+        if (instruments.includes("Strings") && step % 4 === 0 && !isBuild) {
+          harmony.chordFrequencies.forEach((frequency) =>
+            playPreviewTone(frequency, halfBeatSeconds * 2, "sine", 0.014, "strings", scheduledTime)
+          );
+        }
+        if (instruments.includes("Brass") && step % 4 === 0 && !isIntro && !isOutro) {
+          harmony.chordFrequencies.forEach((frequency) =>
+            playPreviewTone(frequency, halfBeatSeconds * 1.2, "sawtooth", 0.025, "brass", scheduledTime)
+          );
+        }
+        if (track.style === "bollywood" && instruments.includes("Strings") && [0, 8].includes(phraseStep) && !isIntro && !isOutro) {
+          harmony.chordFrequencies.forEach((frequency) =>
+            playPreviewTone(frequency, halfBeatSeconds * 3, "sine", isHook ? 0.018 : 0.014, "strings", scheduledTime)
+          );
+        }
+        if (instruments.includes("Pad") && step % 8 === 0 && !isBuild) {
+          harmony.chordFrequencies.forEach((frequency) =>
+            playPreviewTone(frequency, halfBeatSeconds * (isHook ? 3 : 4), "sine", 0.018, "pad", scheduledTime)
+          );
+        }
+        if (instruments.includes("Arp") && (isBuild || isHook) && step % 2 === 0) {
+          const chordTone = harmony.chordFrequencies[(step / 2) % harmony.chordFrequencies.length];
+          playPreviewTone(chordTone, halfBeatSeconds * 0.45, "triangle", 0.022, "arp", scheduledTime);
+        }
+
+        if (track.style === "bollywood" && instruments.includes("Piano") && [7, 15].includes(phraseStep) && !isIntro && !isOutro) {
+          const graceNote = track.root * Math.pow(2, track.scale[(noteIndex + 1) % track.scale.length] / 12);
+          playPreviewTone(graceNote, halfBeatSeconds * 0.25, "sine", 0.022, "piano", scheduledTime);
+        }
+
+        if ((isIntro || isOutro) && step % 8 === 0 && instruments.includes("Drums")) {
+          playPreviewTone(4200, 0.035, "square", 0.006, "drums", scheduledTime);
+        }
+
+        if (isOutro && step % 8 === 0 && instruments.includes("Pad")) {
+          playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012, "pad", scheduledTime);
+        }
+        sequenceStep = (sequenceStep + 1) % 32;
       }
 
       function startAudioSequence() {
         clearInterval(sequenceInterval);
         const scheduleAheadSeconds = 0.12;
         const scheduleNextStep = () => {
-          const track = tracks[selectedTrack];
-          const halfBeatSeconds = 30 / track.bpm;
+          const halfBeatSeconds = 30 / getPreviewSettings().bpm;
           while (nextStepTime < previewAudioContext.currentTime + scheduleAheadSeconds) {
             playPreviewStep(nextStepTime);
             nextStepTime += halfBeatSeconds;
@@ -603,32 +1518,48 @@
         sequenceInterval = setInterval(scheduleNextStep, 25);
       }
 
+      function syncSequenceToPosition() {
+        const halfBeatSeconds = 30 / getPreviewSettings().bpm;
+        sequenceStep = Math.floor(timerSeconds / halfBeatSeconds) % 32;
+        nextStepTime = previewAudioContext
+          ? previewAudioContext.currentTime + 0.03
+          : 0;
+        if (isPlaying) startAudioSequence();
+      }
+
+      // Vintage Cassette Player: stop, rewind, and fast-forward
       function stopPlayer() {
+        playbackRequestId++;
         isPlaying = false;
         clearInterval(timerInterval);
         clearInterval(sequenceInterval);
         stopActiveSources();
+        document.getElementById("mainPlayBtn").disabled = false;
+        timerSeconds = 0;
+        sequenceStep = 0;
         syncPlayer();
         document.getElementById("previewStatus").innerText = "Preview stopped";
       }
 
       function rewindPlayer() {
         timerSeconds = Math.max(0, timerSeconds - 10);
+        syncSequenceToPosition();
         syncPlayer();
       }
 
       function fastForward() {
-        const track = tracks[selectedTrack];
-        timerSeconds = Math.min(track.duration, timerSeconds + 10);
+        timerSeconds = Math.min(getPreviewSettings().duration, timerSeconds + 10);
+        syncSequenceToPosition();
         syncPlayer();
+        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
       }
 
       function startTimer() {
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
           timerSeconds++;
-          const track = tracks[selectedTrack];
-          if (timerSeconds >= track.duration) {
+          if (timerSeconds >= getPreviewSettings().duration) {
+            timerSeconds = getPreviewSettings().duration;
             stopPlayer();
           } else {
             syncPlayer();
@@ -636,19 +1567,185 @@
         }, 1000);
       }
 
+      // Vintage Cassette Player: synchronize deck and playback display
       function syncPlayer() {
-        const track = tracks[selectedTrack];
-        document.getElementById("mainPlayBtn").innerText = isPlaying ? "Ⅱ" : "▶";
+        const duration = getPreviewSettings().duration;
+        const playSymbol = isPlaying ? "Ⅱ" : "▶";
+        document.getElementById("mainPlayBtn").innerText = playSymbol;
+        document.querySelectorAll(".track-play-btn").forEach((button) => {
+          const card = button.closest(".inner-card");
+          const title = card.querySelector("h3").innerText;
+          const trackIsPlaying = title === selectedTrack && isPlaying;
+          button.innerText = trackIsPlaying ? "Ⅱ" : "▶";
+          button.setAttribute("aria-pressed", String(trackIsPlaying));
+        });
         document.getElementById("selectedTrackLabel").innerText = selectedTrack;
         document.getElementById("tapeStatus").innerText = isPlaying ? "PLAY" : "STOP";
         document.getElementById("leftReel").classList.toggle("spinning", isPlaying);
         document.getElementById("rightReel").classList.toggle("spinning", isPlaying);
-        document.getElementById("playbackSeek").max = track.duration;
+        document.getElementById("playbackSeek").max = duration;
         document.getElementById("playbackSeek").value = timerSeconds;
-        document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(track.duration)}`;
+        document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(duration)}`;
         animateWaveform(isPlaying);
       }
 
+      function playPunjabiLayer(type, frequency, volume, scheduledTime, panPosition = 0) {
+        const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        if (type === "punjabi-kick") {
+          const kick = previewAudioContext.createOscillator();
+          const kickFilter = previewAudioContext.createBiquadFilter();
+          const kickGain = previewAudioContext.createGain();
+          const duration = 0.20;
+          kick.type = "sine";
+          kick.frequency.setValueAtTime(frequency * 2.8, startTime);
+          kick.frequency.exponentialRampToValueAtTime(frequency, startTime + 0.085);
+          kickFilter.type = "lowpass";
+          kickFilter.frequency.setValueAtTime(150, startTime);
+          kickGain.gain.setValueAtTime(0.0001, startTime);
+          kickGain.gain.linearRampToValueAtTime(volume, startTime + 0.004);
+          kickGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          kick.connect(kickFilter);
+          kickFilter.connect(kickGain);
+          kickGain.connect(previewMasterGain);
+          activeSources.add(kick);
+          kick.onended = () => activeSources.delete(kick);
+          kick.start(startTime);
+          kick.stop(startTime + duration);
+
+          if (bassBusGain) {
+            bassBusGain.gain.setTargetAtTime(0.52, startTime, 0.012);
+            bassBusGain.gain.setTargetAtTime(0.90, startTime + 0.12, 0.055);
+          }
+          return;
+        }
+
+        if (type === "punjabi-clap") {
+          const duration = 0.11;
+          const clap = previewAudioContext.createBufferSource();
+          const clapBuffer = previewAudioContext.createBuffer(
+            1,
+            Math.ceil(previewAudioContext.sampleRate * duration),
+            previewAudioContext.sampleRate
+          );
+          const clapSamples = clapBuffer.getChannelData(0);
+          for (let index = 0; index < clapSamples.length; index += 1) {
+            clapSamples[index] = (Math.random() * 2 - 1) * (1 - index / clapSamples.length);
+          }
+          const clapFilter = previewAudioContext.createBiquadFilter();
+          const clapPan = previewAudioContext.createStereoPanner();
+          const clapGain = previewAudioContext.createGain();
+          clap.buffer = clapBuffer;
+          clapFilter.type = "bandpass";
+          clapFilter.frequency.setValueAtTime(frequency, startTime);
+          clapFilter.Q.setValueAtTime(0.7, startTime);
+          clapPan.pan.setValueAtTime(panPosition, startTime);
+          clapGain.gain.setValueAtTime(0.0001, startTime);
+          clapGain.gain.linearRampToValueAtTime(volume, startTime + 0.003);
+          clapGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          clap.connect(clapFilter);
+          clapFilter.connect(clapPan);
+          clapPan.connect(clapGain);
+          clapGain.connect(previewMasterGain);
+          activeSources.add(clap);
+          clap.onended = () => activeSources.delete(clap);
+          clap.start(startTime);
+          clap.stop(startTime + duration);
+          return;
+        }
+
+        if (type === "dholak") {
+          if (!liveDholakBuffer) {
+            showPreviewError(new Error("The dholak sample was not ready for playback."));
+            return;
+          }
+          const sample = previewAudioContext.createBufferSource();
+          const sampleGain = previewAudioContext.createGain();
+          const skinFilter = previewAudioContext.createBiquadFilter();
+          const pan = previewAudioContext.createStereoPanner();
+          sample.buffer = liveDholakBuffer;
+          sample.playbackRate.setValueAtTime(frequency > 150 ? 1.04 : 0.88, startTime);
+          skinFilter.type = "bandpass";
+          skinFilter.frequency.setValueAtTime(frequency > 150 ? 420 : 260, startTime);
+          skinFilter.Q.setValueAtTime(1.1, startTime);
+          pan.pan.setValueAtTime(panPosition, startTime);
+          sampleGain.gain.setValueAtTime(0.0001, startTime);
+          sampleGain.gain.linearRampToValueAtTime(volume, startTime + 0.006);
+          sampleGain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.23);
+          sample.connect(skinFilter);
+          skinFilter.connect(pan);
+          pan.connect(sampleGain);
+          sampleGain.connect(previewMasterGain);
+          activeSources.add(sample);
+          sample.onended = () => activeSources.delete(sample);
+          sample.start(startTime);
+          sample.stop(startTime + 0.25);
+          return;
+        }
+
+        if (type === "tabla" || type === "chimta") {
+          const tone = previewAudioContext.createOscillator();
+          const overtone = previewAudioContext.createOscillator();
+          const gain = previewAudioContext.createGain();
+          const filter = previewAudioContext.createBiquadFilter();
+          const pan = previewAudioContext.createStereoPanner();
+          const duration = type === "tabla" ? 0.16 : 0.075;
+          tone.type = type === "tabla" ? "sine" : "triangle";
+          overtone.type = type === "tabla" ? "triangle" : "square";
+          tone.frequency.setValueAtTime(frequency * (type === "tabla" ? 1.45 : 1), startTime);
+          tone.frequency.exponentialRampToValueAtTime(Math.max(55, frequency * 0.72), startTime + duration);
+          overtone.frequency.setValueAtTime(frequency * (type === "tabla" ? 2.4 : 1.37), startTime);
+          filter.type = type === "tabla" ? "lowpass" : "highpass";
+          filter.frequency.setValueAtTime(type === "tabla" ? 2100 : 3600, startTime);
+          filter.Q.setValueAtTime(type === "tabla" ? 0.8 : 1.4, startTime);
+          gain.gain.setValueAtTime(0.0001, startTime);
+          gain.gain.linearRampToValueAtTime(volume, startTime + 0.004);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+          tone.connect(filter);
+          overtone.connect(filter);
+          filter.connect(pan);
+          pan.pan.setValueAtTime(panPosition, startTime);
+          pan.connect(gain);
+          if (type === "chimta") {
+            const noise = previewAudioContext.createBufferSource();
+            const noiseFilter = previewAudioContext.createBiquadFilter();
+            const noiseGain = previewAudioContext.createGain();
+            const noiseBuffer = previewAudioContext.createBuffer(
+              1,
+              Math.ceil(previewAudioContext.sampleRate * duration),
+              previewAudioContext.sampleRate
+            );
+            const noiseSamples = noiseBuffer.getChannelData(0);
+            for (let index = 0; index < noiseSamples.length; index += 1) {
+              noiseSamples[index] = Math.random() * 2 - 1;
+            }
+            noise.buffer = noiseBuffer;
+            noiseFilter.type = "highpass";
+            noiseFilter.frequency.setValueAtTime(5800, startTime);
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.gain.setValueAtTime(0.0001, startTime);
+            noiseGain.gain.linearRampToValueAtTime(volume * 0.55, startTime + 0.003);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+            noiseGain.connect(pan);
+            activeSources.add(noise);
+            noise.onended = () => activeSources.delete(noise);
+            noise.start(startTime);
+            noise.stop(startTime + duration);
+          }
+          gain.connect(previewMasterGain);
+          [tone, overtone].forEach((source) => {
+            activeSources.add(source);
+            source.onended = () => activeSources.delete(source);
+            source.start(startTime);
+            source.stop(startTime + duration);
+          });
+          return;
+        }
+
+        throw new Error(`Unknown Punjabi arrangement layer: ${type}`);
+      }
+
+      // Vintage Cassette Player: display helpers
       function formatTime(seconds) {
         const mins = Math.floor(seconds / 60);
         const secs = (seconds % 60).toString().padStart(2, "0");
@@ -659,7 +1756,7 @@
         const bars = document.querySelectorAll("#waveformContainer div");
         bars.forEach((bar) => {
           if (active) {
-            const randomHeight = Math.floor(Math.random() * 45) + 15;
+            const randomHeight = Math.floor(Math.random() * 40) + 20;
             bar.style.height = `${randomHeight}px`;
           } else {
             bar.style.height = "";
@@ -667,10 +1764,15 @@
         });
       }
 
+      // Vintage Cassette Player: direct track seeking
       document.getElementById("playbackSeek").addEventListener("input", (event) => {
         timerSeconds = Number(event.target.value);
+        syncSequenceToPosition();
         syncPlayer();
+        if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
       });
+
+      syncPlayer();
 
       // Vocal Recording Controls
       let mediaRecorder,
@@ -714,11 +1816,6 @@
           sub.innerText = "Add your Voice or instrument on top";
         }
       }
-
-      // Initialize default selection on page load
-      window.onload = () => {
-        syncPlayer();
-      };
     </script>
   </body>
 </html>
