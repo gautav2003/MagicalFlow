@@ -3,10 +3,10 @@
   <head>
     <!--
       BEGINNER MODE FILE GUIDE
-      1. PAGE STYLES: theme, player and featured romance card
-      2. PAGE LAYOUT: navigation and music-generation workspace
-      3. FEATURED ROMANCE: Moonlit card, prompt, instruments and actions
-      4. PAGE INTERACTIONS: romance audio, track previews and recording
+      1. PAGE STYLES: theme, cards, buttons and cassette player
+      2. PAGE LAYOUT: navigation, music form, playlist and recording card
+      3. PLAYER: one shared cassette deck for all demo tracks
+      4. PAGE INTERACTIONS: form controls, audio presets and recording
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -365,11 +365,11 @@
               <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- TRACK: Moonlit Bollywood Romance · full-length 90s Bollywood-style arrangement -->
+            <!-- TRACK: Moonlit Bollywood Romance · three-minute instrumental demo -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">92 BPM · A minor · Piano, nylon guitar, harmonium, sitar, bansuri, strings, bass and tabla</p>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Music-box bells, nylon guitar, dholak and cinematic strings</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -469,7 +469,7 @@
 
     <!-- PAGE INTERACTIONS -->
     <script>
-      // BEGINNER FORM, TRACK PREVIEW AND RECORDING CONTROLS
+      // 1. BEGINNER FORM AND VALUE CONTROLS
       function setPrompt(text) {
         document.getElementById("promptArea").value = text;
       }
@@ -482,10 +482,11 @@
         if (val > max) val = max;
         el.value = val;
         if (id === "bpm") bpmWasCustomized = true;
+        if (id === "duration") durationWasCustomized = true;
         handlePreviewSettingChange();
       }
 
-      // Vintage Cassette Player: playback state and track durations
+      // 2. TRACK PRESETS AND AUDIO ENGINE
       const tracks = {
         "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
@@ -502,6 +503,18 @@
           melody: [0, 3, 4, 2, 6, 4, 3, 1, 0, 2, 4, 6, 5, 4, 2, 1],
           punjabiArrangement: true,
         },
+        "Moonlit Bollywood Romance": {
+          duration: 180,
+          bpm: 86,
+          root: 220,
+          scale: [0, 2, 3, 7, 9, 12, 14, 15],
+          chord: [0, 3, 7],
+          wave: "sine",
+          style: "bollywood",
+          melody: [0, 2, 3, 5, 4, 2, 1, 0, 0, 2, 4, 5, 3, 2, 1, 0],
+          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass", "Pad"],
+          moonlitArrangement: true,
+        },
       };
       let previewAudioContext = null;
       let isPlaying = false;
@@ -512,6 +525,7 @@
       let nextStepTime = 0;
       let selectedTrack = "Late Night Lo-Fi";
       let bpmWasCustomized = false;
+      let durationWasCustomized = false;
       let genreWasCustomized = false;
       let previewMasterGain = null;
       let previewCompressor = null;
@@ -605,11 +619,13 @@
         };
         const instruments = preset.punjabiArrangement
           ? []
-          : styleArrangements[style]
-            ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
-            : genreWasCustomized
-              ? selectedInstruments
-              : preset.arrangement || selectedInstruments;
+          : preset.moonlitArrangement && style === "bollywood"
+            ? preset.arrangement
+            : styleArrangements[style]
+              ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
+              : genreWasCustomized
+                ? selectedInstruments
+                : preset.arrangement || selectedInstruments;
         const minorMood =
           ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
           style === "bollywood" ||
@@ -638,7 +654,9 @@
           chord,
           wave: waveforms[style] || preset.wave,
           bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
-          duration: Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
+          duration: preset.moonlitArrangement && !durationWasCustomized
+            ? preset.duration
+            : Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
           instruments: preset.punjabiArrangement ? [] : instruments.length ? instruments : ["Piano"],
         };
       }
@@ -737,6 +755,10 @@
           timerSeconds = 0;
           sequenceStep = 0;
           if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
+          if (!durationWasCustomized) {
+            document.getElementById("duration").value =
+              tracks[selectedTrack].moonlitArrangement ? 3 : 2;
+          }
           isPlaying = true;
         } else {
           isPlaying = !isPlaying;
@@ -763,7 +785,9 @@
           ? "Mixing live Punjabi percussion, folk strings, Algoza flute and melodic bass..."
           : loadingTrack.style === "punjabi"
             ? "Loading live dhol recording and sampled instruments..."
-            : "Loading sampled instruments...";
+            : loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood"
+              ? "Preparing the Moonlit romance preview..."
+              : "Loading sampled instruments...";
 
         try {
           await startPreviewAudio();
@@ -778,7 +802,9 @@
           startAudioSequence();
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
             ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
-            : "Instrumental preview from sampled instruments · vocals are not sung";
+            : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
+              ? "Moonlit romance preview: music-box-style bells, plucked arpeggio, dholak-style pulse and cinematic strings"
+              : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
 
@@ -915,6 +941,7 @@
       }
 
       function getSelectedSampleInstruments(track) {
+        if (track.moonlitArrangement && track.style === "bollywood") return [];
         if (track.punjabiArrangement) return ["sitar", "tumbi", "ektara", "algoza", "harmonium", "sarangi", "bass"];
         return track.instruments
           .map((instrument) => instrument.toLowerCase())
@@ -1228,7 +1255,7 @@
         console.error("Unable to play the sampled music preview:", error);
       }
 
-      // Genre, mood, and instrument arrangement
+      // 3. TRACK SEQUENCER AND ARRANGEMENTS
       function playPreviewStep(scheduledTime = previewAudioContext.currentTime) {
         const track = getPreviewSettings();
         const noteIndex = track.melody[sequenceStep % track.melody.length];
@@ -1246,6 +1273,27 @@
         const isSparseMood = ["Chill", "Focused"].includes(track.mood);
         const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
         const phraseStep = step % 16;
+
+        if (track.moonlitArrangement && track.style === "bollywood") {
+          const bellNotes = [880, 987.77, 1046.5, 1318.5, 1174.66, 880];
+          const arpeggioNotes = [440, 523.25, 659.25, 523.25, 392, 440, 523.25, 659.25];
+
+          if ([0, 3, 6, 8, 11, 14].includes(phraseStep)) {
+            playMoonlitVoice(bellNotes[phraseStep % bellNotes.length], 0.35, "sine", 0.22, scheduledTime);
+          }
+          if ([0, 2, 4, 6, 8, 10, 12, 14].includes(phraseStep)) {
+            playMoonlitVoice(arpeggioNotes[(phraseStep / 2) % arpeggioNotes.length], 0.28, "triangle", 0.18, scheduledTime);
+          }
+          if (phraseStep === 0 || phraseStep === 8) {
+            playMoonlitVoice(110, 0.22, "sine", 0.32, scheduledTime);
+          }
+          if (phraseStep === 0) {
+            playMoonlitVoice(220, 1.4, "sawtooth", 0.12, scheduledTime);
+          }
+
+          sequenceStep = (sequenceStep + 1) % 32;
+          return;
+        }
 
         if (track.punjabiArrangement) {
           updateLiveDholMix(track, section);
@@ -1503,6 +1551,27 @@
         sequenceStep = (sequenceStep + 1) % 32;
       }
 
+      // 4. MOONLIT ROMANCE VOICE: uses the shared preview audio and stop controls
+      function playMoonlitVoice(frequency, duration, type, volume, scheduledTime) {
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const oscillator = previewAudioContext.createOscillator();
+        const gain = previewAudioContext.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.connect(gain);
+        gain.connect(previewMasterGain);
+
+        activeSources.add(oscillator);
+        oscillator.onended = () => activeSources.delete(oscillator);
+        oscillator.start(now);
+        oscillator.stop(now + duration);
+      }
+
+      // 5. SHARED CASSETTE PLAYER, SEEKING AND RECORDING
       function startAudioSequence() {
         clearInterval(sequenceInterval);
         const scheduleAheadSeconds = 0.12;
