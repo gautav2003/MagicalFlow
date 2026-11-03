@@ -367,11 +367,11 @@
               <button type="button" aria-label="Play or pause Midnight Dholwave" aria-pressed="false" onclick="togglePlay('Midnight Dholwave')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- TRACK: Moonlit Bollywood Romance · three-minute instrumental demo -->
+            <!-- TRACK: original Moonlit instrumental with a 90s/2000s Bollywood-inspired arrangement -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Music-box bells, nylon guitar, dholak, tabla and cinematic strings</p>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Sampled flute, sitar, piano, guitar, orchestral strings, dholak and tabla</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -444,7 +444,7 @@
           <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
           <p class="text-[10px] leading-4 text-zinc-500">
             Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
-            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi- and Ektara-style plucks use its dulcimer patch, Punjabi Algoza-style double-flute parts use its sampled flute patch, picked bass uses its electric bass patch, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi and Moonlit Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi- and Ektara-style plucks use its dulcimer patch, Punjabi Algoza-style double-flute parts use its sampled flute patch, picked bass uses its electric bass patch, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
           </p>
         </div>
 
@@ -515,7 +515,7 @@
           wave: "sine",
           style: "bollywood",
           melody: [0, 2, 3, 5, 4, 2, 1, 0, 0, 2, 4, 5, 3, 2, 1, 0],
-          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass", "Pad"],
+          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass"],
           moonlitArrangement: true,
         },
       };
@@ -534,6 +534,7 @@
       let genreWasCustomized = false;
       let previewMasterGain = null;
       let previewCompressor = null;
+      let previewReverbGain = null;
       let bassBusGain = null;
       let liveDholBufferPromise = null;
       let liveDholGainNode = null;
@@ -574,6 +575,15 @@
       const activeSources = new Set();
       let liveDholakBuffer = null;
       let liveDholakBufferPromise = null;
+      const moonlitInstrumentProfiles = {
+        piano: { gain: 0.68, pan: -0.12, lowpass: 7800, highpass: 90, attack: 0.008, release: 0.22 },
+        guitar: { gain: 0.72, pan: 0.18, lowpass: 7200, highpass: 120, attack: 0.006, release: 0.20 },
+        strings: { gain: 0.48, pan: -0.08, lowpass: 6200, highpass: 130, attack: 0.12, release: 0.42 },
+        flute: { gain: 0.62, pan: 0.16, lowpass: 6500, highpass: 240, attack: 0.045, release: 0.20 },
+        sitar: { gain: 0.50, pan: -0.22, lowpass: 6900, highpass: 180, attack: 0.006, release: 0.22 },
+        bass: { gain: 0.70, pan: 0, lowpass: 1500, highpass: 42, attack: 0.012, release: 0.16 },
+        pad: { gain: 0.42, pan: 0.08, lowpass: 4800, highpass: 140, attack: 0.16, release: 0.44 },
+      };
 
       // Genre, scale and rhythm maps
       const genreStyles = {
@@ -795,11 +805,16 @@
           : loadingTrack.style === "punjabi"
             ? "Loading live dhol recording and sampled instruments..."
             : loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood"
-              ? "Preparing the Moonlit romance preview..."
+              ? "Loading sampled Bollywood-era instruments and dholak..."
               : "Loading sampled instruments...";
 
         try {
           await startPreviewAudio();
+          previewReverbGain.gain.setTargetAtTime(
+            loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood" ? 0.14 : 0.055,
+            previewAudioContext.currentTime,
+            0.2
+          );
           await preparePreviewSamples();
           if (requestId !== playbackRequestId || !isPlaying) return;
 
@@ -812,7 +827,7 @@
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
             ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
             : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
-              ? "Moonlit romance preview: music-box bells, nylon-guitar arpeggio, dholak, tabla and cinematic strings"
+              ? "Original Moonlit instrumental: sampled strings, flute, sitar, piano, guitar and dholak"
               : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -847,7 +862,7 @@
           previewMasterGain.connect(previewCompressor);
 
           const reverb = previewAudioContext.createConvolver();
-          const reverbGain = previewAudioContext.createGain();
+          previewReverbGain = previewAudioContext.createGain();
           const reverbDuration = 1.6;
           const impulse = previewAudioContext.createBuffer(
             2,
@@ -862,10 +877,10 @@
             }
           }
           reverb.buffer = impulse;
-          reverbGain.gain.value = 0.055;
+          previewReverbGain.gain.value = 0.055;
           previewMasterGain.connect(reverb);
-          reverb.connect(reverbGain);
-          reverbGain.connect(previewCompressor);
+          reverb.connect(previewReverbGain);
+          previewReverbGain.connect(previewCompressor);
           previewCompressor.connect(previewAudioContext.destination);
         }
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
@@ -952,7 +967,6 @@
 
       // Prepare only the instruments and notes needed for the selected track
       function getSelectedSampleInstruments(track) {
-        if (track.moonlitArrangement && track.style === "bollywood") return [];
         if (track.punjabiArrangement) return ["sitar", "tumbi", "ektara", "algoza", "harmonium", "sarangi", "bass"];
         return track.instruments
           .map((instrument) => instrument.toLowerCase())
@@ -962,32 +976,64 @@
       async function preparePreviewSamples() {
         const track = getPreviewSettings();
         const selectedInstruments = getSelectedSampleInstruments(track);
-        const targetNotes = new Set(
-          track.melody.flatMap((noteIndex) =>
-            [0, 5, 7, 8, 9, 10].map((rootOffset) =>
-              Math.round(69 + 12 * Math.log2(
-                track.root * Math.pow(2, (track.scale[noteIndex] + rootOffset) / 12) / 440
-              ))
-            )
-          )
-        );
-        [...targetNotes].forEach((note) => {
-          targetNotes.add(note + 7);
-          targetNotes.add(note + 12);
-        });
+        const targetNotes = new Set();
+        const moonlitNotesByInstrument = new Map();
+        const addFrequency = (frequency) => {
+          targetNotes.add(Math.round(69 + 12 * Math.log2(frequency / 440)));
+        };
+        const addMoonlitInstrumentFrequency = (instrument, frequency) => {
+          if (!moonlitNotesByInstrument.has(instrument)) {
+            moonlitNotesByInstrument.set(instrument, new Set());
+          }
+          moonlitNotesByInstrument
+            .get(instrument)
+            .add(Math.round(69 + 12 * Math.log2(frequency / 440)));
+        };
 
-        for (let step = 0; step < 32; step += 1) {
-          const harmony = getHarmony(track, step);
-          targetNotes.add(Math.round(69 + 12 * Math.log2(harmony.rootFrequency / 2 / 440)));
-          harmony.chordFrequencies.forEach((frequency) => {
-            targetNotes.add(Math.round(69 + 12 * Math.log2(frequency / 440)));
+        if (track.moonlitArrangement && track.style === "bollywood") {
+          for (let step = 0; step < 32; step += 1) {
+            const noteIndex = track.melody[step % track.melody.length];
+            const harmony = getHarmony(track, step);
+            const melodyFrequency =
+              track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones) / 12);
+
+            addMoonlitInstrumentFrequency("flute", melodyFrequency * 2);
+            addMoonlitInstrumentFrequency("sitar", melodyFrequency * 3);
+            addMoonlitInstrumentFrequency("bass", harmony.rootFrequency / 2);
+            harmony.chordFrequencies.forEach((frequency) => {
+              addMoonlitInstrumentFrequency("strings", frequency);
+              addMoonlitInstrumentFrequency("guitar", frequency);
+              addMoonlitInstrumentFrequency("piano", frequency * 2);
+            });
+          }
+        } else {
+          track.melody.forEach((noteIndex) => {
+            [0, 5, 7, 8, 9, 10].forEach((rootOffset) => {
+              addFrequency(
+                track.root * Math.pow(2, (track.scale[noteIndex] + rootOffset) / 12)
+              );
+            });
           });
+          [...targetNotes].forEach((note) => {
+            targetNotes.add(note + 7);
+            targetNotes.add(note + 12);
+          });
+
+          for (let step = 0; step < 32; step += 1) {
+            const harmony = getHarmony(track, step);
+            addFrequency(harmony.rootFrequency / 2);
+            harmony.chordFrequencies.forEach(addFrequency);
+          }
         }
 
-        const sampleLoads = selectedInstruments.flatMap((instrument) =>
-          [...targetNotes].map((note) => loadPreviewSample(instrument, note))
-        );
-        if (track.style === "punjabi") {
+        const isMoonlitArrangement = track.moonlitArrangement && track.style === "bollywood";
+        const sampleLoads = selectedInstruments.flatMap((instrument) => {
+          const notes = isMoonlitArrangement
+            ? moonlitNotesByInstrument.get(instrument) || new Set()
+            : targetNotes;
+          return [...notes].map((note) => loadPreviewSample(instrument, note));
+        });
+        if (track.style === "punjabi" || (track.moonlitArrangement && track.style === "bollywood")) {
           sampleLoads.push(loadLiveDholRecording());
           sampleLoads.push(loadLiveDholakRecording());
         }
@@ -1193,7 +1239,13 @@
               (genreWasCustomized && ["Punjabi Pop", "Bhangra"].includes(
                 document.querySelector('input[name="genre"]:checked')?.value
               ));
-            const profile = isPunjabiMix ? punjabiInstrumentProfiles[instrument] : null;
+            const isMoonlitMix = getPreviewSettings().moonlitArrangement &&
+              getPreviewSettings().style === "bollywood";
+            const profile = isPunjabiMix
+              ? punjabiInstrumentProfiles[instrument]
+              : isMoonlitMix
+                ? moonlitInstrumentProfiles[instrument]
+                : null;
             const releaseDuration = profile?.release || 0.14;
             source.buffer = buffer;
             source.playbackRate.setValueAtTime(
@@ -1289,23 +1341,122 @@
         const phraseStep = step % 16;
 
         if (track.moonlitArrangement && track.style === "bollywood") {
-          const bellNotes = [880, 987.77, 1046.5, 1318.5, 1174.66, 880];
-          const arpeggioNotes = [440, 523.25, 659.25, 523.25, 392, 440, 523.25, 659.25];
+          const chordNotes = harmony.chordFrequencies;
+          const arpeggioPattern = [0, 2, 4, 6, 8, 10, 12, 14];
+          const melodyPattern = isHook
+            ? [0, 2, 3, 4, 6, 8, 10, 11, 12, 14]
+            : isBuild
+              ? [0, 2, 4, 6, 8, 10, 12, 14]
+              : isIntro || isOutro
+                ? [0, 8]
+                : section === "bridge"
+                  ? [0, 4, 8, 12]
+                  : [0, 2, 4, 6, 8, 10, 12, 14];
+          const melodyVolume = isHook ? 0.075 : isBuild ? 0.062 : 0.048;
+          const chordVolume = isHook ? 0.026 : isBuild ? 0.020 : 0.014;
+          const melodyDuration = halfBeatSeconds * (isHook ? 1.65 : 2.2);
 
-          if ([0, 3, 6, 8, 11, 14].includes(phraseStep)) {
-            playMoonlitGlockenspiel(scheduledTime, bellNotes[phraseStep % bellNotes.length]);
+          if (phraseStep === 0 || phraseStep === 8) {
+            chordNotes.forEach((frequency, index) => {
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * (isIntro || isOutro ? 4 : 7),
+                "sawtooth",
+                chordVolume,
+                "strings",
+                scheduledTime + index * 0.018
+              );
+            });
           }
-          if ([0, 2, 4, 6, 8, 10, 12, 14].includes(phraseStep)) {
-            playMoonlitAcousticGuitar(scheduledTime, arpeggioNotes[(phraseStep / 2) % arpeggioNotes.length]);
+
+          if (arpeggioPattern.includes(phraseStep) && !isOutro) {
+            const chordIndex = Math.floor(phraseStep / 2) % chordNotes.length;
+            const guitarVolume = isHook ? 0.042 : 0.032;
+            playPreviewTone(
+              chordNotes[chordIndex],
+              halfBeatSeconds * 1.35,
+              "triangle",
+              guitarVolume,
+              "guitar",
+              scheduledTime
+            );
+            if ([0, 8].includes(phraseStep) && !isIntro) {
+              playPreviewTone(
+                chordNotes[(chordIndex + 1) % chordNotes.length] * 2,
+                halfBeatSeconds * 0.9,
+                "triangle",
+                guitarVolume * 0.42,
+                "piano",
+                scheduledTime + halfBeatSeconds * 0.18
+              );
+            }
           }
-          if (phraseStep === 0 || phraseStep === 8 || phraseStep === 10) {
-            playMoonlitDholakBass(scheduledTime, phraseStep === 10 ? 92 : 82);
+
+          if (melodyPattern.includes(phraseStep)) {
+            const melodicNote = melodyFrequency * 2;
+            playPreviewTone(
+              melodicNote,
+              melodyDuration,
+              "sine",
+              melodyVolume,
+              "flute",
+              scheduledTime
+            );
+            if (isHook && [4, 12].includes(phraseStep)) {
+              playPreviewTone(
+                melodicNote * 1.5,
+                halfBeatSeconds * 0.7,
+                "triangle",
+                0.018,
+                "sitar",
+                scheduledTime + halfBeatSeconds * 0.32
+              );
+            }
           }
-          if ([2, 4, 6, 7, 12, 14, 15].includes(phraseStep)) {
-            playMoonlitTablaRim(scheduledTime, 440);
+
+          if ([0, 8].includes(phraseStep) && !isIntro && !isOutro) {
+            playPreviewTone(
+              harmony.rootFrequency / 2,
+              halfBeatSeconds * 1.7,
+              "triangle",
+              0.035,
+              "bass",
+              scheduledTime
+            );
           }
-          if (phraseStep === 0) {
-            playMoonlitStringPad(scheduledTime, 220, 2);
+
+          const dholakPattern = isHook || isBuild ? [0, 4, 8, 12] : [0, 8];
+          if (!isIntro && !isOutro && dholakPattern.includes(phraseStep)) {
+            const dholakPitch = phraseStep % 8 === 0 ? 185 : 132;
+            const dholakVolume = isHook ? 0.17 : isBuild ? 0.14 : 0.11;
+            playPunjabiLayer(
+              "dholak",
+              dholakPitch,
+              dholakVolume,
+              scheduledTime,
+              phraseStep % 8 === 0 ? -0.12 : 0.12
+            );
+          }
+
+          const tablaPattern = isHook
+            ? [2, 6, 10, 14]
+            : isBuild
+              ? [6, 14]
+              : section === "verse"
+                ? [6]
+                : [];
+          if (tablaPattern.includes(phraseStep)) {
+            playPunjabiLayer(
+              "tabla",
+              phraseStep % 4 === 2 ? 145 : 190,
+              isHook ? 0.025 : 0.017,
+              scheduledTime,
+              phraseStep % 8 === 2 ? -0.10 : 0.10
+            );
+          }
+
+          if (isHook && [0, 8].includes(phraseStep)) {
+            playPreviewTone(6800, 0.12, "square", 0.004, "drums", scheduledTime);
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
@@ -1566,119 +1717,6 @@
           playPreviewTone(track.root, halfBeatSeconds * 3, "sine", 0.012, "pad", scheduledTime);
         }
         sequenceStep = (sequenceStep + 1) % 32;
-      }
-
-      // 4. MOONLIT BOLLYWOOD ROMANCE: procedural instruments for the shared preview player
-      function startMoonlitSource(source, startTime, duration) {
-        activeSources.add(source);
-        source.onended = () => activeSources.delete(source);
-        source.start(startTime);
-        source.stop(startTime + duration);
-      }
-
-      function playMoonlitDholakBass(time, pitch = 82) {
-        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
-        const oscillator = previewAudioContext.createOscillator();
-        const filter = previewAudioContext.createBiquadFilter();
-        const gain = previewAudioContext.createGain();
-
-        oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(pitch, startTime);
-        oscillator.frequency.exponentialRampToValueAtTime(pitch * 0.55, startTime + 0.25);
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(320, startTime);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(0.28, startTime + 0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.32);
-
-        oscillator.connect(filter);
-        filter.connect(gain);
-        gain.connect(previewMasterGain);
-        startMoonlitSource(oscillator, startTime, 0.35);
-      }
-
-      function playMoonlitTablaRim(time, frequency = 440) {
-        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
-        const firstOscillator = previewAudioContext.createOscillator();
-        const secondOscillator = previewAudioContext.createOscillator();
-        const gain = previewAudioContext.createGain();
-
-        firstOscillator.type = "triangle";
-        secondOscillator.type = "sine";
-        firstOscillator.frequency.setValueAtTime(frequency, startTime);
-        secondOscillator.frequency.setValueAtTime(frequency * 2.72, startTime);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(0.16, startTime + 0.006);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.14);
-
-        firstOscillator.connect(gain);
-        secondOscillator.connect(gain);
-        gain.connect(previewMasterGain);
-        startMoonlitSource(firstOscillator, startTime, 0.16);
-        startMoonlitSource(secondOscillator, startTime, 0.16);
-      }
-
-      function playMoonlitAcousticGuitar(time, frequency) {
-        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
-        const oscillator = previewAudioContext.createOscillator();
-        const filter = previewAudioContext.createBiquadFilter();
-        const gain = previewAudioContext.createGain();
-
-        oscillator.type = "triangle";
-        oscillator.frequency.setValueAtTime(frequency, startTime);
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(2400, startTime);
-        filter.frequency.exponentialRampToValueAtTime(500, startTime + 0.3);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(0.20, startTime + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.4);
-
-        oscillator.connect(filter);
-        filter.connect(gain);
-        gain.connect(previewMasterGain);
-        startMoonlitSource(oscillator, startTime, 0.45);
-      }
-
-      function playMoonlitGlockenspiel(time, frequency) {
-        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
-        const oscillator = previewAudioContext.createOscillator();
-        const gain = previewAudioContext.createGain();
-
-        oscillator.type = "sine";
-        oscillator.frequency.setValueAtTime(frequency, startTime);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(0.18, startTime + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.55);
-
-        oscillator.connect(gain);
-        gain.connect(previewMasterGain);
-        startMoonlitSource(oscillator, startTime, 0.6);
-      }
-
-      function playMoonlitStringPad(time, frequency, duration) {
-        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
-        const firstOscillator = previewAudioContext.createOscillator();
-        const secondOscillator = previewAudioContext.createOscillator();
-        const filter = previewAudioContext.createBiquadFilter();
-        const gain = previewAudioContext.createGain();
-
-        firstOscillator.type = "sawtooth";
-        secondOscillator.type = "sawtooth";
-        firstOscillator.frequency.setValueAtTime(frequency, startTime);
-        secondOscillator.frequency.setValueAtTime(frequency * 1.008, startTime);
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(900, startTime);
-        filter.frequency.linearRampToValueAtTime(1800, startTime + duration * 0.4);
-        gain.gain.setValueAtTime(0.0001, startTime);
-        gain.gain.linearRampToValueAtTime(0.10, startTime + 0.25);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-
-        firstOscillator.connect(filter);
-        secondOscillator.connect(filter);
-        filter.connect(gain);
-        gain.connect(previewMasterGain);
-        startMoonlitSource(firstOscillator, startTime, duration);
-        startMoonlitSource(secondOscillator, startTime, duration);
       }
 
       // 5. SHARED CASSETTE PLAYER, SEEKING AND RECORDING
