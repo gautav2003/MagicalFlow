@@ -371,7 +371,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Sampled flute, sitar, piano, guitar, orchestral strings, dholak and tabla</p>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Flute, sitar, sarangi, harmonium, piano, strings, dholak and tabla</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -514,8 +514,8 @@
           chord: [0, 3, 7],
           wave: "sine",
           style: "bollywood",
-          melody: [0, 2, 3, 5, 4, 2, 1, 0, 0, 2, 4, 5, 3, 2, 1, 0],
-          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass"],
+          melody: [0, 2, 3, 4, 3, 2, 1, 0, 0, 2, 4, 5, 4, 2, 1, 0, 0, 2, 3, 5, 4, 3, 2, 1, 0, 2, 4, 5, 3, 2, 1, 0],
+          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass", "Harmonium", "Sarangi"],
           moonlitArrangement: true,
         },
       };
@@ -581,6 +581,8 @@
         strings: { gain: 0.48, pan: -0.08, lowpass: 6200, highpass: 130, attack: 0.12, release: 0.42 },
         flute: { gain: 0.62, pan: 0.16, lowpass: 6500, highpass: 240, attack: 0.045, release: 0.20 },
         sitar: { gain: 0.50, pan: -0.22, lowpass: 6900, highpass: 180, attack: 0.006, release: 0.22 },
+        harmonium: { gain: 0.34, pan: -0.04, lowpass: 4200, highpass: 110, attack: 0.035, release: 0.24 },
+        sarangi: { gain: 0.38, pan: 0.22, lowpass: 5200, highpass: 190, attack: 0.07, release: 0.28 },
         bass: { gain: 0.70, pan: 0, lowpass: 1500, highpass: 42, attack: 0.012, release: 0.16 },
         pad: { gain: 0.42, pan: 0.08, lowpass: 4800, highpass: 140, attack: 0.16, release: 0.44 },
       };
@@ -998,12 +1000,15 @@
               track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones) / 12);
 
             addMoonlitInstrumentFrequency("flute", melodyFrequency * 2);
-            addMoonlitInstrumentFrequency("sitar", melodyFrequency * 3);
+            addMoonlitInstrumentFrequency("sitar", melodyFrequency * 2);
+            addMoonlitInstrumentFrequency("sarangi", melodyFrequency * 2);
             addMoonlitInstrumentFrequency("bass", harmony.rootFrequency / 2);
+            addMoonlitInstrumentFrequency("harmonium", harmony.rootFrequency);
             harmony.chordFrequencies.forEach((frequency) => {
               addMoonlitInstrumentFrequency("strings", frequency);
               addMoonlitInstrumentFrequency("guitar", frequency);
               addMoonlitInstrumentFrequency("piano", frequency * 2);
+              addMoonlitInstrumentFrequency("harmonium", frequency);
             });
           }
         } else {
@@ -1033,8 +1038,10 @@
             : targetNotes;
           return [...notes].map((note) => loadPreviewSample(instrument, note));
         });
-        if (track.style === "punjabi" || (track.moonlitArrangement && track.style === "bollywood")) {
+        if (track.style === "punjabi") {
           sampleLoads.push(loadLiveDholRecording());
+          sampleLoads.push(loadLiveDholakRecording());
+        } else if (track.moonlitArrangement && track.style === "bollywood") {
           sampleLoads.push(loadLiveDholakRecording());
         }
 
@@ -1342,18 +1349,24 @@
 
         if (track.moonlitArrangement && track.style === "bollywood") {
           const chordNotes = harmony.chordFrequencies;
-          const arpeggioPattern = [0, 2, 4, 6, 8, 10, 12, 14];
-          const melodyPattern = isHook
-            ? [0, 2, 3, 4, 6, 8, 10, 11, 12, 14]
-            : isBuild
+          const arpeggioPattern = isHook
               ? [0, 2, 4, 6, 8, 10, 12, 14]
+              : isBuild
+                ? [0, 4, 6, 8, 12, 14]
+                : isIntro || isOutro
+                  ? [0, 8]
+                  : [0, 2, 6, 8, 10, 14];
+          const melodyPattern = isHook
+              ? [0, 2, 3, 4, 6, 8, 10, 11, 12, 14]
+              : isBuild
+                ? [0, 2, 4, 6, 8, 10, 12, 14]
               : isIntro || isOutro
                 ? [0, 8]
                 : section === "bridge"
                   ? [0, 4, 8, 12]
                   : [0, 2, 4, 6, 8, 10, 12, 14];
-          const melodyVolume = isHook ? 0.075 : isBuild ? 0.062 : 0.048;
-          const chordVolume = isHook ? 0.026 : isBuild ? 0.020 : 0.014;
+          const melodyVolume = isHook ? 0.068 : isBuild ? 0.056 : 0.042;
+          const chordVolume = isHook ? 0.021 : isBuild ? 0.018 : 0.012;
           const melodyDuration = halfBeatSeconds * (isHook ? 1.65 : 2.2);
 
           if (phraseStep === 0 || phraseStep === 8) {
@@ -1366,12 +1379,20 @@
                 "strings",
                 scheduledTime + index * 0.018
               );
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * (isIntro || isOutro ? 3.2 : 5.5),
+                "triangle",
+                chordVolume * 0.62,
+                "harmonium",
+                scheduledTime + index * 0.024
+              );
             });
           }
 
           if (arpeggioPattern.includes(phraseStep) && !isOutro) {
             const chordIndex = Math.floor(phraseStep / 2) % chordNotes.length;
-            const guitarVolume = isHook ? 0.042 : 0.032;
+            const guitarVolume = isHook ? 0.034 : 0.026;
             playPreviewTone(
               chordNotes[chordIndex],
               halfBeatSeconds * 1.35,
@@ -1389,6 +1410,17 @@
                 "piano",
                 scheduledTime + halfBeatSeconds * 0.18
               );
+            }
+            if ([2, 6, 10, 14].includes(phraseStep) && !isIntro) {
+                const passingNote = chordNotes[(chordIndex + 2) % chordNotes.length] * 2;
+                playPreviewTone(
+                  passingNote,
+                  halfBeatSeconds * 0.7,
+                  "triangle",
+                  0.018,
+                  "piano",
+                  scheduledTime + halfBeatSeconds * 0.12
+                );
             }
           }
 
@@ -1414,6 +1446,46 @@
             }
           }
 
+          const sitarPattern = isHook
+            ? [1, 5, 9, 13]
+            : section === "bridge"
+              ? [3, 11]
+              : [6, 14];
+          if (!isIntro && !isOutro && sitarPattern.includes(phraseStep)) {
+            const sitarIndex = track.melody[(step + 1) % track.melody.length];
+            const sitarNote =
+              track.root * Math.pow(2, (track.scale[sitarIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(
+              sitarNote,
+              halfBeatSeconds * 0.72,
+              "triangle",
+              isHook ? 0.042 : 0.028,
+              "sitar",
+              scheduledTime
+            );
+          }
+
+          const sarangiPattern = isHook
+            ? [7, 15]
+            : section === "bridge"
+              ? [3, 7, 11, 15]
+              : isBuild
+                ? [7, 15]
+                : [];
+          if (sarangiPattern.includes(phraseStep)) {
+            const nextNoteIndex = track.melody[(step + 1) % track.melody.length];
+            const sarangiNote =
+              track.root * Math.pow(2, (track.scale[nextNoteIndex] + harmony.rootSemitones + 12) / 12);
+            playPreviewTone(
+              sarangiNote,
+              halfBeatSeconds * 1.25,
+              "sine",
+              isHook ? 0.036 : 0.026,
+              "sarangi",
+              scheduledTime
+            );
+          }
+
           if ([0, 8].includes(phraseStep) && !isIntro && !isOutro) {
             playPreviewTone(
               harmony.rootFrequency / 2,
@@ -1428,7 +1500,7 @@
           const dholakPattern = isHook || isBuild ? [0, 4, 8, 12] : [0, 8];
           if (!isIntro && !isOutro && dholakPattern.includes(phraseStep)) {
             const dholakPitch = phraseStep % 8 === 0 ? 185 : 132;
-            const dholakVolume = isHook ? 0.17 : isBuild ? 0.14 : 0.11;
+            const dholakVolume = isHook ? 0.19 : isBuild ? 0.15 : 0.12;
             playPunjabiLayer(
               "dholak",
               dholakPitch,
@@ -1455,8 +1527,27 @@
             );
           }
 
+          if (!isIntro && !isOutro && [2, 6, 10, 14].includes(phraseStep)) {
+            playPunjabiLayer(
+              "chimta",
+              6200,
+              isHook ? 0.012 : 0.007,
+              scheduledTime,
+              phraseStep % 8 === 2 ? -0.16 : 0.16
+            );
+          }
+
+          if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
+            playPreviewDrum(
+              72,
+              0.22,
+              isHook ? 0.045 : 0.026,
+              scheduledTime
+            );
+          }
+
           if (isHook && [0, 8].includes(phraseStep)) {
-            playPreviewTone(6800, 0.12, "square", 0.004, "drums", scheduledTime);
+            playPreviewTone(7600, 0.20, "square", 0.005, "drums", scheduledTime);
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
