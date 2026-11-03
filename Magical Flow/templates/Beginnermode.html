@@ -3,10 +3,12 @@
   <head>
     <!--
       BEGINNER MODE FILE GUIDE
-      1. HEAD: page metadata, styles and shared cassette-player design
-      2. PAGE LAYOUT: navigation, music form, demo playlist and recording card
-      3. SHARED PLAYER: one cassette deck for every demo track
-      4. SCRIPT MAP: form controls (1), presets (2), sequencer (3), Moonlit instruments (4), player (5)
+      1. DOCUMENT HEAD: metadata, external styles and page styles
+      2. PAGE HEADER: brand, navigation and account link
+      3. MUSIC WORKSPACE: prompt, music settings, presets and track playlist
+      4. CASSETTE PLAYER: shared playback controls and waveform
+      5. VOICE RECORDING: microphone recording controls
+      6. PAGE SCRIPT: form (1), audio engine (2), sequencer (3), Moonlit sounds (4), player (5), recording (6)
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -467,7 +469,7 @@
       <span class="text-lg">🎧</span>
     </a>
 
-    <!-- PAGE INTERACTIONS -->
+    <!-- PAGE SCRIPT -->
     <script>
       // 1. BEGINNER FORM AND VALUE CONTROLS
       function setPrompt(text) {
@@ -487,6 +489,7 @@
       }
 
       // 2. TRACK PRESETS AND AUDIO ENGINE
+      // Track presets
       const tracks = {
         "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
@@ -516,6 +519,8 @@
           moonlitArrangement: true,
         },
       };
+
+      // Shared playback state, audio resources and instrument profiles
       let previewAudioContext = null;
       let isPlaying = false;
       let timerSeconds = 0;
@@ -570,6 +575,7 @@
       let liveDholakBuffer = null;
       let liveDholakBufferPromise = null;
 
+      // Genre, scale and rhythm maps
       const genreStyles = {
         "Lo-Fi": "lofi",
         "Hip-Hop": "hiphop",
@@ -603,6 +609,7 @@
         lofi: [0, 8],
       };
 
+      // Resolve form selections into settings for the selected preview
       function getPreviewSettings() {
         const preset = tracks[selectedTrack];
         const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
@@ -661,6 +668,7 @@
         };
       }
 
+      // Song sections, harmony and Punjabi mix helpers
       function getSongSection(duration) {
         const progress = timerSeconds / duration;
         if (progress < 0.12) return "intro";
@@ -726,6 +734,7 @@
         if (isPlaying) syncSequenceToPosition();
       }
 
+      // Form events and preview playback controls
       document.querySelectorAll('input[name="genre"], input[name="mood"], input[name="instruments"]').forEach((input) => {
         input.addEventListener("change", () => {
           if (input.name === "genre") {
@@ -817,7 +826,7 @@
         }
       }
 
-      // Audio setup and online instrument samples
+      // Set up the shared Web Audio output and reverb
       async function startPreviewAudio() {
         const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
         if (!AudioContextConstructor) throw new Error("Web Audio is not supported by this browser.");
@@ -862,6 +871,7 @@
         if (previewAudioContext.state === "suspended") await previewAudioContext.resume();
       }
 
+      // Load soundfonts and samples for the shared preview
       function loadPreviewSoundfont(instrument) {
         const program = soundfontPrograms[instrument];
         if (!program) {
@@ -940,6 +950,7 @@
         };
       }
 
+      // Prepare only the instruments and notes needed for the selected track
       function getSelectedSampleInstruments(track) {
         if (track.moonlitArrangement && track.style === "bollywood") return [];
         if (track.punjabiArrangement) return ["sitar", "tumbi", "ektara", "algoza", "harmonium", "sarangi", "bass"];
@@ -984,6 +995,7 @@
         await Promise.all(sampleLoads);
       }
 
+      // Load live percussion recordings for Punjabi tracks
       function loadLiveDholakRecording() {
         if (!liveDholakBufferPromise) {
           liveDholakBufferPromise = fetch(liveDholakUrl)
@@ -1062,6 +1074,7 @@
         source.start(0, offset);
       }
 
+      // Procedural percussion and sampled instrument playback
       function playPreviewDrum(frequency, duration, volume, scheduledTime) {
         const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
         const style = getPreviewSettings().style;
@@ -1238,6 +1251,7 @@
           });
       }
 
+      // Stop active notes and report preview playback errors
       function stopActiveSources() {
         activeSources.forEach((source) => source.stop());
         activeSources.clear();
@@ -1939,7 +1953,7 @@
 
       syncPlayer();
 
-      // Vocal Recording Controls
+      // 6. VOICE RECORDING CONTROLS
       let mediaRecorder,
         audioChunks = [],
         isRecording = false;
