@@ -371,7 +371,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Flute, sitar, sarangi, harmonium, piano, strings, dholak and tabla</p>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Flute, sitar, santoor-style fills, sarangi, harmonium, strings, dholak, tabla and soft choir</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -444,7 +444,7 @@
           <input id="playbackSeek" type="range" min="0" max="204" value="0" step="1" aria-label="Seek through track" class="w-full h-1 accent-amber-300 cursor-pointer" />
           <p class="text-[10px] leading-4 text-zinc-500">
             Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont</a>
-            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi and Moonlit Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; Tumbi- and Ektara-style plucks use its dulcimer patch, Punjabi Algoza-style double-flute parts use its sampled flute patch, picked bass uses its electric bass patch, Harmonium uses reed organ, and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
+            (<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>). Punjabi demo live Dhol: <a href="https://commons.wikimedia.org/wiki/File:DHOL_BEAT.wav" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOL BEAT” by Johnny Kalsi / The Dhol Foundation</a>, adapted as a looping backing under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Punjabi and Moonlit Dholak: <a href="https://freesound.org/people/curesforbrokenhearts/sounds/536871/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">“DHOLAK (TREBLE SKIN)” by curesforbrokenhearts</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC0 1.0</a>. Sitar samples use FluidR3_GM; santoor-style fills use its vibraphone patch as an approximation; Tumbi- and Ektara-style plucks use its dulcimer patch; Punjabi Algoza-style double-flute parts use its sampled flute patch; picked bass uses its electric bass patch; Harmonium uses reed organ; and Sarangi uses violin patches as timbral approximations under <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>. Tabla, Chimta, and contemporary low-kick accents are synthesized in-browser. Samples require an internet connection.
           </p>
         </div>
 
@@ -515,7 +515,7 @@
           wave: "sine",
           style: "bollywood",
           melody: [0, 2, 3, 4, 3, 2, 1, 0, 0, 2, 4, 5, 4, 2, 1, 0, 0, 2, 3, 5, 4, 3, 2, 1, 0, 2, 4, 5, 3, 2, 1, 0],
-          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Bass", "Harmonium", "Sarangi"],
+          arrangement: ["Piano", "Guitar", "Strings", "Flute", "Sitar", "Santoor", "Bass", "Harmonium", "Sarangi", "Pad", "Vocals"],
           moonlitArrangement: true,
         },
       };
@@ -556,6 +556,7 @@
         algoza: "pan_flute",
         harmonium: "reed_organ",
         sitar: "sitar",
+        santoor: "vibraphone",
         brass: "brass_section",
         pad: "pad_2_warm",
         arp: "vibraphone",
@@ -583,8 +584,10 @@
         sitar: { gain: 0.50, pan: -0.22, lowpass: 6900, highpass: 180, attack: 0.006, release: 0.22 },
         harmonium: { gain: 0.34, pan: -0.04, lowpass: 4200, highpass: 110, attack: 0.035, release: 0.24 },
         sarangi: { gain: 0.38, pan: 0.22, lowpass: 5200, highpass: 190, attack: 0.07, release: 0.28 },
+        santoor: { gain: 0.34, pan: 0.24, lowpass: 7600, highpass: 260, attack: 0.004, release: 0.26 },
         bass: { gain: 0.70, pan: 0, lowpass: 1500, highpass: 42, attack: 0.012, release: 0.16 },
         pad: { gain: 0.42, pan: 0.08, lowpass: 4800, highpass: 140, attack: 0.16, release: 0.44 },
+        vocals: { gain: 0.28, pan: 0.02, lowpass: 5200, highpass: 180, attack: 0.16, release: 0.48 },
       };
 
       // Genre, scale and rhythm maps
@@ -716,7 +719,11 @@
         const scale = isMinor
           ? [0, 2, 3, 5, 7, 8, 10]
           : [0, 2, 4, 5, 7, 9, 11];
-        const progression = isMinor ? [0, 5, 3, 6] : [0, 4, 5, 3];
+        const progression = track.moonlitArrangement
+          ? [0, 5, 2, 6]
+          : isMinor
+            ? [0, 5, 3, 6]
+            : [0, 4, 5, 3];
         const degree = progression[Math.floor(step / 8) % progression.length];
         const root = scale[degree];
         const chord = [0, 2, 4].map((offset) => {
@@ -829,7 +836,7 @@
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
             ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
             : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
-              ? "Original Moonlit instrumental: sampled strings, flute, sitar, piano, guitar and dholak"
+              ? "Original instrumental: sampled flute, sitar, santoor, sarangi, harmonium, strings, dholak and soft wordless choir"
               : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -998,17 +1005,27 @@
             const harmony = getHarmony(track, step);
             const melodyFrequency =
               track.root * Math.pow(2, (track.scale[noteIndex] + harmony.rootSemitones) / 12);
+            const nextNoteIndex = track.melody[(step + 1) % track.melody.length];
+            const nextMelodyFrequency =
+              track.root * Math.pow(2, (track.scale[nextNoteIndex] + harmony.rootSemitones) / 12);
 
             addMoonlitInstrumentFrequency("flute", melodyFrequency * 2);
-            addMoonlitInstrumentFrequency("sitar", melodyFrequency * 2);
-            addMoonlitInstrumentFrequency("sarangi", melodyFrequency * 2);
+            addMoonlitInstrumentFrequency("sitar", nextMelodyFrequency * 2);
+            addMoonlitInstrumentFrequency("sitar", melodyFrequency * 3);
+            addMoonlitInstrumentFrequency("santoor", nextMelodyFrequency * 4);
+            addMoonlitInstrumentFrequency("sarangi", nextMelodyFrequency * 2);
+            addMoonlitInstrumentFrequency("sarangi", melodyFrequency * 1.5);
             addMoonlitInstrumentFrequency("bass", harmony.rootFrequency / 2);
             addMoonlitInstrumentFrequency("harmonium", harmony.rootFrequency);
+            addMoonlitInstrumentFrequency("pad", harmony.rootFrequency);
+            addMoonlitInstrumentFrequency("vocals", melodyFrequency * 2);
             harmony.chordFrequencies.forEach((frequency) => {
               addMoonlitInstrumentFrequency("strings", frequency);
               addMoonlitInstrumentFrequency("guitar", frequency);
               addMoonlitInstrumentFrequency("piano", frequency * 2);
               addMoonlitInstrumentFrequency("harmonium", frequency);
+              addMoonlitInstrumentFrequency("pad", frequency);
+              addMoonlitInstrumentFrequency("vocals", frequency * 2);
             });
           }
         } else {
@@ -1285,12 +1302,14 @@
             }
             panner.connect(gain);
             gain.connect(instrument === "bass" && bassBusGain ? bassBusGain : previewMasterGain);
-            if (instrument === "algoza") {
+            if (["algoza", "flute", "sarangi"].includes(instrument)) {
               const vibrato = previewAudioContext.createOscillator();
               const vibratoDepth = previewAudioContext.createGain();
-              vibrato.frequency.setValueAtTime(5.2, startTime);
+              const vibratoRate = instrument === "sarangi" ? 5.4 : 5.1;
+              const vibratoCents = instrument === "sarangi" ? 5 : instrument === "flute" ? 3 : 4;
+              vibrato.frequency.setValueAtTime(vibratoRate, startTime);
               vibratoDepth.gain.setValueAtTime(0, startTime);
-              vibratoDepth.gain.linearRampToValueAtTime(4, startTime + 0.16);
+              vibratoDepth.gain.linearRampToValueAtTime(vibratoCents, startTime + 0.16);
               vibrato.connect(vibratoDepth);
               vibratoDepth.connect(source.detune);
               activeSources.add(vibrato);
@@ -1350,16 +1369,16 @@
         if (track.moonlitArrangement && track.style === "bollywood") {
           const chordNotes = harmony.chordFrequencies;
           const arpeggioPattern = isHook
-              ? [0, 2, 4, 6, 8, 10, 12, 14]
-              : isBuild
-                ? [0, 4, 6, 8, 12, 14]
-                : isIntro || isOutro
-                  ? [0, 8]
-                  : [0, 2, 6, 8, 10, 14];
+            ? [0, 2, 4, 6, 8, 10, 12, 14]
+            : isBuild
+              ? [0, 4, 6, 8, 12, 14]
+              : isIntro || isOutro
+                ? [0, 8]
+                : [0, 2, 6, 8, 10, 14];
           const melodyPattern = isHook
-              ? [0, 2, 3, 4, 6, 8, 10, 11, 12, 14]
-              : isBuild
-                ? [0, 2, 4, 6, 8, 10, 12, 14]
+            ? [0, 2, 3, 4, 6, 8, 10, 11, 12, 14]
+            : isBuild
+              ? [0, 2, 4, 6, 8, 10, 12, 14]
               : isIntro || isOutro
                 ? [0, 8]
                 : section === "bridge"
@@ -1387,6 +1406,24 @@
                 "harmonium",
                 scheduledTime + index * 0.024
               );
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * (isIntro || isOutro ? 3 : 6),
+                "triangle",
+                chordVolume * 0.42,
+                "pad",
+                scheduledTime + index * 0.03
+              );
+              if (isHook) {
+                playPreviewTone(
+                  frequency * 2,
+                  halfBeatSeconds * 4.8,
+                  "sine",
+                  0.012,
+                  "vocals",
+                  scheduledTime + index * 0.03
+                );
+              }
             });
           }
 
@@ -1412,15 +1449,15 @@
               );
             }
             if ([2, 6, 10, 14].includes(phraseStep) && !isIntro) {
-                const passingNote = chordNotes[(chordIndex + 2) % chordNotes.length] * 2;
-                playPreviewTone(
-                  passingNote,
-                  halfBeatSeconds * 0.7,
-                  "triangle",
-                  0.018,
-                  "piano",
-                  scheduledTime + halfBeatSeconds * 0.12
-                );
+              const passingNote = chordNotes[(chordIndex + 2) % chordNotes.length] * 2;
+              playPreviewTone(
+                passingNote,
+                halfBeatSeconds * 0.7,
+                "triangle",
+                0.018,
+                "piano",
+                scheduledTime + halfBeatSeconds * 0.12
+              );
             }
           }
 
@@ -1442,6 +1479,16 @@
                 0.018,
                 "sitar",
                 scheduledTime + halfBeatSeconds * 0.32
+              );
+            }
+            if (section === "bridge" && [4, 12].includes(phraseStep)) {
+              playPreviewTone(
+                melodicNote * 0.75,
+                halfBeatSeconds * 1.4,
+                "sine",
+                0.024,
+                "sarangi",
+                scheduledTime + halfBeatSeconds * 0.24
               );
             }
           }
@@ -1486,6 +1533,29 @@
             );
           }
 
+          const santoorPattern = isHook
+            ? [3, 7, 11, 15]
+            : isBuild
+              ? [7, 15]
+              : section === "bridge"
+                ? [3, 11]
+                : isIntro || isOutro
+                  ? [8]
+                  : [7, 15];
+          if (santoorPattern.includes(phraseStep)) {
+            const fillIndex = track.melody[(step + 1) % track.melody.length];
+            const santoorNote =
+              track.root * Math.pow(2, (track.scale[fillIndex] + harmony.rootSemitones + 24) / 12);
+            playPreviewTone(
+              santoorNote,
+              halfBeatSeconds * 0.72,
+              "sine",
+              isHook ? 0.032 : 0.021,
+              "santoor",
+              scheduledTime + halfBeatSeconds * 0.14
+            );
+          }
+
           if ([0, 8].includes(phraseStep) && !isIntro && !isOutro) {
             playPreviewTone(
               harmony.rootFrequency / 2,
@@ -1526,6 +1596,15 @@
               phraseStep % 8 === 2 ? -0.10 : 0.10
             );
           }
+          if (isHook && [7, 15].includes(phraseStep)) {
+            playPunjabiLayer(
+              "tabla",
+              235,
+              0.012,
+              scheduledTime,
+              phraseStep === 7 ? -0.12 : 0.12
+            );
+          }
 
           if (!isIntro && !isOutro && [2, 6, 10, 14].includes(phraseStep)) {
             playPunjabiLayer(
@@ -1541,7 +1620,7 @@
             playPreviewDrum(
               72,
               0.22,
-              isHook ? 0.045 : 0.026,
+              isHook ? 0.022 : 0.014,
               scheduledTime
             );
           }
