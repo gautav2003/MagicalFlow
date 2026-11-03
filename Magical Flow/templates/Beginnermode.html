@@ -349,13 +349,13 @@
               <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original Western Hip-Hop Demo -->
+            <!-- Original 80s/90s-inspired synth-pop demo -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
-                <h3 class="font-bold text-sm text-white">City Lights Cypher</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">92 BPM · D Min · Original Western hip-hop demo</p>
+                <h3 class="font-bold text-sm text-sky-200">Magical Dream</h3>
+                <p class="text-[11px] font-mono text-zinc-400 mt-1">116 BPM · D minor · Original 80s/90s synth-pop groove with punchy drums and lush pads</p>
               </div>
-              <button type="button" aria-label="Play or pause City Lights Cypher" onclick="togglePlay('City Lights Cypher')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
+              <button type="button" aria-label="Play or pause Magical Dream" onclick="togglePlay('Magical Dream')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
             <!-- Original Punjabi folk instrumental -->
@@ -494,7 +494,18 @@
         "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
         "Dark Ambient": { duration: 250, bpm: 70, root: 146.83, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "sine", style: "ambient", melody: [0, 4, 2, 5, 1, 3, 6, 2] },
-        "City Lights Cypher": { duration: 210, bpm: 92, root: 146.83, scale: [0, 2, 3, 7, 9, 12, 14, 15], chord: [0, 3, 7], wave: "sawtooth", style: "hiphop", melody: [0, 2, 4, 3, 5, 4, 2, 1] },
+        "Magical Dream": {
+          duration: 180,
+          bpm: 116,
+          root: 146.83,
+          scale: [0, 2, 3, 5, 7, 8, 10, 12, 14, 15],
+          chord: [0, 3, 7],
+          wave: "sawtooth",
+          style: "hiphop",
+          melody: [0, 2, 4, 5, 4, 2, 1, 0, 0, 2, 3, 5, 7, 5, 4, 2],
+          arrangement: ["Synth", "Bass", "Pad", "Piano", "Guitar"],
+          magicalDreamArrangement: true,
+        },
         "Midnight Dholwave": {
           duration: 196,
           bpm: 96,
@@ -589,6 +600,13 @@
         pad: { gain: 0.42, pan: 0.08, lowpass: 4800, highpass: 140, attack: 0.16, release: 0.44 },
         vocals: { gain: 0.28, pan: 0.02, lowpass: 5200, highpass: 180, attack: 0.16, release: 0.48 },
       };
+      const magicalDreamInstrumentProfiles = {
+        synth: { gain: 0.56, pan: 0.04, lowpass: 5200, highpass: 80, attack: 0.012, release: 0.18 },
+        bass: { gain: 0.72, pan: 0, lowpass: 1700, highpass: 38, attack: 0.006, release: 0.12 },
+        pad: { gain: 0.52, pan: 0.08, lowpass: 4700, highpass: 140, attack: 0.18, release: 0.48 },
+        piano: { gain: 0.58, pan: -0.14, lowpass: 7200, highpass: 100, attack: 0.008, release: 0.22 },
+        guitar: { gain: 0.48, pan: 0.16, lowpass: 6800, highpass: 130, attack: 0.006, release: 0.18 },
+      };
 
       // Genre, scale and rhythm maps
       const genreStyles = {
@@ -630,7 +648,7 @@
         const genre = document.querySelector('input[name="genre"]:checked')?.value || "Lo-Fi";
         const mood = document.querySelector('input[name="mood"]:checked')?.value || "Happy";
         const selectedInstruments = [...document.querySelectorAll('input[name="instruments"]:checked')].map((input) => input.value);
-        const style = preset.punjabiArrangement
+        const style = preset.punjabiArrangement || preset.magicalDreamArrangement
           ? preset.style
           : genreWasCustomized
             ? genreStyles[genre]
@@ -641,7 +659,9 @@
         };
         const instruments = preset.punjabiArrangement
           ? []
-          : preset.moonlitArrangement && style === "bollywood"
+          : preset.magicalDreamArrangement
+            ? preset.arrangement
+            : preset.moonlitArrangement && style === "bollywood"
             ? preset.arrangement
             : styleArrangements[style]
               ? [...new Set([...styleArrangements[style], ...selectedInstruments])]
@@ -652,8 +672,20 @@
           ["Chill", "Dark", "Sad", "Romantic", "Focused"].includes(mood) ||
           style === "bollywood" ||
           style === "punjabi";
-        const scale = style === "jazz" ? scales.blues : minorMood ? scales.minor : scales.major;
-        const chord = mood === "Romantic" ? [0, 4, 7, 11] : minorMood ? [0, 3, 7] : [0, 4, 7];
+        const scale = preset.magicalDreamArrangement
+          ? preset.scale
+          : style === "jazz"
+            ? scales.blues
+            : minorMood
+              ? scales.minor
+              : scales.major;
+        const chord = preset.magicalDreamArrangement
+          ? preset.chord
+          : mood === "Romantic"
+            ? [0, 4, 7, 11]
+            : minorMood
+              ? [0, 3, 7]
+              : [0, 4, 7];
         const bpm = bpmWasCustomized ? Number(document.getElementById("bpm").value) : preset.bpm;
         const waveforms = {
           lofi: "triangle",
@@ -676,7 +708,7 @@
           chord,
           wave: waveforms[style] || preset.wave,
           bpm: Math.max(60, Math.min(180, bpm || preset.bpm)),
-          duration: preset.moonlitArrangement && !durationWasCustomized
+          duration: (preset.moonlitArrangement || preset.magicalDreamArrangement) && !durationWasCustomized
             ? preset.duration
             : Math.max(1, Number(document.getElementById("duration").value) || 3) * 60,
           instruments: preset.punjabiArrangement ? [] : instruments.length ? instruments : ["Piano"],
@@ -785,7 +817,7 @@
           if (!bpmWasCustomized) document.getElementById("bpm").value = tracks[selectedTrack].bpm;
           if (!durationWasCustomized) {
             document.getElementById("duration").value =
-              tracks[selectedTrack].moonlitArrangement ? 3 : 2;
+              tracks[selectedTrack].moonlitArrangement || tracks[selectedTrack].magicalDreamArrangement ? 3 : 2;
           }
           isPlaying = true;
         } else {
@@ -820,7 +852,11 @@
         try {
           await startPreviewAudio();
           previewReverbGain.gain.setTargetAtTime(
-            loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood" ? 0.14 : 0.055,
+            loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood"
+              ? 0.14
+              : loadingTrack.magicalDreamArrangement
+                ? 0.095
+                : 0.055,
             previewAudioContext.currentTime,
             0.2
           );
@@ -837,7 +873,9 @@
             ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
             : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
               ? "Original instrumental: sampled flute, sitar, santoor, sarangi, harmonium, strings, dholak and soft wordless choir"
-              : "Instrumental preview from sampled instruments · vocals are not sung";
+              : getPreviewSettings().magicalDreamArrangement
+                ? "Original 116 BPM synth-pop groove: analog-style synth lead and bass, punchy Linn-style drums, lush pads, piano and guitar"
+                : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
 
@@ -1265,11 +1303,14 @@
               ));
             const isMoonlitMix = getPreviewSettings().moonlitArrangement &&
               getPreviewSettings().style === "bollywood";
+            const isMagicalDreamMix = getPreviewSettings().magicalDreamArrangement;
             const profile = isPunjabiMix
               ? punjabiInstrumentProfiles[instrument]
               : isMoonlitMix
                 ? moonlitInstrumentProfiles[instrument]
-                : null;
+                : isMagicalDreamMix
+                  ? magicalDreamInstrumentProfiles[instrument]
+                  : null;
             const releaseDuration = profile?.release || 0.14;
             source.buffer = buffer;
             source.playbackRate.setValueAtTime(
@@ -1365,6 +1406,159 @@
         const isSparseMood = ["Chill", "Focused"].includes(track.mood);
         const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
         const phraseStep = step % 16;
+
+        if (track.magicalDreamArrangement) {
+          const chordNotes = harmony.chordFrequencies;
+          const leadPattern = isHook
+            ? [0, 2, 4, 6, 8, 10, 12, 14]
+            : isBuild
+              ? [0, 4, 6, 8, 12, 14]
+              : isIntro || isOutro
+                ? [0, 8]
+                : [0, 4, 8, 12];
+          const bassPattern = isHook || isBuild ? [0, 6, 8, 14] : [0, 8];
+          const padVolume = isHook ? 0.018 : isBuild ? 0.015 : 0.012;
+
+          if (phraseStep === 0 || phraseStep === 8) {
+            chordNotes.forEach((frequency, index) => {
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * (isIntro || isOutro ? 5 : 7),
+                "sine",
+                padVolume,
+                "pad",
+                scheduledTime + index * 0.025
+              );
+              if (!isIntro && !isOutro) {
+                playPreviewTone(
+                  frequency * 2,
+                  halfBeatSeconds * 0.65,
+                  "triangle",
+                  isHook ? 0.026 : 0.018,
+                  "piano",
+                  scheduledTime + halfBeatSeconds * 0.08 + index * 0.018
+                );
+              }
+            });
+          }
+
+          if (!isIntro && !isOutro && bassPattern.includes(phraseStep)) {
+            const bassFrequency = [6, 14].includes(phraseStep)
+              ? harmony.rootFrequency * 0.75
+              : harmony.rootFrequency / 2;
+            playPreviewTone(
+              bassFrequency,
+              halfBeatSeconds * 1.35,
+              "triangle",
+              isHook ? 0.064 : 0.048,
+              "bass",
+              scheduledTime
+            );
+            if (isHook && [0, 8].includes(phraseStep)) {
+              playPreviewTone(
+                bassFrequency,
+                halfBeatSeconds * 0.9,
+                "sawtooth",
+                0.024,
+                "synth",
+                scheduledTime
+              );
+            }
+          }
+
+          if (!isOutro && (isHook || isBuild || phraseStep % 4 === 0)) {
+            const chordIndex = Math.floor(phraseStep / 2) % chordNotes.length;
+            playPreviewTone(
+              chordNotes[chordIndex] * 2,
+              halfBeatSeconds * (isHook ? 0.72 : 0.52),
+              "triangle",
+              isHook ? 0.022 : 0.014,
+              "guitar",
+              scheduledTime
+            );
+          }
+
+          if (leadPattern.includes(phraseStep)) {
+            const leadNote = melodyFrequency * 2;
+            playPreviewTone(
+              leadNote,
+              halfBeatSeconds * (isHook ? 1.25 : 1.7),
+              "sawtooth",
+              isHook ? 0.052 : isBuild ? 0.040 : 0.026,
+              "synth",
+              scheduledTime
+            );
+            if (isHook && [6, 14].includes(phraseStep)) {
+              const answerIndex = track.melody[(step + 1) % track.melody.length];
+              const answerNote = track.root *
+                Math.pow(2, (track.scale[answerIndex] + harmony.rootSemitones + 12) / 12);
+              playPreviewTone(
+                answerNote,
+                halfBeatSeconds * 0.62,
+                "triangle",
+                0.022,
+                "piano",
+                scheduledTime + halfBeatSeconds * 0.28
+              );
+            }
+          }
+
+          if (!isIntro && !isOutro) {
+            const kickSteps = isHook ? [0, 4, 8, 12] : [0, 8];
+            if (kickSteps.includes(phraseStep)) {
+              playPreviewDrum(
+                58,
+                0.22,
+                isHook ? 0.078 : isBuild ? 0.066 : 0.052,
+                scheduledTime
+              );
+            }
+
+            const snareSteps = [2, 6, 10, 14];
+            if (snareSteps.includes(phraseStep)) {
+              playPreviewDrum(
+                1850,
+                0.14,
+                isHook ? 0.085 : isBuild ? 0.064 : 0.048,
+                scheduledTime
+              );
+            }
+
+            if ((isHook || isBuild) && phraseStep % 2 === 1) {
+              playPreviewDrum(
+                7600,
+                0.035,
+                isHook ? 0.008 : 0.005,
+                scheduledTime
+              );
+            }
+
+            if (isBuild && [12, 13, 14, 15].includes(phraseStep)) {
+              playPreviewDrum(
+                2400,
+                0.075,
+                0.018 + (phraseStep - 12) * 0.006,
+                scheduledTime
+              );
+            }
+          }
+
+          if (isOutro && phraseStep === 0) {
+            chordNotes.forEach((frequency, index) => {
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * 8,
+                "sine",
+                0.009,
+                "pad",
+                scheduledTime + index * 0.03
+              );
+            });
+          }
+
+          sequenceStep = (sequenceStep + 1) % 32;
+          return;
+        }
 
         if (track.moonlitArrangement && track.style === "bollywood") {
           const chordNotes = harmony.chordFrequencies;
