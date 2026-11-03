@@ -3,10 +3,10 @@
   <head>
     <!--
       BEGINNER MODE FILE GUIDE
-      1. PAGE STYLES: theme, cards, buttons and cassette player
-      2. PAGE LAYOUT: navigation, music form, playlist and recording card
-      3. PLAYER: one shared cassette deck for all demo tracks
-      4. PAGE INTERACTIONS: form controls, audio presets and recording
+      1. HEAD: page metadata, styles and shared cassette-player design
+      2. PAGE LAYOUT: navigation, music form, demo playlist and recording card
+      3. SHARED PLAYER: one cassette deck for every demo track
+      4. SCRIPT MAP: form controls (1), presets (2), sequencer (3), Moonlit instruments (4), player (5)
     -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -369,7 +369,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-white">Moonlit Bollywood Romance</h3>
-                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Music-box bells, nylon guitar, dholak and cinematic strings</p>
+                <p class="mt-1 text-[11px] leading-4 text-zinc-400">86 BPM · A minor · 3:00 · Music-box bells, nylon guitar, dholak, tabla and cinematic strings</p>
               </div>
               <button type="button" aria-label="Play or pause Moonlit Bollywood Romance" aria-pressed="false" onclick="togglePlay('Moonlit Bollywood Romance')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -803,7 +803,7 @@
           document.getElementById("previewStatus").innerText = getPreviewSettings().punjabiArrangement
             ? "Punjabi folk × modern Punjabi groove: live Dhol and Dholak, Algoza, Tumbi, Ektara, Sitar, Tabla, Chimta and melodic bass"
             : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
-              ? "Moonlit romance preview: music-box-style bells, plucked arpeggio, dholak-style pulse and cinematic strings"
+              ? "Moonlit romance preview: music-box bells, nylon-guitar arpeggio, dholak, tabla and cinematic strings"
               : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -1279,16 +1279,19 @@
           const arpeggioNotes = [440, 523.25, 659.25, 523.25, 392, 440, 523.25, 659.25];
 
           if ([0, 3, 6, 8, 11, 14].includes(phraseStep)) {
-            playMoonlitVoice(bellNotes[phraseStep % bellNotes.length], 0.35, "sine", 0.22, scheduledTime);
+            playMoonlitGlockenspiel(scheduledTime, bellNotes[phraseStep % bellNotes.length]);
           }
           if ([0, 2, 4, 6, 8, 10, 12, 14].includes(phraseStep)) {
-            playMoonlitVoice(arpeggioNotes[(phraseStep / 2) % arpeggioNotes.length], 0.28, "triangle", 0.18, scheduledTime);
+            playMoonlitAcousticGuitar(scheduledTime, arpeggioNotes[(phraseStep / 2) % arpeggioNotes.length]);
           }
-          if (phraseStep === 0 || phraseStep === 8) {
-            playMoonlitVoice(110, 0.22, "sine", 0.32, scheduledTime);
+          if (phraseStep === 0 || phraseStep === 8 || phraseStep === 10) {
+            playMoonlitDholakBass(scheduledTime, phraseStep === 10 ? 92 : 82);
+          }
+          if ([2, 4, 6, 7, 12, 14, 15].includes(phraseStep)) {
+            playMoonlitTablaRim(scheduledTime, 440);
           }
           if (phraseStep === 0) {
-            playMoonlitVoice(220, 1.4, "sawtooth", 0.12, scheduledTime);
+            playMoonlitStringPad(scheduledTime, 220, 2);
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
@@ -1551,24 +1554,117 @@
         sequenceStep = (sequenceStep + 1) % 32;
       }
 
-      // 4. MOONLIT ROMANCE VOICE: uses the shared preview audio and stop controls
-      function playMoonlitVoice(frequency, duration, type, volume, scheduledTime) {
-        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+      // 4. MOONLIT BOLLYWOOD ROMANCE: procedural instruments for the shared preview player
+      function startMoonlitSource(source, startTime, duration) {
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        source.start(startTime);
+        source.stop(startTime + duration);
+      }
+
+      function playMoonlitDholakBass(time, pitch = 82) {
+        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
+        const oscillator = previewAudioContext.createOscillator();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(pitch, startTime);
+        oscillator.frequency.exponentialRampToValueAtTime(pitch * 0.55, startTime + 0.25);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(320, startTime);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(0.28, startTime + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.32);
+
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        startMoonlitSource(oscillator, startTime, 0.35);
+      }
+
+      function playMoonlitTablaRim(time, frequency = 440) {
+        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
+        const firstOscillator = previewAudioContext.createOscillator();
+        const secondOscillator = previewAudioContext.createOscillator();
+        const gain = previewAudioContext.createGain();
+
+        firstOscillator.type = "triangle";
+        secondOscillator.type = "sine";
+        firstOscillator.frequency.setValueAtTime(frequency, startTime);
+        secondOscillator.frequency.setValueAtTime(frequency * 2.72, startTime);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(0.16, startTime + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.14);
+
+        firstOscillator.connect(gain);
+        secondOscillator.connect(gain);
+        gain.connect(previewMasterGain);
+        startMoonlitSource(firstOscillator, startTime, 0.16);
+        startMoonlitSource(secondOscillator, startTime, 0.16);
+      }
+
+      function playMoonlitAcousticGuitar(time, frequency) {
+        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
+        const oscillator = previewAudioContext.createOscillator();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+
+        oscillator.type = "triangle";
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(2400, startTime);
+        filter.frequency.exponentialRampToValueAtTime(500, startTime + 0.3);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(0.20, startTime + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.4);
+
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        startMoonlitSource(oscillator, startTime, 0.45);
+      }
+
+      function playMoonlitGlockenspiel(time, frequency) {
+        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
         const oscillator = previewAudioContext.createOscillator();
         const gain = previewAudioContext.createGain();
 
-        oscillator.type = type;
-        oscillator.frequency.setValueAtTime(frequency, now);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.linearRampToValueAtTime(volume, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(0.18, startTime + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.55);
+
         oscillator.connect(gain);
         gain.connect(previewMasterGain);
+        startMoonlitSource(oscillator, startTime, 0.6);
+      }
 
-        activeSources.add(oscillator);
-        oscillator.onended = () => activeSources.delete(oscillator);
-        oscillator.start(now);
-        oscillator.stop(now + duration);
+      function playMoonlitStringPad(time, frequency, duration) {
+        const startTime = Math.max(time, previewAudioContext.currentTime + 0.005);
+        const firstOscillator = previewAudioContext.createOscillator();
+        const secondOscillator = previewAudioContext.createOscillator();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+
+        firstOscillator.type = "sawtooth";
+        secondOscillator.type = "sawtooth";
+        firstOscillator.frequency.setValueAtTime(frequency, startTime);
+        secondOscillator.frequency.setValueAtTime(frequency * 1.008, startTime);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(900, startTime);
+        filter.frequency.linearRampToValueAtTime(1800, startTime + duration * 0.4);
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(0.10, startTime + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        firstOscillator.connect(filter);
+        secondOscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        startMoonlitSource(firstOscillator, startTime, duration);
+        startMoonlitSource(secondOscillator, startTime, duration);
       }
 
       // 5. SHARED CASSETTE PLAYER, SEEKING AND RECORDING
