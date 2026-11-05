@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magical Flow - Beginner Output</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #05010c;
+        color: #ffffff;
+      }
+
+      /* Main Container Panels matching exact screenshot layout */
+      .main-output-card {
+        background: linear-gradient(180deg, #101625 0%, #0a0d18 100%);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.8);
+      }
+
+      .overdub-sidebar {
+        background: linear-gradient(180deg, #091a18 0%, #040e0d 100%);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+      }
+
+      /* Badge Pill */
+      .aurora-badge {
+        background: rgba(10, 35, 28, 0.9);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+      }
+
+      /* Waveform Deck Box */
+      .waveform-deck {
+        background: linear-gradient(180deg, #1c0838 0%, #110426 100%);
+        border: 1px solid rgba(168, 85, 247, 0.35);
+      }
+
+      /* Transport Control Buttons */
+      .transport-btn {
+        background: rgba(45, 12, 60, 0.8);
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        color: #c4b5fd;
+        transition: all 0.15s ease;
+      }
+      .transport-btn:hover {
+        background: rgba(75, 20, 100, 0.9);
+        border-color: rgba(192, 132, 252, 0.8);
+        color: #ffffff;
+      }
+
+      /* Export Pill Buttons */
+      .export-btn {
+        background: rgba(22, 10, 48, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.6);
+        color: #ffffff;
+        font-weight: 700;
+        transition: all 0.2s ease;
+      }
+      .export-btn:hover {
+        background: rgba(45, 15, 80, 0.9);
+        border-color: rgba(192, 132, 252, 0.9);
+      }
+
+      /* Save to My Music Button */
+      .save-btn {
+        background: rgba(20, 8, 42, 0.9);
+        border: 1px solid rgba(147, 51, 234, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      .save-btn:hover {
+        background: rgba(40, 15, 80, 0.9);
+      }
+
+      /* OverDub Recording Toggle Button */
+      .rec-toggle-btn {
+        background: rgba(10, 30, 25, 0.9);
+        border: 1px solid rgba(16, 185, 129, 0.6);
+        color: #ffffff;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      .rec-toggle-btn:hover {
+        background: rgba(20, 50, 40, 0.9);
+        border-color: rgba(52, 211, 153, 0.9);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
+    
+    <!-- Top Navigation Header -->
+    <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
+      <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-purple-900/50">
+          <div class="w-full h-full bg-[#05010c] rounded-full flex items-center justify-center">
+            <span class="text-xs">🎵</span>
+          </div>
+        </div>
+        <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
+        <a href="{{ url_for('signin') }}" class="hover:text-purple-300 transition-colors">Sign in</a>
+        <a href="{{ url_for('register') }}" class="hover:text-purple-300 transition-colors">Register</a>
+        <a href="{{ url_for('home') }}" class="hover:text-purple-300 transition-colors">Home</a>
+        <a href="{{ url_for('select_mode') }}" class="hover:text-purple-300 transition-colors">Mode</a>
+        <a href="{{ url_for('beginner_mode') }}" class="hover:text-purple-300 transition-colors">Beginner</a>
+        <a href="{{ url_for('pro_studio_mode') }}" class="hover:text-purple-300 transition-colors">Pro Studio</a>
+        <a href="{{ url_for('beginner_output') }}" class="text-white font-bold border-b-2 border-purple-400 pb-0.5">Beginner output</a>
+        <a href="{{ url_for('studio_output') }}" class="hover:text-purple-300 transition-colors">Studio output</a>
+        <a href="{{ url_for('my_music') }}" class="hover:text-purple-300 transition-colors">My Music</a>
+      </nav>
+
+      <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-purple-950 border border-purple-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </a>
+    </header>
+
+    <!-- Main Workspace Dashboard Grid -->
+    <main class="flex-grow p-4 md:p-6 max-w-[1500px] w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- LEFT MAIN CONTENT CARD (lg:col-span-9) -->
+      <div class="lg:col-span-9 main-output-card rounded-2xl p-6 md:p-8 flex flex-col justify-between space-y-8">
+        
+        <!-- Header Section: Badge, Title & Details -->
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full aurora-badge">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">AURORA CREATION</span>
+            <span class="text-[10px] text-zinc-300 ml-1">AI imagination, fully formed</span>
+          </div>
+
+          <div>
+            <span class="text-xs text-zinc-400 block mb-1">Generated Track</span>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+              {{ prompt if prompt else "Late Night Lo-Fi" }}
+            </h1>
+            <p class="text-xs font-mono text-zinc-400 mt-1">
+              {{ bpm if bpm else "90" }} BPM . {{ key if key else "Lo-Fi" }} .
+              <span id="trackDurationLabel">{{ duration if duration else "3:24" }}</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Master Waveform Deck -->
+        <div class="waveform-deck rounded-2xl p-5 space-y-4">
+          <!-- Blue Waveform Visualizer Bars -->
+          <div id="waveform" class="h-16 flex items-center justify-between gap-1.5 px-2">
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-16 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-7 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-12 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-16 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-6 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.25rem] bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-10 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-8 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-12 bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-5 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.75rem] bg-indigo-500 rounded-full transition-all"></div>
+            <div class="w-1.5 h-9 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-[3.25rem] bg-indigo-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-7 bg-blue-400 rounded-full transition-all"></div>
+            <div class="w-1.5 h-14 bg-indigo-500 rounded-full transition-all"></div>
+          </div>
+
+          <!-- Player Transport Controls & Digital Clock -->
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="seekPlayback(-5)" title="Back 5 seconds" aria-label="Back 5 seconds" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏮</button>
+              <button type="button" id="playButton" onclick="togglePlayback()" title="Play" aria-label="Play" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-purple-300">▶</button>
+              <button type="button" onclick="seekPlayback(5)" title="Forward 5 seconds" aria-label="Forward 5 seconds" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏭</button>
+              <button type="button" onclick="stopPlayback()" title="Stop" aria-label="Stop" class="transport-btn w-9 h-8 rounded-lg flex items-center justify-center text-xs">⏹</button>
+              <span class="w-2.5 h-2.5 rounded-full bg-purple-300 ml-1"></span>
+            </div>
+            <span id="timecode" class="text-xs font-mono text-zinc-300">0:00 / 3:24</span>
+          </div>
+          <p id="playbackStatus" role="status" aria-live="polite" class="text-[9px] text-zinc-500">
+            Instrumental preview based on this track's genre and tempo. Samples load online.
+          </p>
+          <p class="text-[8px] text-zinc-500">
+            Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">FluidR3 GM SoundFont via MIDI.js Soundfonts</a>, licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-purple-300 underline">CC BY 3.0</a>.
+          </p>
+        </div>
+
+        <!-- Layer Breakdown Section (Multi-Color Progress Meters) -->
+        <div class="space-y-4">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Layer Breakdown</span>
+
+          <div class="space-y-4 text-xs font-semibold">
+            <!-- Melody - Lo-Fi Piano (Sky Blue) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Melody - Lo-Fi Piano</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-blue-900/30">
+                <div class="h-full bg-sky-400 rounded-l-full w-[68%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[32%]"></div>
+              </div>
+            </div>
+
+            <!-- Bass - Warm Sub (Neon Magenta/Pink) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Bass - Warm Sub</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-pink-900/30">
+                <div class="h-full bg-fuchsia-500 rounded-l-full w-[56%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[44%]"></div>
+              </div>
+            </div>
+
+            <!-- Drums - Vinyl Kit (Emerald Green) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Drums - Vinyl Kit</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-emerald-900/30">
+                <div class="h-full bg-emerald-400 rounded-l-full w-[78%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[22%]"></div>
+              </div>
+            </div>
+
+            <!-- Atmosphere - Pad (Warm Yellow) -->
+            <div class="flex items-center justify-between gap-6">
+              <span class="w-36 text-zinc-200">Atmosphere - Pad</span>
+              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-yellow-900/30">
+                <div class="h-full bg-yellow-300 rounded-l-full w-[82%]"></div>
+                <div class="h-full bg-slate-200/20 rounded-r-full w-[18%]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export Buttons Section -->
+        <div class="space-y-3 pt-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Export</span>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="downloadFile('Track_Export.mp3')" class="px-6 py-2.5 rounded-xl export-btn text-xs">MP3</button>
+            <button type="button" onclick="downloadFile('Track_Export.wav')" class="px-6 py-2.5 rounded-xl export-btn text-xs">WAV</button>
+            <button type="button" onclick="downloadFile('Track_Stems.zip')" class="px-6 py-2.5 rounded-xl export-btn text-xs">STEMS</button>
+          </div>
+        </div>
+
+        <!-- Save to My Music Action Button -->
+        <div>
+          <button type="button" onclick="alert('Track saved to My Music!')" class="py-3 px-8 rounded-xl save-btn text-xs uppercase tracking-wider">
+            Save to My Music
+          </button>
+        </div>
+
+      </div>
+
+      <!-- RIGHT OVERDUB SIDEBAR (lg:col-span-3) -->
+      <div class="lg:col-span-3 overdub-sidebar rounded-2xl p-6 flex flex-col items-center justify-between text-center space-y-6">
+        <div class="space-y-5 w-full pt-2">
+          <h3 class="text-sm font-extrabold uppercase tracking-widest text-white">OverDub</h3>
+          
+          <!-- Microphone Box Card -->
+          <div class="w-20 h-20 mx-auto rounded-2xl bg-[#092620] border border-emerald-500/40 flex items-center justify-center text-3xl shadow-inner">
+            🎙️
+          </div>
+
+          <p class="text-xs text-zinc-300 leading-relaxed px-2">
+            Record your Voice or instrument on top of this track
+          </p>
+        </div>
+
+        <div class="w-full pb-4">
+          <button type="button" onclick="toggleRecording(this)" id="recBtn" class="w-full py-3 rounded-full rec-toggle-btn text-xs uppercase tracking-wider">
+            Start Recording
+          </button>
+        </div>
+
+        <!-- Headphone Audio Indicator at Bottom -->
+        <div class="w-full pt-4 border-t border-emerald-950 flex justify-end">
+          <span class="text-xl">🎧</span>
+        </div>
+      </div>
+
+    </main>
+
+    <div
+      id="beginnerTrackSettings"
+      hidden
+      data-bpm="{{ bpm or 90 }}"
+      data-genre="{{ key or 'Lo-Fi' }}"
+      data-duration="{{ duration or '3:24' }}"
+    ></div>
+
+    <!-- Web Audio & Player Logic -->
+    <script>
+      // Track settings and playback state
+      const settings = document.getElementById('beginnerTrackSettings').dataset;
+      const trackBpm = Math.max(40, Math.min(240, Number(settings.bpm) || 90));
+      const trackGenre = settings.genre || 'Lo-Fi';
+      const durationSeconds = parseDuration(settings.duration);
+      let audioCtx = null;
+      let masterGain = null;
+      let isPlaying = false;
+      let isLoading = false;
+      let playbackTimer = null;
+      let beatTimer = null;
+      let seconds = 0;
+      let playbackRequestId = 0;
+      let currentArrangement = [];
+
+      // Instrument and sample configuration
+      const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+      const instruments = {
+        piano: 'acoustic_grand_piano',
+        guitar: 'acoustic_guitar_steel',
+        bass: 'electric_bass_pick',
+        strings: 'string_ensemble_1',
+        synth: 'lead_2_sawtooth',
+        harmonium: 'reed_organ'
+      };
+      const genreProfiles = {
+        'Lo-Fi': { root: 0, minor: true, lead: 'piano', kick: [0, 2], snare: [1, 3], hats: true },
+        'Hip-Hop': { root: 2, minor: true, lead: 'synth', kick: [0, 2], snare: [1, 3], hats: true },
+        Jazz: { root: 5, minor: false, lead: 'piano', kick: [0], snare: [1, 3], hats: true },
+        Electronic: { root: 9, minor: true, lead: 'synth', kick: [0, 2], snare: [1, 3], hats: true },
+        'Western Pop': { root: 7, minor: false, lead: 'guitar', kick: [0, 2], snare: [1, 3], hats: true },
+        Folk: { root: 2, minor: false, lead: 'guitar', kick: [0], snare: [2], hats: false },
+        'R&B': { root: 9, minor: true, lead: 'piano', kick: [0, 2], snare: [1, 3], hats: true },
+        Classical: { root: 4, minor: false, lead: 'strings', kick: [], snare: [], hats: false },
+        'Punjabi Pop': { root: 0, minor: false, lead: 'harmonium', kick: [0, 2], snare: [1, 3], hats: true },
+        Bhangra: { root: 7, minor: false, lead: 'harmonium', kick: [0, 2], snare: [1, 3], hats: true },
+        'Bollywood Romance': { root: 5, minor: true, lead: 'strings', kick: [0, 2], snare: [1, 3], hats: true }
+      };
+      const soundfontPromises = new Map();
+      const sampleBufferCache = new Map();
+      const activeSources = new Set();
+      const noteSemitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+      // Duration and audio setup
+      function parseDuration(value) {
+        const parts = value.split(':').map(Number);
+        if (parts.length === 2 && parts.every(Number.isFinite)) {
+          const seconds = parts[0] * 60 + parts[1];
+          return seconds > 0 ? seconds : 204;
+        }
+
+        const minutes = Number(value);
+        return Number.isFinite(minutes) && minutes > 0 ? minutes * 60 : 204;
+      }
+
+      function initAudio() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) {
+            throw new Error('Web Audio is not supported in this browser.');
+          }
+
+          audioCtx = new AudioContext();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.65;
+          masterGain.connect(audioCtx.destination);
+        }
+      }
+
+      // SoundFont and note sample loading
+      function loadSoundfont(instrument) {
+        const program = instruments[instrument];
+        if (!program) {
+          return Promise.reject(new Error(`Unknown instrument: ${instrument}`));
+        }
+        if (window.MIDI?.Soundfont?.[program]) {
+          return Promise.resolve(window.MIDI.Soundfont[program]);
+        }
+        if (soundfontPromises.has(program)) {
+          return soundfontPromises.get(program);
+        }
+
+        const loadPromise = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+          script.async = true;
+          script.onload = () => {
+            const soundfont = window.MIDI?.Soundfont?.[program];
+            if (soundfont) {
+              resolve(soundfont);
+            } else {
+              reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+            }
+          };
+          script.onerror = () => {
+            reject(new Error(`Could not download the ${instrument} sample bank.`));
+          };
+          document.head.appendChild(script);
+        });
+
+        soundfontPromises.set(program, loadPromise);
+        loadPromise.catch(() => soundfontPromises.delete(program));
+        return loadPromise;
+      }
+
+      function midiNoteNumber(noteName) {
+        const match = /^([A-G])([#b]?)(-?\d+)$/.exec(noteName);
+        if (!match) {
+          return null;
+        }
+
+        const accidental = match[2] === '#' ? 1 : match[2] === 'b' ? -1 : 0;
+        return (Number(match[3]) + 1) * 12 + noteSemitones[match[1]] + accidental;
+      }
+
+      async function loadInstrumentSample(instrument, targetNote) {
+        const soundfont = await loadSoundfont(instrument);
+        const sampleName = Object.keys(soundfont)
+          .filter(name => midiNoteNumber(name) !== null)
+          .sort((a, b) => {
+            const distanceA = Math.abs(midiNoteNumber(a) - targetNote);
+            const distanceB = Math.abs(midiNoteNumber(b) - targetNote);
+            return distanceA - distanceB;
+          })[0];
+
+        if (!sampleName) {
+          throw new Error(`No playable samples were found for ${instrument}.`);
+        }
+
+        const cacheKey = `${instruments[instrument]}:${sampleName}`;
+        let bufferPromise = sampleBufferCache.get(cacheKey);
+        if (!bufferPromise) {
+          bufferPromise = fetch(soundfont[sampleName])
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Could not download a ${instrument} note sample (${response.status}).`);
+              }
+              return response.arrayBuffer();
+            })
+            .then(data => audioCtx.decodeAudioData(data));
+
+          sampleBufferCache.set(cacheKey, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
+        }
+
+        return {
+          buffer: await bufferPromise,
+          sampleNote: midiNoteNumber(sampleName)
+        };
+      }
+
+      // Genre-based arrangement
+      function getGenreProfile() {
+        return genreProfiles[trackGenre] || genreProfiles['Lo-Fi'];
+      }
+
+      function getArrangement() {
+        const profile = getGenreProfile();
+        const scale = profile.minor
+          ? [0, 2, 3, 5, 7, 8, 10]
+          : [0, 2, 4, 5, 7, 9, 11];
+        const root = 48 + profile.root;
+        const progression = [0, 5, 3, 4];
+
+        return Array.from({ length: 16 }, (_, beat) => {
+          const bar = Math.floor(beat / 4);
+          const chordDegree = progression[bar];
+          const chord = [0, 2, 4].map(offset => {
+            const degree = chordDegree + offset;
+            return root + scale[degree % scale.length] + 12 * Math.floor(degree / scale.length);
+          });
+          const melodyDegree = [0, 2, 4, 2][beat % 4];
+
+          return {
+            bass: chord[0] - 12,
+            chord: beat % 4 === 0 ? chord : [],
+            melody: beat % 2 === 1
+              ? root + scale[(chordDegree + melodyDegree) % scale.length] + 12
+              : null,
+            kick: profile.kick.includes(beat % 4),
+            snare: profile.snare.includes(beat % 4),
+            hiHat: profile.hats && beat % 2 === 0
+          };
+        });
+      }
+
+      async function prepareArrangement(arrangement) {
+        const profile = getGenreProfile();
+        const notes = {
+          bass: new Set(),
+          piano: new Set(),
+          guitar: new Set(),
+          strings: new Set(),
+          synth: new Set(),
+          harmonium: new Set()
+        };
+
+        arrangement.forEach(step => {
+          notes.bass.add(step.bass);
+          step.chord.forEach(note => notes.piano.add(note));
+          if (step.melody !== null) {
+            notes[profile.lead].add(step.melody);
+          }
+        });
+
+        await Promise.all(
+          Object.entries(notes)
+            .filter(([, instrumentNotes]) => instrumentNotes.size > 0)
+            .flatMap(([instrument, instrumentNotes]) =>
+              [...instrumentNotes].map(note => loadInstrumentSample(instrument, note))
+            )
+        );
+      }
+
+      // Instrument and percussion playback
+      function registerSource(source) {
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+      }
+
+      function playSampledNote(instrument, note, velocity, duration, requestId) {
+        loadInstrumentSample(instrument, note)
+          .then(({ buffer, sampleNote }) => {
+            if (!isPlaying || requestId !== playbackRequestId) {
+              return;
+            }
+
+            const source = audioCtx.createBufferSource();
+            const gain = audioCtx.createGain();
+            source.buffer = buffer;
+            source.playbackRate.setValueAtTime(
+              Math.pow(2, (note - sampleNote) / 12),
+              audioCtx.currentTime
+            );
+            gain.gain.setValueAtTime(velocity, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(
+              0.001,
+              audioCtx.currentTime + duration
+            );
+            source.connect(gain);
+            gain.connect(masterGain);
+            registerSource(source);
+            source.start();
+            source.stop(audioCtx.currentTime + duration);
+          })
+          .catch(error => {
+            if (isPlaying && requestId === playbackRequestId) {
+              showPlaybackError(error);
+            }
+          });
+      }
+
+      function playKick(time) {
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(130, time);
+        oscillator.frequency.exponentialRampToValueAtTime(42, time + 0.15);
+        gain.gain.setValueAtTime(0.3, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
+        oscillator.connect(gain);
+        gain.connect(masterGain);
+        registerSource(oscillator);
+        oscillator.start(time);
+        oscillator.stop(time + 0.2);
+      }
+
+      function playNoiseDrum(time, duration, filterType, frequency, volume) {
+        const length = Math.floor(audioCtx.sampleRate * duration);
+        const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index++) {
+          data[index] = Math.random() * 2 - 1;
+        }
+
+        const source = audioCtx.createBufferSource();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        source.buffer = buffer;
+        filter.type = filterType;
+        filter.frequency.setValueAtTime(frequency, time);
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        registerSource(source);
+        source.start(time);
+        source.stop(time + duration);
+      }
+
+      function playArrangementBeat(beatIndex) {
+        const step = currentArrangement[beatIndex % currentArrangement.length];
+        const time = audioCtx.currentTime + 0.015;
+        const requestId = playbackRequestId;
+        const beatDuration = 60 / trackBpm;
+        const profile = getGenreProfile();
+
+        playSampledNote('bass', step.bass, 0.34, beatDuration * 0.85, requestId);
+        step.chord.forEach(note => {
+          playSampledNote('piano', note, 0.16, beatDuration * 1.8, requestId);
+        });
+        if (step.melody !== null) {
+          playSampledNote(profile.lead, step.melody, 0.2, beatDuration * 0.8, requestId);
+        }
+        if (step.kick) {
+          playKick(time);
+        }
+        if (step.snare) {
+          playNoiseDrum(time, 0.14, 'bandpass', 2200, 0.12);
+        }
+        if (step.hiHat) {
+          playNoiseDrum(time, 0.04, 'highpass', 7000, 0.04);
+        }
+
+        animateWaveform();
+      }
+
+      // Transport, playback status, and waveform
+      function formatTime(value) {
+        const mins = Math.floor(value / 60);
+        const secs = value % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+      }
+
+      function updateTimecode() {
+        document.getElementById('timecode').innerText =
+          `${formatTime(seconds)} / ${formatTime(durationSeconds)}`;
+      }
+
+      function updatePlayButton(playing) {
+        const button = document.getElementById('playButton');
+        button.innerText = playing ? '⏸' : '▶';
+        button.title = playing ? 'Pause' : 'Play';
+        button.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+      }
+
+      function startBeatTimer() {
+        clearInterval(beatTimer);
+        const beatDuration = 60 / trackBpm;
+        let beatIndex = Math.floor(seconds / beatDuration);
+        playArrangementBeat(beatIndex++);
+        beatTimer = setInterval(() => {
+          playArrangementBeat(beatIndex++);
+        }, beatDuration * 1000);
+      }
+
+      function startPlaybackTimer() {
+        clearInterval(playbackTimer);
+        playbackTimer = setInterval(() => {
+          seconds = Math.min(seconds + 1, durationSeconds);
+          updateTimecode();
+
+          if (seconds >= durationSeconds) {
+            pausePlayback();
+            document.getElementById('playbackStatus').innerText =
+              'Preview finished. Press Play to start again.';
+          }
+        }, 1000);
+      }
+
+      async function togglePlayback() {
+        if (isPlaying) {
+          pausePlayback();
+          return;
+        }
+        if (isLoading) {
+          return;
+        }
+
+        if (seconds >= durationSeconds) {
+          seconds = 0;
+          updateTimecode();
+        }
+
+        const requestId = ++playbackRequestId;
+        const button = document.getElementById('playButton');
+        const status = document.getElementById('playbackStatus');
+        isLoading = true;
+        button.disabled = true;
+        status.innerText = 'Loading sampled instruments...';
+
+        try {
+          initAudio();
+          if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+          }
+
+          currentArrangement = getArrangement();
+          await prepareArrangement(currentArrangement);
+          if (requestId !== playbackRequestId) {
+            return;
+          }
+
+          isLoading = false;
+          isPlaying = true;
+          button.disabled = false;
+          updatePlayButton(true);
+          status.innerText = `${trackGenre} instrumental preview.`;
+          startBeatTimer();
+          startPlaybackTimer();
+        } catch (error) {
+          if (requestId === playbackRequestId) {
+            isLoading = false;
+            button.disabled = false;
+            showPlaybackError(error);
+          }
+        }
+      }
+
+      function pausePlayback() {
+        playbackRequestId++;
+        isPlaying = false;
+        isLoading = false;
+        clearInterval(playbackTimer);
+        clearInterval(beatTimer);
+        activeSources.forEach(source => source.stop());
+        activeSources.clear();
+        document.getElementById('playButton').disabled = false;
+        updatePlayButton(false);
+        resetWaveform();
+      }
+
+      function stopPlayback() {
+        pausePlayback();
+        seconds = 0;
+        updateTimecode();
+        document.getElementById('playbackStatus').innerText =
+          `Instrumental preview based on this track's genre and tempo. Samples load online.`;
+      }
+
+      function seekPlayback(offset) {
+        seconds = Math.max(0, Math.min(durationSeconds, seconds + offset));
+        updateTimecode();
+
+        if (isPlaying) {
+          startBeatTimer();
+        }
+      }
+
+      function showPlaybackError(error) {
+        pausePlayback();
+        document.getElementById('playbackStatus').innerText =
+          `Playback unavailable: ${error.message}`;
+      }
+
+      function animateWaveform() {
+        document.querySelectorAll('#waveform div').forEach(bar => {
+          bar.style.height = `${Math.floor(Math.random() * 50) + 12}px`;
+        });
+      }
+
+      function resetWaveform() {
+        document.querySelectorAll('#waveform div').forEach(bar => {
+          bar.style.height = '16px';
+        });
+      }
+
+      // Export and recording actions
+      function downloadFile(filename) {
+        alert("Downloading " + filename + "...");
+      }
+
+      function toggleRecording(btn) {
+        if (btn.innerText === "START RECORDING") {
+          btn.innerText = "STOP RECORDING";
+          btn.style.borderColor = "#ef4444";
+          btn.style.color = "#ef4444";
+        } else {
+          btn.innerText = "START RECORDING";
+          btn.style.borderColor = "rgba(16, 185, 129, 0.6)";
+          btn.style.color = "#ffffff";
+        }
+      }
+
+      updateTimecode();
+      document.getElementById('trackDurationLabel').innerText = formatTime(durationSeconds);
+    </script>
+  </body>
+</html>

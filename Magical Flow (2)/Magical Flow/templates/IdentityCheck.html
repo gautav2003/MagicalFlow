@@ -1,0 +1,44 @@
+{% extends "Base.html" %}
+{% block title %}Magical Flow - Identity Check{% endblock %}
+{% block content %}
+<div class="studio-card w-full max-w-md rounded-2xl p-8 space-y-6 border border-purple-500/40 shadow-2xl my-8">
+    
+    <div class="text-center space-y-2">
+        <div class="w-12 h-12 mx-auto rounded-2xl bg-purple-900/40 border border-purple-500/40 flex items-center justify-center text-purple-300 shadow-inner">
+            <i class="fa-solid fa-shield-halved text-lg"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white tracking-tight">Identity Check</h2>
+        <p class="text-xs text-zinc-400">We've dispatched a 6-digit verification code to <span class="text-purple-300 font-medium">{{ email }}</span></p>
+    </div>
+
+    {% if error %}
+    <div class="bg-red-500/20 border border-red-500 text-red-300 text-xs p-3 rounded-xl text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Prototype Helper Badge -->
+    <div class="bg-[#120822] border border-purple-900/60 rounded-xl p-3 text-center space-y-1">
+        <div class="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Development Prototype Code</div>
+        <div class="text-sm font-mono font-bold text-purple-300 tracking-widest">{{ prototype_code }}</div>
+        <p class="text-[10px] text-zinc-500">(Also printed in your VS Code terminal console)</p>
+    </div>
+
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-[11px] text-zinc-400 mb-1">Enter 6-Digit Code</label>
+            <input type="text" name="code" required maxlength="6" placeholder="123456" 
+                class="w-full bg-[#120822] border border-purple-500/40 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-white focus:outline-none focus:border-purple-400">
+        </div>
+
+        <button type="submit" class="w-full bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-semibold text-xs py-3 rounded-xl shadow-lg transition">
+            Verify & Enter Studio
+        </button>
+    </form>
+
+    <div class="text-center">
+        <a href="{{ url_for('signin') }}" class="text-[11px] text-zinc-400 hover:text-purple-300 transition">Back to Sign In</a>
+    </div>
+
+</div>
+{% endblock %}
