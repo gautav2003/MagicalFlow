@@ -627,15 +627,15 @@
         celesta: { gain: 0.28, pan: 0.18, lowpass: 5400, highpass: 260, attack: 0.012, release: 0.62 },
         "steel drums": { gain: 0.22, pan: 0.22, lowpass: 4600, highpass: 250, attack: 0.012, release: 0.42 },
       };
-      // DARK AMBIENT VILLAIN TRACK: restrained, low-passed tones leave room for the slow cinematic build.
+      // DARK AMBIENT VILLAIN TRACK: weighty low end and stronger orchestral layers.
       const darkAmbientInstrumentProfiles = {
-        pad: { gain: 0.42, pan: 0.04, lowpass: 1700, highpass: 55, attack: 0.55, release: 0.9 },
-        strings: { gain: 0.48, pan: -0.12, lowpass: 3200, highpass: 65, attack: 0.16, release: 0.58 },
-        organ: { gain: 0.34, pan: 0.08, lowpass: 2500, highpass: 60, attack: 0.08, release: 0.52 },
-        brass: { gain: 0.24, pan: 0.12, lowpass: 2300, highpass: 80, attack: 0.10, release: 0.38 },
-        bass: { gain: 0.72, pan: 0, lowpass: 620, highpass: 36, attack: 0.025, release: 0.30 },
-        synth: { gain: 0.26, pan: 0, lowpass: 1450, highpass: 48, attack: 0.08, release: 0.42 },
-        vocals: { gain: 0.28, pan: 0.02, lowpass: 2100, highpass: 85, attack: 0.28, release: 0.68 },
+        pad: { gain: 0.56, pan: 0.04, lowpass: 1500, highpass: 42, attack: 0.55, release: 1.1 },
+        strings: { gain: 0.64, pan: -0.12, lowpass: 3000, highpass: 52, attack: 0.16, release: 0.72 },
+        organ: { gain: 0.50, pan: 0.08, lowpass: 2300, highpass: 42, attack: 0.08, release: 0.65 },
+        brass: { gain: 0.34, pan: 0.12, lowpass: 2100, highpass: 65, attack: 0.10, release: 0.48 },
+        bass: { gain: 0.88, pan: 0, lowpass: 480, highpass: 24, attack: 0.025, release: 0.38 },
+        synth: { gain: 0.38, pan: 0, lowpass: 1250, highpass: 36, attack: 0.08, release: 0.52 },
+        vocals: { gain: 0.38, pan: 0.02, lowpass: 2000, highpass: 65, attack: 0.28, release: 0.82 },
       };
 
       // Genre, scale and rhythm maps
@@ -793,6 +793,16 @@
             : [0, 4, 5, 3];
         const degree = progression[Math.floor(step / 8) % progression.length];
         const root = scale[degree];
+        if (track.darkAmbientArrangement) {
+          const diminishedIntervals = [0, 3, 6];
+          return {
+            rootFrequency: track.root * Math.pow(2, root / 12),
+            chordFrequencies: diminishedIntervals.map((interval) =>
+              track.root * Math.pow(2, (root + interval + 12) / 12)
+            ),
+            rootSemitones: root
+          };
+        }
         const chord = [0, 2, 4].map((offset) => {
           const chordDegree = degree + offset;
           const octave = Math.floor(chordDegree / scale.length);
@@ -888,13 +898,18 @@
 
         try {
           await startPreviewAudio();
+          previewMasterGain.gain.setTargetAtTime(
+            loadingTrack.darkAmbientArrangement ? 0.86 : 0.68,
+            previewAudioContext.currentTime,
+            0.2
+          );
           previewReverbGain.gain.setTargetAtTime(
             loadingTrack.moonlitArrangement && loadingTrack.style === "bollywood"
               ? 0.14
               : loadingTrack.magicalDreamArrangement
                 ? 0.17
                 : loadingTrack.darkAmbientArrangement
-                  ? 0.22
+                ? 0.28
                   : 0.055,
             previewAudioContext.currentTime,
             0.2
@@ -1123,6 +1138,9 @@
           for (let step = 0; step < 32; step += 1) {
             const harmony = getHarmony(track, step);
             addFrequency(harmony.rootFrequency / 2);
+            if (track.darkAmbientArrangement) {
+              addFrequency(harmony.rootFrequency / 4);
+            }
             harmony.chordFrequencies.forEach(addFrequency);
           }
         }
@@ -1468,7 +1486,7 @@
 
           if (chordSteps) {
             const chordDuration = halfBeatSeconds * (isOutro ? 7 : isIntro ? 6 : 8);
-            const chordVolume = isIntro || isOutro ? 0.008 : isHook ? 0.014 : 0.011;
+            const chordVolume = isIntro || isOutro ? 0.012 : isHook ? 0.023 : isBuild ? 0.019 : 0.016;
             const notes = isOutro
               ? [track.root, track.root * Math.pow(2, 3 / 12), track.root * Math.pow(2, 7 / 12)]
               : chordNotes;
@@ -1478,7 +1496,7 @@
                 frequency / 2,
                 chordDuration,
                 "triangle",
-                chordVolume,
+                chordVolume * 1.15,
                 "strings",
                 scheduledTime + index * 0.035
               );
@@ -1486,7 +1504,7 @@
                 frequency,
                 chordDuration * 0.82,
                 "sine",
-                chordVolume * 0.72,
+                chordVolume * 0.9,
                 "pad",
                 scheduledTime + index * 0.045
               );
@@ -1497,7 +1515,7 @@
                 chordNotes[0] / 2,
                 halfBeatSeconds * 5,
                 "sine",
-                isHook ? 0.016 : 0.012,
+                isHook ? 0.026 : 0.020,
                 "organ",
                 scheduledTime + halfBeatSeconds * 0.08
               );
@@ -1508,7 +1526,7 @@
                 chordNotes[2],
                 halfBeatSeconds * 2.2,
                 "sawtooth",
-                0.012,
+                0.020,
                 "brass",
                 scheduledTime + halfBeatSeconds * 0.12
               );
@@ -1516,7 +1534,7 @@
                 chordNotes[0],
                 halfBeatSeconds * 5,
                 "sine",
-                0.009,
+                0.015,
                 "vocals",
                 scheduledTime + halfBeatSeconds * 0.06
               );
@@ -1530,7 +1548,7 @@
               leadNote,
               leadDuration,
               "sine",
-              isHook ? 0.025 : isBuild ? 0.020 : 0.014,
+              isHook ? 0.038 : isBuild ? 0.030 : 0.021,
               "organ",
               scheduledTime
             );
@@ -1539,7 +1557,7 @@
                 leadNote,
                 leadDuration * 1.08,
                 "triangle",
-                isHook ? 0.022 : 0.014,
+                isHook ? 0.032 : 0.021,
                 "strings",
                 scheduledTime + halfBeatSeconds * 0.08
               );
@@ -1548,10 +1566,10 @@
 
           if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
             playPreviewTone(
-              harmony.rootFrequency / 2,
-              halfBeatSeconds * (isHook ? 2.2 : 2.8),
+              harmony.rootFrequency / 4,
+              halfBeatSeconds * (isHook ? 2.6 : 3.2),
               "sine",
-              isHook ? 0.062 : 0.046,
+              isHook ? 0.095 : 0.072,
               "bass",
               scheduledTime
             );
@@ -1569,13 +1587,13 @@
           }
 
           if (isBuild && phraseStep === 15) {
-            playPreviewDrum(58, 0.9, 0.055, scheduledTime);
+            playPreviewDrum(58, 0.9,             0.075, scheduledTime);
           }
           if (isHook && phraseStep === 0) {
-            playPreviewDrum(52, 1.1, 0.075, scheduledTime);
+            playPreviewDrum(45, 1.1, 0.095, scheduledTime);
           }
           if (isBridge && phraseStep === 0) {
-            playPreviewDrum(62, 0.7, 0.035, scheduledTime);
+            playPreviewDrum(50, 0.7, 0.050, scheduledTime);
           }
 
           sequenceStep = (sequenceStep + 1) % 32;
