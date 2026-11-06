@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magical Flow - Dragon Fire Studio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #030008;
+        color: #ffffff;
+      }
+
+      .mono-font {
+        font-family: "Fira Code", monospace;
+      }
+
+      /* Dragon Fire Magical Theme Panels */
+      .daw-card {
+        background: linear-gradient(180deg, rgba(20, 7, 38, 0.95) 0%, rgba(8, 2, 18, 0.98) 100%);
+        border: 1px solid rgba(249, 115, 22, 0.3);
+        box-shadow: 0 0 25px rgba(139, 92, 246, 0.15);
+      }
+
+      .daw-border-red {
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+      }
+
+      .daw-border-purple {
+        border: 1px solid rgba(168, 85, 247, 0.4);
+      }
+
+      .audio-wave {
+        background: linear-gradient(90deg, #ea580c 0%, #a855f7 50%, #f43f5e 100%);
+        border-radius: 4px;
+      }
+
+      /* Magical Vintage Cassette Deck */
+      .tape-deck {
+        background: radial-gradient(ellipse at 50% 0%, rgba(249, 115, 22, 0.25), transparent 70%), linear-gradient(145deg, #2b1147, #130724 60%, #05010a);
+        border: 1px solid #f97316;
+        box-shadow: inset 0 0 0 2px rgba(249, 115, 22, 0.3), 0 0 20px rgba(239, 68, 68, 0.35);
+      }
+      .tape-counter {
+        background: #0c0418;
+        color: #fed7aa;
+        border: 1px solid rgba(249, 115, 22, 0.6);
+        box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9), 0 0 10px rgba(249, 115, 22, 0.3);
+      }
+      .tape-reel {
+        background: repeating-conic-gradient(#fed7aa 0deg 12deg, #7c2d12 12deg 20deg);
+        border: 3px solid #ea580c;
+        box-shadow: 0 0 0 2px #fdba74, inset 0 0 0 3px #c2410c, 0 0 12px rgba(249, 115, 22, 0.6);
+      }
+      .tape-reel::after {
+        content: "";
+        position: absolute;
+        inset: 35%;
+        border-radius: 9999px;
+        background: #18052b;
+        border: 1px solid #fed7aa;
+      }
+      .tape-reel.spinning {
+        animation: tape-spin 1.6s linear infinite, tape-glow 2.4s ease-in-out infinite alternate;
+      }
+      @keyframes tape-spin {
+        to { transform: rotate(360deg); }
+      }
+      @keyframes tape-glow {
+        from { filter: drop-shadow(0 0 3px rgba(249, 115, 22, 0.6)); }
+        to { filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.95)); }
+      }
+      .tape-button {
+        background: linear-gradient(180deg, #fb923c, #c2410c);
+        border: 1px solid #fed7aa;
+        color: #ffffff;
+        box-shadow: inset 0 1px rgba(255, 255, 255, 0.5), 0 2px 0 #7c2d12, 0 0 10px rgba(249, 115, 22, 0.4);
+      }
+      .tape-button:hover {
+        background: linear-gradient(180deg, #fdba74, #ea580c);
+        box-shadow: 0 0 15px rgba(249, 115, 22, 0.7);
+      }
+      .tape-button:active {
+        transform: translateY(1px);
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #030008;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c2410c;
+        border-radius: 3px;
+      }
+
+      /* Dragon Fire Magical Piano Keyboard Layout */
+      .piano-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        background: linear-gradient(180deg, #0d041a 0%, #030108 100%);
+        border: 1px solid rgba(249, 115, 22, 0.4);
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.2);
+      }
+      .piano-octave {
+        position: relative;
+        display: flex;
+        height: 120px;
+      }
+      .white-key {
+        width: 36px;
+        height: 100%;
+        background: linear-gradient(to bottom, #ffffff 0%, #f3f4f6 100%);
+        border: 1px solid #4b5563;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        cursor: pointer;
+        z-index: 1;
+        transition: background 0.08s ease, transform 0.08s ease;
+        box-shadow: inset 0 -4px 4px rgba(0,0,0,0.2);
+      }
+      .white-key:active, .white-key.active-key {
+        background: linear-gradient(to bottom, #fdba74 0%, #f97316 100%) !important;
+        transform: translateY(2px);
+        box-shadow: inset 0 -2px 2px rgba(0,0,0,0.3), 0 0 10px #f97316;
+      }
+      .black-key {
+        position: absolute;
+        width: 22px;
+        height: 68px;
+        background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+        border: 1px solid #f97316;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        cursor: pointer;
+        z-index: 10;
+        transition: background 0.08s ease, transform 0.08s ease;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+      }
+      .black-key:active, .black-key.active-key {
+        background: linear-gradient(180deg, #ea580c 0%, #c2410c 100%) !important;
+        transform: translateY(2px);
+        box-shadow: 0 0 12px #f97316;
+      }
+      /* Precise Black Key Offset Positions for Each Octave */
+      .bk-1 { left: 25px; }
+      .bk-2 { left: 61px; }
+      .bk-3 { left: 133px; }
+      .bk-4 { left: 169px; }
+      .bk-5 { left: 205px; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[#030008] text-white flex flex-col justify-between selection:bg-orange-600 selection:text-white">
+    <!-- Top Navigation Header Bar -->
+    <header class="w-full bg-[#030008] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-30">
+      <a href="{{ url_for('home') }}" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-600 via-orange-500 to-pink-500 p-0.5 flex items-center justify-center shadow-lg shadow-orange-950/50">
+          <div class="w-full h-full bg-[#030008] rounded-full flex items-center justify-center">
+            <span class="text-xs">🔥</span>
+          </div>
+        </div>
+        <span class="font-extrabold text-sm tracking-wide text-white">Magical Flow <span class="text-orange-500 text-xs">Dragon Fire</span></span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-zinc-300">
+        <a href="{{ url_for('signin') }}" class="hover:text-orange-300 transition-colors">Sign in</a>
+        <a href="{{ url_for('register') }}" class="hover:text-orange-300 transition-colors">Register</a>
+        <a href="{{ url_for('home') }}" class="hover:text-orange-300 transition-colors">Home</a>
+        <a href="{{ url_for('select_mode') }}" class="hover:text-orange-300 transition-colors">Mode</a>
+        <a href="{{ url_for('beginner_mode') }}" class="hover:text-orange-300 transition-colors">Beginner</a>
+        <a href="{{ url_for('pro_studio_mode') }}" class="text-orange-400 font-bold border-b-2 border-orange-500 pb-0.5">Pro Studio</a>
+        <a href="{{ url_for('beginner_output') }}" class="hover:text-orange-300 transition-colors">Beginner output</a>
+        <a href="{{ url_for('studio_output') }}" class="hover:text-orange-300 transition-colors">Studio output</a>
+        <a href="{{ url_for('my_music') }}" class="hover:text-orange-300 transition-colors">My Music</a>
+      </nav>
+
+      <a href="{{ url_for('account') }}" class="w-7 h-7 rounded-full bg-orange-950/80 border border-orange-500/40 flex items-center justify-center text-zinc-300 hover:text-white transition-colors">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+      </a>
+    </header>
+
+    <!-- Main DAW Interface Container -->
+    <main class="flex-grow p-4 md:p-6 max-w-[1600px] w-full mx-auto space-y-4">
+      <!-- Top Transport Toolbar Panel -->
+      <div class="daw-card daw-border-red rounded-xl p-3 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="rewindTransport()" title="Rewind" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏪</button>
+          <button type="button" id="playBtn" onclick="togglePlay()" title="Play" class="tape-button w-9 h-9 rounded-lg flex items-center justify-center text-xs">▶</button>
+          <button type="button" onclick="fastForward()" title="Forward" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">⏩</button>
+          <button type="button" onclick="stopTransport()" title="Stop" class="tape-button w-8 h-8 rounded-lg flex items-center justify-center text-xs">■</button>
+          <span id="transportLed" class="w-2.5 h-2.5 rounded-full bg-orange-400 ml-1"></span>
+          
+          <!-- Vintage Magical Cassette Deck -->
+          <div class="tape-deck rounded-lg px-3 py-1.5 flex items-center gap-3">
+            <div id="leftTapeReel" class="tape-reel relative w-7 h-7 rounded-full"></div>
+            <div class="tape-counter rounded px-2.5 py-1 text-[10px] leading-none font-mono text-center min-w-[82px]">
+              <span id="measureCounter" class="text-orange-300 font-bold">BAR 001</span>
+              <span class="block mt-1"><span id="transportTime">00:00</span><span id="transportState" class="ml-1 text-orange-400 font-bold">STOP</span></span>
+            </div>
+            <div id="rightTapeReel" class="tape-reel relative w-7 h-7 rounded-full"></div>
+          </div>
+          <input id="transportSeek" type="range" min="0" max="120" value="0" step="1" class="w-24 accent-orange-500 cursor-pointer" />
+        </div>
+
+        <div class="flex items-center gap-2 bg-gradient-to-r from-orange-950/60 to-red-950/60 border border-orange-500/50 px-3.5 py-1.5 rounded-full shadow-lg shadow-orange-950/50">
+          <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping"></span>
+          <span class="text-[10px] font-extrabold tracking-widest text-orange-400 uppercase">🔥 DRAGON FIRE STUDIO</span>
+          <span class="text-[10px] text-zinc-300">Magical Precision</span>
+        </div>
+
+        <div class="flex items-center gap-6 mono-font text-xs font-semibold">
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">BPM</span>
+            <input id="bpmInput" type="number" min="40" max="240" value="96" aria-label="Tempo in beats per minute" class="w-16 bg-transparent text-center text-sm font-bold text-orange-300 focus:outline-none focus:ring-1 focus:ring-orange-400 rounded" />
+          </div>
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">SIG</span>
+            <span class="text-sm font-bold text-white">4/4</span>
+          </div>
+          <div class="text-center">
+            <span class="block text-[9px] text-zinc-400 uppercase">KEY</span>
+            <span class="text-sm font-bold text-white">D Min</span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-orange-950/60 border border-orange-500/40 px-2.5 py-1 rounded-full text-[11px] text-orange-400"><span class="w-2 h-2 rounded-full bg-orange-400 animate-pulse"></span> USB-MIDI</div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-orange-950/80 border border-orange-600/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white transition-colors" title="Arm Mic">🎙</button>
+          <a id="micDownload" class="hidden text-[10px] text-orange-300 underline" download>Download mic take</a>
+          <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
+            <input type="hidden" name="bpm" value="96" />
+            <input type="hidden" name="key_scale" value="D Min" />
+            <input type="hidden" name="prompt" id="hiddenPrompt" value="" />
+            <button type="submit" class="px-4 py-1.5 bg-gradient-to-r from-orange-900 to-red-900 border border-orange-500/60 hover:from-orange-800 hover:to-red-800 rounded-lg text-xs font-bold text-white transition-all shadow-md shadow-orange-950">Export</button>
+          </form>
+          <button type="button" onclick="saveProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-600/60 hover:bg-purple-900 rounded-lg text-xs font-bold text-white transition-all">Save</button>
+          <button type="button" onclick="exportProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-600/60 hover:bg-purple-900 rounded-lg text-xs font-bold text-white transition-all">Export Project</button>
+        </div>
+      </div>
+
+      <!-- Grid Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- LEFT 9-COLUMN -->
+        <div class="lg:col-span-9 space-y-4">
+          <div class="daw-card daw-border-purple rounded-xl overflow-hidden flex">
+            <!-- Track Names List -->
+            <div class="w-48 bg-[#090318] border-r border-purple-950/60 flex-shrink-0">
+              <div class="h-7 border-b border-purple-950/60 bg-[#060110]"></div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-orange-500 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Kick 808</h4><span class="text-[9px] text-zinc-400 font-mono">Audio</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-orange-500 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Snare Crack</h4><span class="text-[9px] text-zinc-400 font-mono">Audio</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-orange-500 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Hi-Hat Perc</h4><span class="text-[9px] text-zinc-400 font-mono">Audio</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Bass Synth</h4><span class="text-[9px] text-zinc-400 font-mono">MIDI</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Lead Keys</h4><span class="text-[9px] text-zinc-400 font-mono">MIDI</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-yellow-400 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Pad Atmosphere</h4><span class="text-[9px] text-zinc-400 font-mono">MIDI</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-orange-500 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Guitar DI</h4><span class="text-[9px] text-zinc-400 font-mono">Audio</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-3 flex items-center justify-between">
+                <div class="flex items-center gap-2"><span class="w-1.5 h-6 bg-orange-500 rounded-full"></span><div><h4 class="text-xs font-bold text-white leading-tight">Vox Main</h4><span class="text-[9px] text-zinc-400 font-mono">Audio</span></div></div>
+                <button type="button" onclick="toggleMute(this)" class="text-[9px] font-mono px-1 bg-purple-950 rounded border border-purple-800 text-purple-300">M</button>
+              </div>
+            </div>
+
+            <!-- Timeline Measures Ruler -->
+            <div class="flex-grow overflow-x-auto">
+              <div class="h-7 border-b border-purple-950/60 bg-[#060110] flex items-center font-mono text-[10px] text-zinc-400 px-2 gap-8">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span>
+              </div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center bg-[#0b031d]"><div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center bg-[#0b031d]"><div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center bg-[#0b031d]"><div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-3 bg-[#0d0422]"><span class="h-2 w-10 bg-orange-400 rounded-sm"></span><span class="h-2 w-16 bg-orange-400 rounded-sm"></span><span class="h-2 w-8 bg-orange-400 rounded-sm"></span><span class="h-2 w-12 bg-orange-400 rounded-sm"></span></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-2 bg-[#0d0422]"><span class="h-2 w-12 bg-orange-400 rounded-sm"></span><span class="h-2 w-8 bg-orange-400 rounded-sm"></span><span class="h-2 w-16 bg-orange-400 rounded-sm"></span></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center gap-4 bg-[#0d0422]"><span class="h-2 w-14 bg-orange-400 rounded-sm"></span><span class="h-2 w-10 bg-orange-400 rounded-sm"></span><span class="h-2 w-8 bg-orange-400 rounded-sm"></span></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center bg-[#0b031d]"><div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div></div>
+              <div class="h-10 border-b border-purple-950/40 px-2 flex items-center bg-[#0b031d]"><div class="h-6 w-full audio-wave flex items-center justify-around opacity-90"><span class="text-[8px] font-mono">||||||||||||||||||||||||||||||||||||||||||</span></div></div>
+            </div>
+          </div>
+
+          <div class="daw-card rounded-xl h-24 bg-[#1a071d]/80 border border-orange-500/30 flex items-center justify-center p-4">
+            <div class="text-center">
+              <span id="dawStatusText" class="block text-xs font-mono text-orange-300">🔥 Dragon Fire Studio Session • Active Instrument: Grand Piano</span>
+              <span id="projectStatus" class="block mt-1 text-[10px] font-mono text-zinc-400">Ready · Set tempo, program drums, and save your project</span>
+            </div>
+          </div>
+
+          <!-- Virtual VST Instrument Multi-Genre Library & Fixed Piano Keyboard Layout -->
+          <div class="daw-card daw-border-purple rounded-xl p-4 space-y-3">
+            <div class="flex items-center justify-between border-b border-purple-900/40 pb-2">
+              <div class="flex items-center gap-3 text-xs font-semibold text-zinc-300 overflow-x-auto py-1">
+                <button type="button" onclick="selectInstrument(this, 'Grand Piano')" class="vst-tab text-white font-bold border-b-2 border-orange-400 pb-1 px-1 whitespace-nowrap">Grand Piano</button>
+                <button type="button" onclick="selectInstrument(this, 'Acoustic Guitar')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Acoustic Guitar</button>
+                <button type="button" onclick="selectInstrument(this, 'Electric Guitar')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Guitar</button>
+                <button type="button" onclick="selectInstrument(this, 'Electric Bass')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Electric Bass</button>
+                <button type="button" onclick="selectInstrument(this, '808 Sub')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">808 Sub</button>
+                <button type="button" onclick="selectInstrument(this, 'Trap Drums')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Trap Drums</button>
+                <button type="button" onclick="selectInstrument(this, 'Dhol')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Punjabi Dhol</button>
+                <button type="button" onclick="selectInstrument(this, 'Lead Synth')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Lead Synth</button>
+                <button type="button" onclick="selectInstrument(this, 'Supersaw')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Supersaw</button>
+                <button type="button" onclick="selectInstrument(this, 'Cinematic Strings')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Cinematic Strings</button>
+                <button type="button" onclick="selectInstrument(this, 'Brass Section')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Brass Section</button>
+                <button type="button" onclick="selectInstrument(this, 'Ambient Pad')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Ambient Pad</button>
+                <button type="button" onclick="selectInstrument(this, 'Sitar')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Sitar</button>
+                <button type="button" onclick="selectInstrument(this, 'Harmonium')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Harmonium</button>
+                <button type="button" onclick="selectInstrument(this, 'Arp Sequence')" class="vst-tab hover:text-white transition-colors px-1 whitespace-nowrap">Arp Sequence</button>
+              </div>
+              <button type="button" onclick="triggerAiAssist()" class="px-3 py-1 bg-gradient-to-r from-orange-900 to-purple-900 border border-orange-500/50 rounded-full text-xs text-orange-200 font-semibold hover:from-orange-800 hover:to-purple-800 whitespace-nowrap ml-2">AI Assist</button>
+            </div>
+            <p id="instrumentStatus" class="text-[10px] text-orange-300">Grand Piano selected · Click white/black keys or use A–L to play</p>
+            <div id="drumPads" class="hidden flex-wrap gap-2" aria-label="Drum pads">
+              <button type="button" onclick="playDrum('kick')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Kick <span class="opacity-70">A</span></button>
+              <button type="button" onclick="playDrum('snare')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Snare <span class="opacity-70">S</span></button>
+              <button type="button" onclick="playDrum('closedHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Closed Hat <span class="opacity-70">D</span></button>
+              <button type="button" onclick="playDrum('openHat')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Open Hat <span class="opacity-70">F</span></button>
+              <button type="button" onclick="playDrum('tom')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tom <span class="opacity-70">G</span></button>
+            </div>
+            <div id="dholPads" class="hidden flex flex-wrap gap-2" aria-label="Dhol pads">
+              <button type="button" onclick="playDholStroke('dha')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Dha <span class="opacity-70">A · both heads</span></button>
+              <button type="button" onclick="playDholStroke('ge')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Ge <span class="opacity-70">S · deep bass</span></button>
+              <button type="button" onclick="playDholStroke('na')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Na <span class="opacity-70">D · treble head</span></button>
+              <button type="button" onclick="playDholStroke('tak')" class="tape-button rounded-lg px-3 py-2 text-xs font-bold">Tak <span class="opacity-70">F · sharp slap</span></button>
+            </div>
+            <div id="drumSequencer" class="hidden space-y-2">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h3 class="text-xs font-bold text-orange-200">16-step drum sequencer</h3>
+                <label class="flex items-center gap-1 text-[10px] text-zinc-400"><input id="metronomeToggle" type="checkbox" class="accent-orange-500" /> Metronome</label>
+              </div>
+              <span class="text-[10px] text-zinc-400">Click steps, then press Play</span>
+              <div id="stepGrid" class="space-y-1.5 overflow-x-auto"></div>
+              <p class="text-[10px] text-zinc-500">Instrument samples: <a href="https://github.com/gleitz/midi-js-soundfonts" target="_blank" rel="noopener noreferrer" class="text-orange-300 underline">FluidR3 GM SoundFont via MIDI.js Soundfonts</a>, licensed <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer" class="text-orange-300 underline">CC BY 3.0</a>. Samples load online; synthesized sounds remain available offline.</p>
+            </div>
+
+            <!-- Correctly Layered Piano Keyboard (White Keys & Black Keys) -->
+            <div class="piano-container overflow-x-auto">
+              <div class="flex gap-2">
+                <!-- Octave 1 -->
+                <div class="piano-octave">
+                  <div onclick="playActiveInstrument(130.81)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(138.59)" class="black-key bk-1"></div>
+                  <div onclick="playActiveInstrument(146.83)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(155.56)" class="black-key bk-2"></div>
+                  <div onclick="playActiveInstrument(164.81)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(174.61)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(185.0)" class="black-key bk-3"></div>
+                  <div onclick="playActiveInstrument(196.0)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(207.65)" class="black-key bk-4"></div>
+                  <div onclick="playActiveInstrument(220.0)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(233.08)" class="black-key bk-5"></div>
+                  <div onclick="playActiveInstrument(246.94)" class="white-key"></div>
+                </div>
+
+                <!-- Octave 2 -->
+                <div class="piano-octave">
+                  <div onclick="playActiveInstrument(261.63)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(277.18)" class="black-key bk-1"></div>
+                  <div onclick="playActiveInstrument(293.66)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(311.13)" class="black-key bk-2"></div>
+                  <div onclick="playActiveInstrument(329.63)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(349.23)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(369.99)" class="black-key bk-3"></div>
+                  <div onclick="playActiveInstrument(392.0)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(415.3)" class="black-key bk-4"></div>
+                  <div onclick="playActiveInstrument(440.0)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(466.16)" class="black-key bk-5"></div>
+                  <div onclick="playActiveInstrument(493.88)" class="white-key"></div>
+                </div>
+
+                <!-- Octave 3 -->
+                <div class="piano-octave">
+                  <div onclick="playActiveInstrument(523.25)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(554.37)" class="black-key bk-1"></div>
+                  <div onclick="playActiveInstrument(587.33)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(622.25)" class="black-key bk-2"></div>
+                  <div onclick="playActiveInstrument(659.25)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(698.46)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(739.99)" class="black-key bk-3"></div>
+                  <div onclick="playActiveInstrument(783.99)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(830.61)" class="black-key bk-4"></div>
+                  <div onclick="playActiveInstrument(880.0)" class="white-key"></div>
+                  <div onclick="playActiveInstrument(932.33)" class="black-key bk-5"></div>
+                  <div onclick="playActiveInstrument(987.77)" class="white-key"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT 3-COLUMN: Inspector Sidebar -->
+        <div class="lg:col-span-3 space-y-4">
+          <div class="daw-card daw-border-purple rounded-xl p-4 space-y-5 h-full flex flex-col justify-between">
+            <div class="space-y-5">
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-orange-400 mb-2">AI Assist</h3>
+                <div class="bg-gradient-to-b from-[#240c4a] to-[#120529] border border-orange-500/40 rounded-xl p-2.5 h-20 flex flex-col justify-between shadow-inner">
+                  <textarea id="aiPromptInput" oninput="document.getElementById('hiddenPrompt').value = this.value" placeholder="Ask AI to help..." class="w-full h-full bg-transparent text-xs text-orange-200 placeholder-orange-400/60 focus:outline-none resize-none"></textarea>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-orange-400 mb-3">Channel Strip</h3>
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">EQ</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer"><div class="w-4 h-4 bg-white rounded-full shadow-md"></div></button>
+                  </div>
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">Compressor</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer"><div class="w-4 h-4 bg-white rounded-full shadow-md"></div></button>
+                  </div>
+                  <div class="flex items-center justify-between text-xs font-semibold">
+                    <span class="text-zinc-300">Reverb</span>
+                    <button type="button" onclick="toggleSwitch(this)" class="w-12 h-5 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full p-0.5 flex items-center justify-end transition-all cursor-pointer"><div class="w-4 h-4 bg-white rounded-full shadow-md"></div></button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-orange-400 mb-3">Hardware Ports</h3>
+                <div class="space-y-2.5 font-mono text-xs">
+                  <div class="flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-500/50"></span><span class="text-zinc-200">IN 1 Active</span></div>
+                  <div class="flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-500/50"></span><span class="text-zinc-200">IN 2 Active</span></div>
+                  <div class="flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-500/50"></span><span class="text-zinc-200">OUT L Active</span></div>
+                  <div class="flex items-center gap-2.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-400 shadow-sm shadow-orange-500/50"></span><span class="text-zinc-200">OUT R Active</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-purple-950/60 flex justify-end">
+              <span class="text-xl" title="Magical Headphone Monitor">🎧</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+  let audioCtx = null;
+  let isPlaying = false;
+  let playbackInterval = null;
+  let micRecorder = null;
+  let micStream = null;
+  let micChunks = [];
+  let micRecordingUrl = null;
+  let currentMeasure = 1;
+  let secondsCount = 0;
+  let playbackElapsedMs = 0;
+  let activeInstrument = 'Grand Piano';
+  let sequencerStep = 0;
+  let soundfontSampleCache = new Map();
+  let soundfontLoadPromises = new Map();
+  let projectPattern = {
+    kick: [0, 8],
+    snare: [4, 12],
+    closedHat: [0, 2, 4, 6, 8, 10, 12, 14],
+    openHat: []
+  };
+  const soundfontPrograms = {
+    'Grand Piano': 'acoustic_grand_piano',
+    'Acoustic Guitar': 'acoustic_guitar_steel',
+    'Electric Guitar': 'overdriven_guitar',
+    'Electric Bass': 'electric_bass_pick',
+    'Lead Synth': 'lead_2_sawtooth',
+    'Cinematic Strings': 'string_ensemble_1',
+    'Brass Section': 'brass_section',
+    'Ambient Pad': 'pad_2_warm',
+    'Sitar': 'sitar',
+    'Harmonium': 'reed_organ'
+  };
+  const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function loadSoundfont(instrument) {
+    const program = soundfontPrograms[instrument];
+    if (!program) return Promise.resolve(null);
+    if (window.MIDI?.Soundfont?.[program]) return Promise.resolve(window.MIDI.Soundfont[program]);
+    if (soundfontLoadPromises.has(program)) return soundfontLoadPromises.get(program);
+
+    const loadPromise = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `${soundfontBaseUrl}${program}-mp3.js`;
+      script.async = true;
+      script.onload = () => {
+        const soundfont = window.MIDI?.Soundfont?.[program];
+        if (soundfont) resolve(soundfont);
+        else reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
+      };
+      script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
+      document.head.appendChild(script);
+    });
+    soundfontLoadPromises.set(program, loadPromise);
+    loadPromise.catch(() => soundfontLoadPromises.delete(program));
+    return loadPromise;
+  }
+
+  function midiNoteNumber(noteName) {
+    const match = /^([A-G])(#?)(-?\d+)$/.exec(noteName);
+    if (!match) return null;
+    const semitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+    return (Number(match[3]) + 1) * 12 + semitones[match[1]] + (match[2] ? 1 : 0);
+  }
+
+  async function playSampledNote(instrument, frequency) {
+    const soundfont = await loadSoundfont(instrument);
+    if (!soundfont) return false;
+
+    const targetMidi = Math.round(69 + 12 * Math.log2(frequency / 440));
+    const sampleName = Object.keys(soundfont)
+      .filter(name => midiNoteNumber(name) !== null)
+      .sort((a, b) => Math.abs(midiNoteNumber(a) - targetMidi) - Math.abs(midiNoteNumber(b) - targetMidi))[0];
+    if (!sampleName) throw new Error(`No playable samples were found for ${instrument}.`);
+
+    const program = soundfontPrograms[instrument];
+    const cacheKey = `${program}:${sampleName}`;
+    let bufferPromise = soundfontSampleCache.get(cacheKey);
+    if (!bufferPromise) {
+      bufferPromise = fetch(soundfont[sampleName])
+        .then(response => {
+          if (!response.ok) throw new Error(`Could not download the ${instrument} note sample.`);
+          return response.arrayBuffer();
+        })
+        .then(data => audioCtx.decodeAudioData(data));
+      soundfontSampleCache.set(cacheKey, bufferPromise);
+      bufferPromise.catch(() => soundfontSampleCache.delete(cacheKey));
+    }
+
+    const buffer = await bufferPromise;
+    const source = audioCtx.createBufferSource();
+    const gain = audioCtx.createGain();
+    source.buffer = buffer;
+    source.playbackRate.setValueAtTime(frequency / (440 * Math.pow(2, (midiNoteNumber(sampleName) - 69) / 12)), audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+    source.connect(gain);
+    gain.connect(audioCtx.destination);
+    source.start();
+    return true;
+  }
+
+  function makeDistortionCurve(amount) {
+    const k = typeof amount === 'number' ? amount : 50;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI / 180;
+    for (let i = 0; i < n_samples; ++i) {
+      const x = (i * 2) / n_samples - 1;
+      curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
+  function playDrum(drum) {
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    function playNoise(duration, filterType, filterFreq, gainLevel, q = 1) {
+      const bufferSize = Math.floor(audioCtx.sampleRate * duration);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      const filter = audioCtx.createBiquadFilter();
+      const gain = audioCtx.createGain();
+      noise.buffer = buffer;
+      filter.type = filterType;
+      filter.frequency.setValueAtTime(filterFreq, now);
+      filter.Q.setValueAtTime(q, now);
+      gain.gain.setValueAtTime(gainLevel, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(now);
+      noise.stop(now + duration);
+    }
+
+    if (drum === 'kick') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(155, now);
+      osc.frequency.exponentialRampToValueAtTime(42, now + 0.16);
+      gain.gain.setValueAtTime(0.9, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.48);
+      playNoise(0.025, 'highpass', 2500, 0.12);
+      return;
+    }
+
+    if (drum === 'snare') {
+      const osc = audioCtx.createOscillator();
+      const bodyGain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(190, now);
+      osc.frequency.exponentialRampToValueAtTime(115, now + 0.11);
+      bodyGain.gain.setValueAtTime(0.28, now);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.connect(bodyGain);
+      bodyGain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.2);
+      playNoise(0.22, 'bandpass', 1900, 0.5, 0.8);
+      return;
+    }
+
+    if (drum === 'closedHat' || drum === 'openHat') {
+      const duration = drum === 'openHat' ? 0.48 : 0.075;
+      playNoise(duration, 'highpass', 7000, drum === 'openHat' ? 0.24 : 0.3, 0.7);
+      [4100, 5700, 7300].forEach((frequency, index) => {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(frequency, now);
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(6000, now);
+        gain.gain.setValueAtTime(0.018 / (index + 1), now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      });
+      return;
+    }
+
+    if (drum === 'tom') {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(95, now + 0.24);
+      gain.gain.setValueAtTime(0.55, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.42);
+    }
+  }
+
+  function playDholStroke(stroke) {
+    initAudio();
+    const now = audioCtx.currentTime;
+    const strokes = {
+      dha: { tones: [[82, 0.95, 0.36, 1.75], [260, 0.58, 0.16, 1.3]], noise: 1700, noiseLevel: 0.2, noiseDuration: 0.04 },
+      ge: { tones: [[72, 1, 0.44, 1.9]], noise: 950, noiseLevel: 0.13, noiseDuration: 0.035 },
+      na: { tones: [[345, 0.62, 0.18, 1.35]], noise: 2600, noiseLevel: 0.22, noiseDuration: 0.035 },
+      tak: { tones: [[430, 0.48, 0.095, 1.55]], noise: 3600, noiseLevel: 0.28, noiseDuration: 0.025 }
+    };
+    const hit = strokes[stroke];
+    if (!hit) return;
+
+    hit.tones.forEach(([frequency, level, decay, pitchDrop]) => {
+      const body = audioCtx.createOscillator();
+      const bodyGain = audioCtx.createGain();
+      const overtone = audioCtx.createOscillator();
+      const overtoneGain = audioCtx.createGain();
+
+      body.type = 'sine';
+      body.frequency.setValueAtTime(frequency * pitchDrop, now);
+      body.frequency.exponentialRampToValueAtTime(frequency, now + 0.035);
+      bodyGain.gain.setValueAtTime(0.0001, now);
+      bodyGain.gain.linearRampToValueAtTime(level, now + 0.004);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, now + decay);
+
+      overtone.type = 'triangle';
+      overtone.frequency.setValueAtTime(frequency * 2.4, now);
+      overtoneGain.gain.setValueAtTime(0.0001, now);
+      overtoneGain.gain.linearRampToValueAtTime(level * 0.2, now + 0.003);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decay * 0.45);
+
+      body.connect(bodyGain);
+      bodyGain.connect(audioCtx.destination);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(audioCtx.destination);
+      body.start(now);
+      body.stop(now + decay);
+      overtone.start(now);
+      overtone.stop(now + decay * 0.55);
+    });
+
+    const noiseDuration = hit.noiseDuration;
+    const noiseBuffer = audioCtx.createBuffer(1, Math.floor(audioCtx.sampleRate * noiseDuration), audioCtx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseData.length; i++) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+    const noise = audioCtx.createBufferSource();
+    const filter = audioCtx.createBiquadFilter();
+    const noiseGain = audioCtx.createGain();
+    noise.buffer = noiseBuffer;
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(hit.noise, now);
+    filter.Q.setValueAtTime(0.9, now);
+    noiseGain.gain.setValueAtTime(hit.noiseLevel, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    noise.start(now);
+    noise.stop(now + noiseDuration);
+  }
+
+  function playActiveInstrument(freq) {
+    initAudio();
+    const instrument = activeInstrument;
+    if (!soundfontPrograms[instrument]) {
+      playSynthInstrument(freq);
+      return;
+    }
+
+    playSampledNote(instrument, freq).catch(error => {
+      console.error(error);
+      if (activeInstrument === instrument) {
+        document.getElementById('instrumentStatus').innerText = `${instrument} sample unavailable; playing the built-in sound instead.`;
+        playSynthInstrument(freq);
+      }
+    });
+  }
+
+  function playSynthInstrument(freq) {
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    switch(activeInstrument) {
+
+      case 'Electric Guitar': {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const dist = audioCtx.createWaveShaper();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 1.005, now);
+
+        dist.curve = makeDistortionCurve(45);
+        dist.oversample = '4x';
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(3200, now);
+        filter.frequency.exponentialRampToValueAtTime(800, now + 0.9);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+
+        osc1.connect(dist);
+        osc2.connect(dist);
+        dist.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.1); osc2.stop(now + 1.1);
+        break;
+      }
+
+      case 'Grand Piano': {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 2, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(300, now + 1.2);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+        osc1.connect(filter); osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.2); osc2.stop(now + 1.2);
+        break;
+      }
+
+      case 'Acoustic Guitar': {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1500, now);
+        filter.Q.value = 3;
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.8);
+        break;
+      }
+
+      case 'Electric Bass': {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq / 2, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(450, now);
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 1.0);
+        break;
+      }
+
+      case '808 Sub': {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq / 2, now);
+        osc.frequency.exponentialRampToValueAtTime(35, now + 0.5);
+
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 1.4);
+        break;
+      }
+
+      case 'Trap Drums': {
+        const drum = freq < 160 ? 'kick'
+          : freq < 250 ? 'snare'
+            : freq < 400 ? 'closedHat'
+              : freq < 600 ? 'openHat'
+                : 'tom';
+        playDrum(drum);
+        break;
+      }
+
+      case 'Dhol': {
+        const stroke = freq < 300 ? 'ge'
+          : freq < 400 ? 'dha'
+            : freq < 600 ? 'na'
+              : 'tak';
+        playDholStroke(stroke);
+        break;
+      }
+
+      case 'Lead Synth': {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2500, now);
+        filter.frequency.exponentialRampToValueAtTime(600, now + 0.6);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.7);
+        break;
+      }
+
+      case 'Supersaw': {
+        [-10, 0, 10].forEach(detune => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.detune.setValueAtTime(detune, now);
+
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now); osc.stop(now + 0.9);
+        });
+        break;
+      }
+
+      case 'Cinematic Strings': {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const lfo = audioCtx.createOscillator();
+        const lfoGain = audioCtx.createGain();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 1.002, now);
+
+        lfo.frequency.setValueAtTime(5, now);
+        lfoGain.gain.setValueAtTime(3, now);
+        lfo.connect(osc1.frequency);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+        osc1.connect(gain); osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        lfo.start(now); osc1.start(now); osc2.start(now);
+        lfo.stop(now + 2.0); osc1.stop(now + 2.0); osc2.stop(now + 2.0);
+        break;
+      }
+
+      case 'Brass Section': {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(300, now);
+        filter.frequency.linearRampToValueAtTime(3000, now + 0.1);
+        filter.frequency.exponentialRampToValueAtTime(800, now + 0.8);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.8);
+        break;
+      }
+
+      case 'Ambient Pad': {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.4);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 2.5);
+        break;
+      }
+
+      case 'Sitar': {
+        const osc = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(freq * 3, now);
+        filter.Q.value = 8;
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.9);
+        break;
+      }
+
+      case 'Harmonium': {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'square';
+        osc2.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(freq, now);
+        osc2.frequency.setValueAtTime(freq * 2, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, now);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
+        osc1.connect(filter); osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(now); osc2.start(now);
+        osc1.stop(now + 1.2); osc2.stop(now + 1.2);
+        break;
+      }
+
+      case 'Arp Sequence': {
+        [0, 0.1, 0.2].forEach((delay, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq * (1 + idx * 0.25), now + delay);
+
+          gain.gain.setValueAtTime(0.15, now + delay);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + delay);
+          osc.stop(now + delay + 0.15);
+        });
+        break;
+      }
+    }
+  }
+
+  const drumTrackNames = {
+    kick: 'Kick',
+    snare: 'Snare',
+    closedHat: 'Closed hat',
+    openHat: 'Open hat'
+  };
+
+  function renderDrumSequencer() {
+    const stepGrid = document.getElementById('stepGrid');
+    stepGrid.innerHTML = Object.entries(drumTrackNames).map(([track, label]) => {
+      const steps = Array.from({ length: 16 }, (_, step) => {
+        const enabled = projectPattern[track].includes(step);
+        const beatMarker = step % 4 === 0 ? ' ring-1 ring-orange-500/40' : '';
+        return `<button type="button" data-step="${step}" aria-label="${label} step ${step + 1}" aria-pressed="${enabled}" onclick="toggleDrumStep('${track}', ${step})" class="h-7 min-w-6 flex-1 rounded ${enabled ? 'bg-orange-500' : 'bg-purple-950'}${beatMarker} hover:bg-orange-400 transition-colors"></button>`;
+      }).join('');
+      return `<div class="flex min-w-[510px] items-center gap-2"><span class="w-20 shrink-0 text-[10px] text-zinc-300">${label}</span><div class="flex flex-1 gap-1">${steps}</div></div>`;
+    }).join('');
+  }
+
+  function toggleDrumStep(track, step) {
+    const steps = new Set(projectPattern[track]);
+    if (steps.has(step)) steps.delete(step);
+    else steps.add(step);
+    projectPattern[track] = [...steps].sort((a, b) => a - b);
+    renderDrumSequencer();
+  }
+
+  function setTempo(value) {
+    const tempoInput = document.getElementById('bpmInput');
+    const tempo = Math.max(40, Math.min(240, Math.round(Number(value) || 96)));
+    tempoInput.value = tempo;
+    document.querySelector('#studioForm input[name="bpm"]').value = tempo;
+    document.getElementById('transportSeek').max = Math.ceil(17 * 240 / tempo);
+    if (isPlaying) {
+      clearInterval(playbackInterval);
+      playbackInterval = setInterval(playbackTick, 60000 / tempo / 4);
+    }
+  }
+
+  function getTempo() {
+    const value = Number(document.getElementById('bpmInput').value);
+    return Math.max(40, Math.min(240, Math.round(Number.isFinite(value) && value > 0 ? value : 96)));
+  }
+
+  function playSequencerStep() {
+    const step = sequencerStep;
+    Object.keys(drumTrackNames).forEach(track => {
+      if (projectPattern[track].includes(step)) playDrum(track);
+    });
+
+    if (document.getElementById('metronomeToggle').checked && step % 4 === 0) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const now = audioCtx.currentTime;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(step === 0 ? 1100 : 780, now);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    }
+
+    document.querySelectorAll('#stepGrid button').forEach(button => {
+      const isCurrentStep = Number(button.dataset.step) === step;
+      button.classList.toggle('ring-2', isCurrentStep);
+      button.classList.toggle('ring-white', isCurrentStep);
+    });
+    sequencerStep = (sequencerStep + 1) % 16;
+    if (sequencerStep === 0) {
+      currentMeasure = currentMeasure >= 17 ? 1 : currentMeasure + 1;
+      document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    }
+  }
+
+  function playbackTick() {
+    if (!isPlaying) return;
+    const stepMilliseconds = 60000 / getTempo() / 4;
+    playSequencerStep();
+    playbackElapsedMs += stepMilliseconds;
+    secondsCount = Math.floor(playbackElapsedMs / 1000);
+    const minutes = Math.floor(secondsCount / 60);
+    const seconds = secondsCount % 60;
+    document.getElementById('transportTime').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    document.getElementById('transportSeek').value = Math.min(Number(document.getElementById('transportSeek').max), secondsCount);
+  }
+
+  function seekTransport(seconds) {
+    const seek = document.getElementById('transportSeek');
+    const position = Math.max(0, Math.min(Number(seconds) || 0, Number(seek.max)));
+    const secondsPerBar = 240 / getTempo();
+    const secondsIntoBar = position % secondsPerBar;
+    playbackElapsedMs = position * 1000;
+    secondsCount = Math.floor(position);
+    currentMeasure = Math.min(17, Math.floor(position / secondsPerBar) + 1);
+    sequencerStep = Math.floor(secondsIntoBar / (secondsPerBar / 16)) % 16;
+    seek.value = position;
+    document.getElementById('measureCounter').innerText = `BAR ${String(currentMeasure).padStart(3, '0')}`;
+    document.getElementById('transportTime').innerText = `${String(Math.floor(secondsCount / 60)).padStart(2, '0')}:${String(secondsCount % 60).padStart(2, '0')}`;
+  }
+
+  function selectInstrument(tabEl, name) {
+    activeInstrument = name;
+    const drumPads = document.getElementById('drumPads');
+    const dholPads = document.getElementById('dholPads');
+    const drumSequencer = document.getElementById('drumSequencer');
+    document.querySelectorAll('.vst-tab').forEach(t => {
+      t.classList.remove('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
+      t.classList.add('hover:text-white', 'transition-colors');
+    });
+    tabEl.classList.add('text-white', 'font-bold', 'border-b-2', 'border-orange-400', 'pb-1');
+    tabEl.classList.remove('hover:text-white', 'transition-colors');
+    drumPads.classList.toggle('hidden', name !== 'Trap Drums');
+    dholPads.classList.toggle('hidden', name !== 'Dhol');
+    drumSequencer.classList.toggle('hidden', name !== 'Trap Drums');
+    if (soundfontPrograms[name]) {
+      document.getElementById('instrumentStatus').innerText = `${name} selected · Loading realistic instrument samples…`;
+      loadSoundfont(name).then(() => {
+        if (activeInstrument === name) {
+          document.getElementById('instrumentStatus').innerText = `${name} samples ready · Click keys or use A–L to play`;
+        }
+      }).catch(error => {
+        console.error(error);
+        if (activeInstrument === name) {
+          document.getElementById('instrumentStatus').innerText = `${name} samples unavailable; built-in sound remains available offline.`;
+        }
+      });
+    } else {
+      document.getElementById('instrumentStatus').innerText = name === 'Trap Drums'
+        ? 'Trap Drums selected · Pads or A kick, S snare, D closed hat, F open hat, G tom'
+        : name === 'Dhol'
+            ? 'Punjabi Dhol selected · Play Dha, Ge, Na, and Tak pads or use A, S, D, F'
+          : `${name} selected · Click keys or use A–L to play`;
+    }
+    document.getElementById('dawStatusText').innerText = `🔥 Dragon Fire Studio Session • Active Instrument: ${name}`;
+  }
+
+  function togglePlay() {
+    initAudio();
+    const playBtn = document.getElementById('playBtn');
+    const stateEl = document.getElementById('transportState');
+    const led = document.getElementById('transportLed');
+    const leftReel = document.getElementById('leftTapeReel');
+    const rightReel = document.getElementById('rightTapeReel');
+
+    if (!isPlaying) {
+      isPlaying = true;
+      playBtn.innerText = '⏸';
+      stateEl.innerText = 'PLAY';
+      led.classList.remove('bg-orange-400');
+      led.classList.add('bg-orange-500', 'animate-pulse');
+      leftReel.classList.add('spinning');
+      rightReel.classList.add('spinning');
+
+      const tempo = getTempo();
+      document.getElementById('bpmInput').value = tempo;
+      document.querySelector('#studioForm input[name="bpm"]').value = tempo;
+      const stepMilliseconds = 60000 / tempo / 4;
+      playSequencerStep();
+      playbackInterval = setInterval(playbackTick, stepMilliseconds);
+    } else {
+      stopTransport();
+    }
+  }
+
+  function stopTransport() {
+    isPlaying = false;
+    clearInterval(playbackInterval);
+    document.getElementById('playBtn').innerText = '▶';
+    document.getElementById('transportState').innerText = 'STOP';
+    const led = document.getElementById('transportLed');
+    led.classList.remove('bg-orange-500', 'animate-pulse');
+    led.classList.add('bg-orange-400');
+    document.getElementById('leftTapeReel').classList.remove('spinning');
+    document.getElementById('rightTapeReel').classList.remove('spinning');
+    currentMeasure = 1;
+    secondsCount = 0;
+    playbackElapsedMs = 0;
+    sequencerStep = 0;
+    document.getElementById('measureCounter').innerText = 'BAR 001';
+    document.getElementById('transportTime').innerText = '00:00';
+    document.getElementById('transportSeek').value = 0;
+  }
+
+  function rewindTransport() {
+    seekTransport(playbackElapsedMs / 1000 - (4 * 240 / getTempo()));
+  }
+
+  function fastForward() {
+    seekTransport(playbackElapsedMs / 1000 + (4 * 240 / getTempo()));
+  }
+
+  function toggleMute(btn) {
+    const isMuted = btn.getAttribute('aria-pressed') === 'true';
+    btn.setAttribute('aria-pressed', !isMuted);
+    if (!isMuted) {
+      btn.classList.add('bg-red-950', 'border-red-600', 'text-red-300');
+      btn.classList.remove('bg-purple-950', 'text-purple-300');
+    } else {
+      btn.classList.remove('bg-red-950', 'border-red-600', 'text-red-300');
+      btn.classList.add('bg-purple-950', 'text-purple-300');
+    }
+  }
+
+  async function toggleMic() {
+    const micButton = document.getElementById('micBtn');
+    if (micRecorder?.state === 'recording') {
+      micRecorder.stop();
+      micButton.title = 'Start microphone recording';
+      micButton.classList.remove('bg-red-950', 'border-red-600');
+      micButton.classList.add('bg-orange-950/80', 'border-orange-600/40');
+      document.getElementById('projectStatus').innerText = 'Finishing microphone recording…';
+      return;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      document.getElementById('projectStatus').innerText = 'Microphone recording is not supported by this browser.';
+      alert('Microphone recording requires a supported browser and a secure connection (localhost or HTTPS).');
+      return;
+    }
+
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus']
+        .find(type => MediaRecorder.isTypeSupported(type));
+      micRecorder = mimeType
+        ? new MediaRecorder(micStream, { mimeType })
+        : new MediaRecorder(micStream);
+      micChunks = [];
+      micRecorder.ondataavailable = event => {
+        if (event.data.size > 0) micChunks.push(event.data);
+      };
+      micRecorder.onerror = event => {
+        console.error('Microphone recording failed.', event.error);
+        document.getElementById('projectStatus').innerText = 'Microphone recording failed. Check browser microphone permissions.';
+      };
+      micRecorder.onstop = () => {
+        const recording = new Blob(micChunks, { type: micRecorder.mimeType || 'audio/webm' });
+        micStream?.getTracks().forEach(track => track.stop());
+        micStream = null;
+        if (recording.size === 0) {
+          document.getElementById('projectStatus').innerText = 'The microphone recording was empty.';
+          return;
+        }
+        if (micRecordingUrl) URL.revokeObjectURL(micRecordingUrl);
+        micRecordingUrl = URL.createObjectURL(recording);
+        const download = document.getElementById('micDownload');
+        download.href = micRecordingUrl;
+        download.download = `magical-flow-mic-take.${recording.type.includes('ogg') ? 'ogg' : 'webm'}`;
+        download.classList.remove('hidden');
+        document.getElementById('projectStatus').innerText = 'Microphone take ready to download.';
+      };
+      micRecorder.start();
+      micButton.title = 'Stop microphone recording';
+      micButton.classList.remove('bg-orange-950/80', 'border-orange-600/40');
+      micButton.classList.add('bg-red-950', 'border-red-600');
+      document.getElementById('projectStatus').innerText = 'Recording from your microphone…';
+    } catch (error) {
+      console.error('Could not start microphone recording.', error);
+      micStream?.getTracks().forEach(track => track.stop());
+      micStream = null;
+      document.getElementById('projectStatus').innerText = 'Microphone access was denied or unavailable.';
+      alert('Could not start microphone recording. Allow microphone access in your browser and try again.');
+    }
+  }
+
+  function toggleSwitch(btn) {
+    btn.classList.toggle('justify-end');
+    btn.classList.toggle('justify-start');
+  }
+
+  function triggerAiAssist() {
+    const promptVal = document.getElementById('aiPromptInput').value;
+    alert(promptVal ? `AI Assist processing: "${promptVal}"` : "Please type a prompt in the AI Assist box first!");
+  }
+
+  function createProjectData() {
+    return {
+      version: 1,
+      bpm: getTempo(),
+      instrument: activeInstrument,
+      pattern: projectPattern,
+      metronome: document.getElementById('metronomeToggle').checked
+    };
+  }
+
+  function saveProject() {
+    try {
+      localStorage.setItem('magicalFlowProStudioProject', JSON.stringify(createProjectData()));
+      document.getElementById('projectStatus').innerText = 'Project saved in this browser.';
+    } catch (error) {
+      console.error('Could not save the studio project.', error);
+      document.getElementById('projectStatus').innerText = 'Save failed. Check browser storage permissions.';
+      alert('The project could not be saved in this browser. Please check its storage settings.');
+    }
+  }
+
+  function exportProject() {
+    const file = new Blob([JSON.stringify(createProjectData(), null, 2)], { type: 'application/json' });
+    const downloadUrl = URL.createObjectURL(file);
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'magical-flow-pro-studio-project.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+    document.getElementById('projectStatus').innerText = 'Project settings exported as JSON.';
+  }
+
+  function loadSavedProject() {
+    try {
+      const saved = localStorage.getItem('magicalFlowProStudioProject');
+      if (!saved) return;
+      const project = JSON.parse(saved);
+      if (project.version !== 1 || !Number.isFinite(Number(project.bpm))) {
+        throw new Error('The saved project has an unsupported or invalid format.');
+      }
+
+      setTempo(project.bpm);
+      if (project.pattern && typeof project.pattern === 'object') {
+        Object.keys(drumTrackNames).forEach(track => {
+          const steps = project.pattern[track];
+          if (Array.isArray(steps)) {
+            projectPattern[track] = [...new Set(steps.filter(step => Number.isInteger(step) && step >= 0 && step < 16))];
+          }
+        });
+      }
+      document.getElementById('metronomeToggle').checked = project.metronome === true;
+      renderDrumSequencer();
+
+      if (typeof project.instrument === 'string') {
+        const tab = [...document.querySelectorAll('.vst-tab')].find(item =>
+          item.textContent.trim() === project.instrument ||
+          (project.instrument === 'Dhol' && item.textContent.trim() === 'Punjabi Dhol')
+        );
+        if (tab) selectInstrument(tab, project.instrument);
+      }
+      document.getElementById('projectStatus').innerText = 'Saved project restored from this browser.';
+    } catch (error) {
+      console.error('Could not restore the saved studio project.', error);
+      document.getElementById('projectStatus').innerText = 'Saved project could not be restored; use Export Project to keep a backup.';
+    }
+  }
+
+  const keyMap = { 'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23, 'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33 };
+  const drumKeyMap = { 'a': 'kick', 's': 'snare', 'd': 'closedHat', 'f': 'openHat', 'g': 'tom' };
+  const dholKeyMap = { 'a': 'dha', 's': 'ge', 'd': 'na', 'f': 'tak' };
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toLowerCase();
+    if (activeInstrument === 'Trap Drums' && drumKeyMap[key]) {
+      playDrum(drumKeyMap[key]);
+      return;
+    }
+    if (activeInstrument === 'Dhol' && dholKeyMap[key]) {
+      playDholStroke(dholKeyMap[key]);
+      return;
+    }
+    if (keyMap[key]) {
+      playActiveInstrument(keyMap[key]);
+    }
+  });
+
+  renderDrumSequencer();
+  setTempo(getTempo());
+  loadSavedProject();
+  document.getElementById('bpmInput').addEventListener('change', event => setTempo(event.target.value));
+  document.getElementById('transportSeek').addEventListener('input', event => seekTransport(event.target.value));
+</script>
+  </body>
+</html>
