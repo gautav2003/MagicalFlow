@@ -215,7 +215,7 @@
           <div class="space-y-2">
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
-            <button type="button" onclick="setPrompt('Original Bollywood sci-fi villain instrumental, 68 BPM, B Phrygian: thumping 808 sub-bass pulse, dissonant organ, dark strings, shadow choir, rising brass and huge drums. Eerie intro, tense verses, powerful climax, haunted bridge, bigger final climax, long fade. Distinct original motif, dramatic dynamics, polished full three-minute song. Instrumental only; no lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
+            <button type="button" onclick="setPrompt('Original Bollywood sci-fi villain instrumental, 68 BPM, B Phrygian: thumping 808 sub, dissonant organ, dark strings, shadow choir, ghostly pitch bends, eerie whispers, rising filtered-noise sweeps, brass and huge drums. Tense verses, powerful climax, haunted bridge, bigger finale, long fade. Distinct original motif, dramatic dynamics, polished three-minute song. Instrumental only; no lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
             <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
@@ -1287,6 +1287,70 @@
         punch.stop(now + 0.14);
       }
 
+      function playDarkAmbientDread(frequency, duration, volume, scheduledTime) {
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+        const root = Math.max(50, Math.min(500, frequency));
+        const voices = [
+          { ratio: 1, waveform: "triangle", detune: -7 },
+          { ratio: Math.pow(2, 1 / 12), waveform: "sine", detune: 6 },
+          { ratio: Math.SQRT2, waveform: "sine", detune: -4 },
+        ];
+
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(900, now);
+        filter.frequency.linearRampToValueAtTime(1500, now + duration * 0.55);
+        filter.Q.setValueAtTime(3.5, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + Math.min(0.22, duration * 0.25));
+        gain.gain.setValueAtTime(volume * 0.72, now + duration * 0.55);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+
+        voices.forEach(({ ratio, waveform, detune }) => {
+          const oscillator = previewAudioContext.createOscillator();
+          oscillator.type = waveform;
+          oscillator.frequency.setValueAtTime(root * ratio, now);
+          oscillator.detune.setValueAtTime(detune, now);
+          oscillator.connect(filter);
+          activeSources.add(oscillator);
+          oscillator.onended = () => activeSources.delete(oscillator);
+          oscillator.start(now);
+          oscillator.stop(now + duration);
+        });
+      }
+
+      function playDarkAmbientRiser(duration, volume, scheduledTime) {
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const sampleCount = Math.max(1, Math.floor(previewAudioContext.sampleRate * duration));
+        const noiseBuffer = previewAudioContext.createBuffer(1, sampleCount, previewAudioContext.sampleRate);
+        const noiseData = noiseBuffer.getChannelData(0);
+        for (let index = 0; index < sampleCount; index += 1) {
+          noiseData[index] = Math.random() * 2 - 1;
+        }
+
+        const source = previewAudioContext.createBufferSource();
+        const filter = previewAudioContext.createBiquadFilter();
+        const gain = previewAudioContext.createGain();
+        source.buffer = noiseBuffer;
+        filter.type = "bandpass";
+        filter.Q.setValueAtTime(1.6, now);
+        filter.frequency.setValueAtTime(180, now);
+        filter.frequency.exponentialRampToValueAtTime(2600, now + duration * 0.88);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(volume, now + duration * 0.82);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(previewMasterGain);
+        activeSources.add(source);
+        source.onended = () => activeSources.delete(source);
+        source.start(now);
+        source.stop(now + duration);
+      }
+
       function playPreviewDrum(frequency, duration, volume, scheduledTime) {
         const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
         const style = getPreviewSettings().style;
@@ -1668,6 +1732,21 @@
               "synth",
               scheduledTime
             );
+          }
+
+          if (!isIntro && !isOutro && [7, 15].includes(phraseStep)) {
+            const dreadFrequency = track.root *
+              Math.pow(2, (harmony.rootSemitones + (isBridge ? 12 : 19)) / 12);
+            playDarkAmbientDread(
+              dreadFrequency,
+              halfBeatSeconds * (isVillainPeak ? 3.2 : 2.8),
+              isVillainPeak ? 0.026 : 0.018,
+              scheduledTime
+            );
+          }
+
+          if (isBuild && phraseStep === 12) {
+            playDarkAmbientRiser(halfBeatSeconds * 5, 0.012, scheduledTime);
           }
 
           if (isBuild && phraseStep === 15) {
