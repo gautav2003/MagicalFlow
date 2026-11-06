@@ -215,7 +215,7 @@
           <div class="space-y-2">
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
-            <button type="button" onclick="setPrompt('Original Bollywood sci-fi villain instrumental, 68 BPM, B Phrygian: deep electronic pulse, sub-bass, dissonant organ, dark strings, shadow choir, rising brass and huge drums. Eerie intro, tense verses, powerful climax, haunted bridge, bigger final climax, long fade. Distinct original motif, dramatic dynamics, polished full three-minute song. Instrumental only; no lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
+            <button type="button" onclick="setPrompt('Original Bollywood sci-fi villain instrumental, 68 BPM, B Phrygian: thumping 808 sub-bass pulse, dissonant organ, dark strings, shadow choir, rising brass and huge drums. Eerie intro, tense verses, powerful climax, haunted bridge, bigger final climax, long fade. Distinct original motif, dramatic dynamics, polished full three-minute song. Instrumental only; no lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
             <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
@@ -345,7 +345,7 @@
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-white">Dark Ambient</h3>
-                <p class="text-[11px] leading-4 text-zinc-400 mt-1">68 BPM · B Phrygian · 3:00 · Pipe organ, low strings, choir, brass, sub-bass and ominous synth</p>
+                <p class="text-[11px] leading-4 text-zinc-400 mt-1">68 BPM · B Phrygian · 3:00 · Thumping 808 sub, pipe organ, low strings, choir, brass and ominous synth</p>
               </div>
               <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -504,7 +504,7 @@
           wave: "sine",
           style: "ambient",
           melody: [0, 6, 1, 8, 3, 7, 4, 0],
-          arrangement: ["Pad", "Strings", "Organ", "Brass", "Bass", "Synth", "Vocals"],
+          arrangement: ["Pad", "Strings", "Organ", "Brass", "Synth", "Vocals"],
           darkAmbientArrangement: true,
         },
         "Heartful Magical Dream": {
@@ -633,7 +633,6 @@
         strings: { gain: 0.64, pan: -0.12, lowpass: 3000, highpass: 52, attack: 0.16, release: 0.72 },
         organ: { gain: 0.50, pan: 0.08, lowpass: 2300, highpass: 42, attack: 0.08, release: 0.65 },
         brass: { gain: 0.34, pan: 0.12, lowpass: 2100, highpass: 65, attack: 0.10, release: 0.48 },
-        bass: { gain: 0.88, pan: 0, lowpass: 480, highpass: 24, attack: 0.025, release: 0.38 },
         synth: { gain: 0.38, pan: 0, lowpass: 1250, highpass: 36, attack: 0.08, release: 0.52 },
         vocals: { gain: 0.38, pan: 0.02, lowpass: 2000, highpass: 65, attack: 0.28, release: 0.82 },
       };
@@ -1251,6 +1250,43 @@
       }
 
       // Procedural percussion and sampled instrument playback
+      function playDarkAmbient808(frequency, duration, volume, scheduledTime) {
+        const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
+        const fundamental = Math.max(28, Math.min(60, frequency));
+        const sub = previewAudioContext.createOscillator();
+        const subGain = previewAudioContext.createGain();
+        const punch = previewAudioContext.createOscillator();
+        const punchGain = previewAudioContext.createGain();
+
+        sub.type = "sine";
+        sub.frequency.setValueAtTime(fundamental * 2.8, now);
+        sub.frequency.exponentialRampToValueAtTime(fundamental, now + 0.11);
+        subGain.gain.setValueAtTime(0.0001, now);
+        subGain.gain.linearRampToValueAtTime(volume, now + 0.008);
+        subGain.gain.exponentialRampToValueAtTime(Math.max(volume * 0.42, 0.0001), now + 0.15);
+        subGain.gain.setValueAtTime(Math.max(volume * 0.42, 0.0001), now + 0.15);
+        subGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        sub.connect(subGain);
+        subGain.connect(bassBusGain || previewMasterGain);
+        activeSources.add(sub);
+        sub.onended = () => activeSources.delete(sub);
+        sub.start(now);
+        sub.stop(now + duration);
+
+        punch.type = "triangle";
+        punch.frequency.setValueAtTime(fundamental * 2.4, now);
+        punch.frequency.exponentialRampToValueAtTime(fundamental * 1.65, now + 0.07);
+        punchGain.gain.setValueAtTime(0.0001, now);
+        punchGain.gain.linearRampToValueAtTime(volume * 0.32, now + 0.004);
+        punchGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+        punch.connect(punchGain);
+        punchGain.connect(bassBusGain || previewMasterGain);
+        activeSources.add(punch);
+        punch.onended = () => activeSources.delete(punch);
+        punch.start(now);
+        punch.stop(now + 0.14);
+      }
+
       function playPreviewDrum(frequency, duration, volume, scheduledTime) {
         const now = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
         const style = getPreviewSettings().style;
@@ -1576,23 +1612,28 @@
           }
 
           if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
-            playPreviewTone(
+            playDarkAmbient808(
               harmony.rootFrequency / 4,
               halfBeatSeconds * (isVillainPeak ? 2.6 : 3.2),
-              "sine",
               isVillainPeak ? 0.10 : 0.072,
-              "bass",
+              scheduledTime
+            );
+          }
+
+          if (!isIntro && !isOutro && [4, 12].includes(phraseStep)) {
+            playDarkAmbient808(
+              harmony.rootFrequency / 4,
+              halfBeatSeconds * 1.7,
+              isVillainPeak ? 0.15 : 0.11,
               scheduledTime
             );
           }
 
           if (!isIntro && !isOutro && [2, 6, 10, 14].includes(phraseStep)) {
-            playPreviewTone(
+            playDarkAmbient808(
               harmony.rootFrequency / 4,
-              halfBeatSeconds * 0.72,
-              "sine",
+              halfBeatSeconds * 0.82,
               isVillainPeak ? 0.065 : 0.045,
-              "bass",
               scheduledTime
             );
           }
