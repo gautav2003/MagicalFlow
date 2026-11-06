@@ -215,7 +215,7 @@
           <div class="space-y-2">
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
-            <button type="button" onclick="setPrompt('Original Bollywood-cinematic villain instrumental, 68 BPM, B Phrygian: deep electronic pulse, sub-bass, dissonant pipe organ, dark string ostinato, shadow choir, rising brass, huge cinematic drums. Eerie sparse intro, tense verses building to a powerful orchestral climax, haunted bridge, bigger final climax, then a long fade. Memorable original motif, dramatic dynamics, polished full three-minute instrumental song. No lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
+            <button type="button" onclick="setPrompt('Original Bollywood sci-fi villain instrumental, 68 BPM, B Phrygian: deep electronic pulse, sub-bass, dissonant organ, dark strings, shadow choir, rising brass and huge drums. Eerie intro, tense verses, powerful climax, haunted bridge, bigger final climax, long fade. Distinct original motif, dramatic dynamics, polished full three-minute song. Instrumental only; no lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
             <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
@@ -494,7 +494,7 @@
       const tracks = {
         "Late Night Lo-Fi": { duration: 204, bpm: 90, root: 220, scale: [0, 3, 5, 7, 10, 12, 15, 17], chord: [0, 3, 7], wave: "triangle", style: "lofi", melody: [0, 2, 4, 2, 1, 3, 5, 3] },
         "Morning Jazz": { duration: 178, bpm: 110, root: 261.63, scale: [0, 2, 4, 7, 9, 12, 14, 16], chord: [0, 4, 7], wave: "sine", style: "jazz", melody: [0, 2, 4, 5, 3, 2, 1, 4] },
-        // DARK AMBIENT VILLAIN TRACK: dedicated B-Phrygian score and three-minute arrangement.
+        // DARK AMBIENT VILLAIN TRACK: original B-Phrygian sci-fi score and three-minute arrangement.
         "Dark Ambient": {
           duration: 180,
           bpm: 68,
@@ -503,7 +503,7 @@
           chord: [0, 3, 6],
           wave: "sine",
           style: "ambient",
-          melody: [0, 6, 3, 1, 7, 4, 2, 0],
+          melody: [0, 6, 1, 8, 3, 7, 4, 0],
           arrangement: ["Pad", "Strings", "Organ", "Brass", "Bass", "Synth", "Vocals"],
           darkAmbientArrangement: true,
         },
@@ -749,6 +749,15 @@
       // Song sections, harmony and Punjabi mix helpers
       function getSongSection(duration) {
         const progress = timerSeconds / duration;
+        if (tracks[selectedTrack]?.darkAmbientArrangement) {
+          if (progress < 0.10) return "intro";
+          if (progress < 0.30) return "verse";
+          if (progress < 0.43) return "build";
+          if (progress < 0.62) return "hook";
+          if (progress < 0.75) return "bridge";
+          if (progress < 0.91) return "final-hook";
+          return "outro";
+        }
         if (progress < 0.12) return "intro";
         if (progress < 0.36) return "verse";
         if (progress < 0.48) return "build";
@@ -1466,6 +1475,8 @@
         const isBridge = section === "bridge";
         const isIntro = section === "intro";
         const isOutro = section === "outro";
+        const isVillainFinale = track.darkAmbientArrangement && section === "final-hook";
+        const isVillainPeak = isHook || isVillainFinale;
         const isSparseMood = ["Chill", "Focused"].includes(track.mood);
         const melodyEvery = isHook || track.mood === "Energetic" ? 1 : isBuild ? 2 : isIntro || isOutro || isSparseMood ? 4 : 2;
         const phraseStep = step % 16;
@@ -1474,7 +1485,7 @@
         if (track.darkAmbientArrangement) {
           const chordNotes = harmony.chordFrequencies;
           const chordSteps = [0, 8].includes(phraseStep);
-          const melodyPattern = isHook
+          const melodyPattern = isVillainPeak
             ? [0, 2, 4, 6, 8, 10, 12, 14]
             : isBuild
               ? [0, 4, 8, 12]
@@ -1486,7 +1497,7 @@
 
           if (chordSteps) {
             const chordDuration = halfBeatSeconds * (isOutro ? 7 : isIntro ? 6 : 8);
-            const chordVolume = isIntro || isOutro ? 0.012 : isHook ? 0.023 : isBuild ? 0.019 : 0.016;
+            const chordVolume = isIntro || isOutro ? 0.012 : isVillainPeak ? 0.025 : isBuild ? 0.019 : 0.016;
             const notes = isOutro
               ? [track.root, track.root * Math.pow(2, 3 / 12), track.root * Math.pow(2, 7 / 12)]
               : chordNotes;
@@ -1515,13 +1526,13 @@
                 chordNotes[0] / 2,
                 halfBeatSeconds * 5,
                 "sine",
-                isHook ? 0.026 : 0.020,
+                isVillainPeak ? 0.029 : 0.020,
                 "organ",
                 scheduledTime + halfBeatSeconds * 0.08
               );
             }
 
-            if (isHook) {
+            if (isVillainPeak) {
               playPreviewTone(
                 chordNotes[2],
                 halfBeatSeconds * 2.2,
@@ -1548,7 +1559,7 @@
               leadNote,
               leadDuration,
               "sine",
-              isHook ? 0.038 : isBuild ? 0.030 : 0.021,
+              isVillainPeak ? 0.041 : isBuild ? 0.030 : 0.021,
               "organ",
               scheduledTime
             );
@@ -1557,7 +1568,7 @@
                 leadNote,
                 leadDuration * 1.08,
                 "triangle",
-                isHook ? 0.032 : 0.021,
+                isVillainPeak ? 0.034 : 0.021,
                 "strings",
                 scheduledTime + halfBeatSeconds * 0.08
               );
@@ -1567,9 +1578,9 @@
           if (!isIntro && !isOutro && [0, 8].includes(phraseStep)) {
             playPreviewTone(
               harmony.rootFrequency / 4,
-              halfBeatSeconds * (isHook ? 2.6 : 3.2),
+              halfBeatSeconds * (isVillainPeak ? 2.6 : 3.2),
               "sine",
-              isHook ? 0.095 : 0.072,
+              isVillainPeak ? 0.10 : 0.072,
               "bass",
               scheduledTime
             );
@@ -1580,8 +1591,29 @@
               harmony.rootFrequency / 4,
               halfBeatSeconds * 0.72,
               "sine",
-              isHook ? 0.062 : 0.045,
+              isVillainPeak ? 0.065 : 0.045,
               "bass",
+              scheduledTime
+            );
+          }
+
+          const electronicPulseSteps = isVillainPeak
+            ? [0, 3, 6, 8, 11, 14]
+            : isBuild
+              ? [0, 6, 10, 14]
+              : isBridge
+                ? [0, 8]
+                : [0, 6, 12];
+          if (!isIntro && !isOutro && electronicPulseSteps.includes(phraseStep)) {
+            const pulseIndex = (step + (isVillainPeak ? 2 : 0)) % track.melody.length;
+            const pulseFrequency = track.root *
+              Math.pow(2, (track.scale[track.melody[pulseIndex]] + harmony.rootSemitones) / 12);
+            playPreviewTone(
+              pulseFrequency,
+              halfBeatSeconds * (isVillainPeak ? 0.62 : 0.48),
+              "sawtooth",
+              isVillainPeak ? 0.032 : isBuild ? 0.024 : 0.018,
+              "synth",
               scheduledTime
             );
           }
@@ -1600,10 +1632,10 @@
           if (isBuild && phraseStep === 15) {
             playPreviewDrum(58, 0.9,             0.075, scheduledTime);
           }
-          if (isHook && [0, 8].includes(phraseStep)) {
-            playPreviewDrum(45, 1.1, 0.095, scheduledTime);
+          if (isVillainPeak && [0, 8].includes(phraseStep)) {
+            playPreviewDrum(45, 1.1, isVillainFinale ? 0.105 : 0.095, scheduledTime);
           }
-          if (isHook && [4, 12].includes(phraseStep)) {
+          if (isVillainPeak && [4, 12].includes(phraseStep)) {
             playPreviewDrum(58, 0.55, 0.052, scheduledTime);
           }
           if (isBridge && phraseStep === 0) {
