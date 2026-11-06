@@ -215,7 +215,7 @@
           <div class="space-y-2">
             <button type="button" onclick="setPrompt('Late night lo-fi with warm keys')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Late night lo-fi with warm keys</button>
             <button type="button" onclick="setPrompt('Upbeat jazzy morning vibes')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Upbeat jazzy morning vibes</button>
-            <button type="button" onclick="setPrompt('Original dark ambient villain score, 68 BPM in B Phrygian, ominous pipe-organ drone, low evolving strings, wordless shadow choir, restrained brass swells, deep sub-bass pulses and a sparse dissonant motif. Build from a spacious, quiet intro into a powerful cinematic climax, strip back for a tense bridge, then resolve into a long fading outro. Instrumental only, polished full three-minute arrangement, no lyrics.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Villain Dark Ambient</button>
+            <button type="button" onclick="setPrompt('Original Bollywood-cinematic villain instrumental, 68 BPM, B Phrygian: deep electronic pulse, sub-bass, dissonant pipe organ, dark string ostinato, shadow choir, rising brass, huge cinematic drums. Eerie sparse intro, tense verses building to a powerful orchestral climax, haunted bridge, bigger final climax, then a long fade. Memorable original motif, dramatic dynamics, polished full three-minute instrumental song. No lyrics or borrowed melodies.')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Cinematic Villain Score</button>
             <button type="button" onclick="setPrompt('Midnight Dholwave: roots-first Punjabi folk and contemporary Punjabi hip-hop, live dhol and dholak lead the groove, warm thumping kick and rounded chord-following sub bass tucked under the dhol, expressive algoza double-flute melody over a gentle drone, bright tumbi and sitar call-and-response, soft harmonium chords, delicate tabla bols and occasional chimta jingles, a sparse ektara-style folk pluck and sarangi ornaments, natural human dynamics, spacious transitions, rich but uncluttered bass, cohesive full-song arrangement, warm polished studio finish')" class="w-full py-2 px-3 ctrl-btn rounded-xl text-xs text-white text-center font-medium transition-all">Midnight Dholwave</button>
           </div>
         </div>
@@ -503,7 +503,7 @@
           chord: [0, 3, 6],
           wave: "sine",
           style: "ambient",
-          melody: [0, 1, 4, 3, 0, 6, 4, 1],
+          melody: [0, 6, 3, 1, 7, 4, 2, 0],
           arrangement: ["Pad", "Strings", "Organ", "Brass", "Bass", "Synth", "Vocals"],
           darkAmbientArrangement: true,
         },
@@ -1575,6 +1575,17 @@
             );
           }
 
+          if (!isIntro && !isOutro && [2, 6, 10, 14].includes(phraseStep)) {
+            playPreviewTone(
+              harmony.rootFrequency / 4,
+              halfBeatSeconds * 0.72,
+              "sine",
+              isHook ? 0.062 : 0.045,
+              "bass",
+              scheduledTime
+            );
+          }
+
           if (isBuild && [12, 14].includes(phraseStep)) {
             playPreviewTone(
               melodyFrequency,
@@ -1589,8 +1600,11 @@
           if (isBuild && phraseStep === 15) {
             playPreviewDrum(58, 0.9,             0.075, scheduledTime);
           }
-          if (isHook && phraseStep === 0) {
+          if (isHook && [0, 8].includes(phraseStep)) {
             playPreviewDrum(45, 1.1, 0.095, scheduledTime);
+          }
+          if (isHook && [4, 12].includes(phraseStep)) {
+            playPreviewDrum(58, 0.55, 0.052, scheduledTime);
           }
           if (isBridge && phraseStep === 0) {
             playPreviewDrum(50, 0.7, 0.050, scheduledTime);
