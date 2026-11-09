@@ -17,8 +17,8 @@
     </div>
     {% endif %}
 
-    <!-- Prototype Helper Badge -->
-    <div class="bg-[#120822] border border-purple-900/60 rounded-xl p-3 text-center space-y-1">
+    <!-- Development Prototype Code Badge -->
+    <div class="bg-[#120822] border border-purple-900/60 rounded-xl p-3 text-center space-y-1 shadow-inner">
         <div class="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Development Prototype Code</div>
         <div class="text-sm font-mono font-bold text-purple-300 tracking-widest">{{ prototype_code }}</div>
         <p class="text-[10px] text-zinc-500">(Also printed in your VS Code terminal console)</p>
@@ -27,7 +27,7 @@
     <form method="POST" class="space-y-4">
         <div>
             <label class="block text-[11px] text-zinc-400 mb-1">Enter 6-Digit Code</label>
-            <input type="text" name="code" required maxlength="6" placeholder="123456" 
+            <input type="text" name="code" required maxlength="6" autofocus placeholder="123456" pattern="[0-9]*" inputmode="numeric"
                 class="w-full bg-[#120822] border border-purple-500/40 rounded-xl px-4 py-3 text-center text-sm font-mono tracking-widest text-white focus:outline-none focus:border-purple-400">
         </div>
 
