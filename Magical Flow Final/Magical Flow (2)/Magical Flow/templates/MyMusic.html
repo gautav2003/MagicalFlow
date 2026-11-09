@@ -351,7 +351,7 @@
           <button type="button" onclick="toggleMuteVolume()" class="text-zinc-300 hover:text-white">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
           </button>
-          <input type="range" id="volumeSlider" min="0" max="100" value="80" oninput="adjustVolume(this.value)" class="w-20 h-1 bg-purple-950 rounded-lg accent-emerald-400 cursor-pointer">
+          <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="adjustVolume(this.value)" class="w-20 h-1 bg-purple-950 rounded-lg accent-emerald-400 cursor-pointer">
           <span class="text-lg" title="Headphone Monitor Active">🎧</span>
         </div>
 
@@ -807,7 +807,7 @@
 
       function toggleMuteVolume() {
         const v = document.getElementById('volumeSlider');
-        v.value = Number(v.value) === 0 ? 80 : 0;
+        v.value = Number(v.value) === 0 ? 100 : 0;
         adjustVolume(v.value);
       }
     </script>

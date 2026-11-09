@@ -14,8 +14,9 @@ from email.mime.multipart import MIMEMultipart
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'magical_flow_super_secret_production_key'
+app.secret_key = os.getenv('SECRET_KEY', 'magical_flow_super_secret_production_key')
 DB_NAME = 'MagicalFlow.db'
+GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:5000/google/callback')
 
 # ==================== OFFICIAL GMAIL SMTP CONFIGURATION (SSL PORT 465) ====================
 SMTP_SERVER = "smtp.gmail.com"
@@ -56,12 +57,17 @@ def send_official_email(recipient_email, subject_text, html_body):
 
 # ==================== OFFICIAL GOOGLE OAUTH CONFIGURATION ====================
 oauth = OAuth(app)
+
+def google_oauth_configured():
+    return bool(os.getenv('GOOGLE_CLIENT_ID') and os.getenv('GOOGLE_CLIENT_SECRET'))
+
 google = oauth.register(
     name='google',
-    client_id=os.getenv("GOOGLE_CLIENT_ID"),
-    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    client_id=os.getenv('GOOGLE_CLIENT_ID'),
+    client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid email profile'}
+    client_kwargs={'scope': 'openid email profile'},
+    redirect_uri=GOOGLE_REDIRECT_URI,
 )
 
 def init_db():
@@ -257,7 +263,10 @@ def reset_password():
 # ==================== OFFICIAL GOOGLE OAUTH ROUTES ====================
 @app.route('/google-login', endpoint='google_login')
 def google_login():
-    redirect_uri = url_for('google_callback', _external=True)
+    if not google_oauth_configured():
+        return redirect(url_for('signin', msg='Google sign-in is not configured.'))
+
+    redirect_uri = GOOGLE_REDIRECT_URI
     return google.authorize_redirect(redirect_uri)
 
 app.add_url_rule('/google-login', endpoint='google_auth', view_func=google_login)
@@ -265,23 +274,26 @@ app.add_url_rule('/google-login', endpoint='google_auth', view_func=google_login
 @app.route('/google/callback')
 def google_callback():
     try:
+        if not google_oauth_configured():
+            return redirect(url_for('signin', msg='Google sign-in is not configured.'))
+
         token = google.authorize_access_token()
         user_info = token.get('userinfo')
-        
+
         if user_info:
             email = user_info['email']
             username = user_info.get('name', email.split('@')[0])
-            
+
             conn = sqlite3.connect(DB_NAME)
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
             user = cursor.fetchone()
-            
+
             if not user:
-                cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
+                cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
                                (username, email, 'GOOGLE_OAUTH_AUTHENTICATED'))
                 conn.commit()
-                
+
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <h2 style="color: #e879f9;">Welcome to Magical Flow, {username}!</h2>
@@ -289,16 +301,16 @@ def google_callback():
                 </div>
                 """
                 send_official_email(email, "Welcome to Magical Flow via Google Sign-In", welcome_html)
-                
+
             conn.close()
 
             session['user'] = username
             session['new_user_name'] = username
             return redirect(url_for('home'))
-            
+
     except Exception as e:
         print(f"[!] Google OAuth Callback Error: {e}")
-        return redirect(url_for('signin', msg="Google authentication failed."))
+        return redirect(url_for('signin', msg='Google authentication failed. Check the Google OAuth client and redirect URI configuration.'))
 
     return redirect(url_for('signin'))
 

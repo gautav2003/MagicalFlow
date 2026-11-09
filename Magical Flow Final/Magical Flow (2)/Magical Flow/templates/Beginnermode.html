@@ -350,11 +350,11 @@
               <button type="button" aria-label="Play or pause Dark Ambient" onclick="togglePlay('Dark Ambient')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
 
-            <!-- Original 80s/90s-inspired synth-pop demo -->
+            <!-- Original romantic dance-pop demo -->
             <div class="inner-card rounded-xl p-4 flex items-center justify-between gap-3">
               <div>
                 <h3 class="font-bold text-sm text-sky-200">Heartful Magical Dream</h3>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">96 BPM · D major · Peaceful tropical dream-pop with kalimba, celesta, soft shaker and gentle steel drums</p>
+                <p class="text-[11px] leading-4 text-zinc-400 mt-1">104 BPM · D major · Dreamy romantic dance-pop with soulful piano, funky bass, bright guitar, warm strings, soft choir and handclaps</p>
               </div>
               <button type="button" aria-label="Play or pause Heartful Magical Dream" onclick="togglePlay('Heartful Magical Dream')" class="track-play-btn transport-btn w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-xs">▶</button>
             </div>
@@ -509,14 +509,14 @@
         },
         "Heartful Magical Dream": {
           duration: 180,
-          bpm: 96,
+          bpm: 104,
           root: 146.83,
           scale: [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17],
           chord: [0, 4, 7],
           wave: "triangle",
-          style: "hiphop",
+          style: "rnb",
           melody: [0, 2, 4, 5, 4, 2, 1, 0, 0, 2, 4, 6, 7, 5, 4, 2],
-          arrangement: ["Synth", "Bass", "Pad", "Piano", "Guitar", "Kalimba", "Celesta", "Steel Drums"],
+          arrangement: ["Synth", "Bass", "Pad", "Piano", "Guitar", "Strings", "Vocals", "Celesta"],
           magicalDreamArrangement: true,
         },
         "Midnight Dholwave": {
@@ -619,13 +619,13 @@
       };
       const magicalDreamInstrumentProfiles = {
         synth: { gain: 0.38, pan: 0.04, lowpass: 3800, highpass: 100, attack: 0.025, release: 0.28 },
-        bass: { gain: 0.54, pan: 0, lowpass: 1200, highpass: 42, attack: 0.012, release: 0.20 },
+        bass: { gain: 0.62, pan: 0, lowpass: 1500, highpass: 42, attack: 0.008, release: 0.16 },
         pad: { gain: 0.48, pan: 0.08, lowpass: 3900, highpass: 150, attack: 0.28, release: 0.72 },
         piano: { gain: 0.42, pan: -0.14, lowpass: 5800, highpass: 120, attack: 0.012, release: 0.32 },
-        guitar: { gain: 0.36, pan: 0.16, lowpass: 5200, highpass: 150, attack: 0.012, release: 0.30 },
-        kalimba: { gain: 0.42, pan: -0.20, lowpass: 5200, highpass: 280, attack: 0.006, release: 0.42 },
+        guitar: { gain: 0.42, pan: 0.16, lowpass: 5200, highpass: 150, attack: 0.006, release: 0.18 },
+        strings: { gain: 0.34, pan: -0.12, lowpass: 5200, highpass: 140, attack: 0.12, release: 0.48 },
+        vocals: { gain: 0.24, pan: 0.08, lowpass: 4800, highpass: 180, attack: 0.18, release: 0.52 },
         celesta: { gain: 0.28, pan: 0.18, lowpass: 5400, highpass: 260, attack: 0.012, release: 0.62 },
-        "steel drums": { gain: 0.22, pan: 0.22, lowpass: 4600, highpass: 250, attack: 0.012, release: 0.42 },
       };
       // DARK AMBIENT VILLAIN TRACK: weighty low end and stronger orchestral layers.
       const darkAmbientInstrumentProfiles = {
@@ -938,7 +938,7 @@
               : getPreviewSettings().moonlitArrangement && getPreviewSettings().style === "bollywood"
               ? "Original instrumental: sampled flute, sitar, santoor, sarangi, harmonium, strings, dholak and soft wordless choir"
               : getPreviewSettings().magicalDreamArrangement
-                ? "Peaceful 96 BPM tropical dream-pop in D major: warm slow-release pads, kalimba, celesta sparkles, soft shaker and gentle steel drums"
+                ? "Dreamy romantic dance-pop in D major: soulful piano, syncopated bass, bright offbeat guitar, warm strings, soft choir harmonies and sparkling celesta"
                 : "Instrumental preview from sampled instruments · vocals are not sung";
         } catch (error) {
           if (requestId !== playbackRequestId) return;
@@ -959,7 +959,7 @@
         if (!previewAudioContext) {
           previewAudioContext = new AudioContextConstructor();
           previewMasterGain = previewAudioContext.createGain();
-          previewMasterGain.gain.value = 0.68;
+          previewMasterGain.gain.value = 0.85;
           bassBusGain = previewAudioContext.createGain();
           bassBusGain.gain.value = 0.90;
           bassBusGain.connect(previewMasterGain);
@@ -1684,6 +1684,10 @@
             );
           }
 
+          if (isHook && [6, 14].includes(phraseStep)) {
+            playPreviewDrum(1450, 0.12, 0.012, scheduledTime + halfBeatSeconds * 0.04);
+          }
+
           if (!isIntro && !isOutro && [4, 12].includes(phraseStep)) {
             playDarkAmbient808(
               harmony.rootFrequency / 4,
@@ -1775,7 +1779,7 @@
               : isIntro || isOutro
                 ? [0, 8]
                 : [0, 4, 8, 12];
-          const bassPattern = isHook || isBuild ? [0, 6, 8, 14] : [0, 8];
+          const bassPattern = isHook || isBuild ? [0, 3, 6, 8, 11, 14] : [0, 8];
           const padVolume = isHook ? 0.018 : isBuild ? 0.016 : 0.014;
 
           if (phraseStep === 0 || phraseStep === 8) {
@@ -1798,6 +1802,16 @@
                   scheduledTime + halfBeatSeconds * 0.16
                 );
               }
+              if (!isIntro && !isOutro && phraseStep === 0) {
+                playPreviewTone(
+                  frequency,
+                  halfBeatSeconds * 7,
+                  "sine",
+                  isHook ? 0.010 : 0.006,
+                  "strings",
+                  scheduledTime + index * 0.035
+                );
+              }
               if (!isIntro && !isOutro) {
                 playPreviewTone(
                   frequency * 2,
@@ -1812,7 +1826,7 @@
           }
 
           if (!isIntro && !isOutro && bassPattern.includes(phraseStep)) {
-            const bassFrequency = [6, 14].includes(phraseStep)
+            const bassFrequency = [3, 6, 11, 14].includes(phraseStep)
               ? harmony.rootFrequency * 0.75
               : harmony.rootFrequency / 2;
             playPreviewTone(
@@ -1835,16 +1849,29 @@
             }
           }
 
-          if (!isOutro && (isHook || isBuild || phraseStep % 4 === 0)) {
+          if (!isOutro && (isHook || isBuild || [1, 5, 9, 13].includes(phraseStep))) {
             const chordIndex = Math.floor(phraseStep / 2) % chordNotes.length;
             playPreviewTone(
               chordNotes[chordIndex] * 2,
-              halfBeatSeconds * (isHook ? 0.72 : 0.52),
+              halfBeatSeconds * (isHook ? 0.42 : 0.34),
               "triangle",
-              isHook ? 0.022 : 0.014,
+              isHook ? 0.026 : 0.016,
               "guitar",
               scheduledTime
             );
+          }
+
+          if (isHook && [0, 8].includes(phraseStep)) {
+            chordNotes.forEach((frequency, index) => {
+              playPreviewTone(
+                frequency,
+                halfBeatSeconds * 5,
+                "sine",
+                0.006,
+                "vocals",
+                scheduledTime + index * 0.045
+              );
+            });
           }
 
           if (leadPattern.includes(phraseStep)) {
@@ -1873,36 +1900,28 @@
           }
 
           if (!isIntro && !isOutro && [2, 6, 10, 14].includes(phraseStep)) {
-            const tropicalNoteIndex = track.melody[(step + 3) % track.melody.length];
-            const tropicalNote = track.root *
-              Math.pow(2, (track.scale[tropicalNoteIndex] + harmony.rootSemitones + 12) / 12);
+            const sparkleNoteIndex = track.melody[(step + 3) % track.melody.length];
+            const sparkleNote = track.root *
+              Math.pow(2, (track.scale[sparkleNoteIndex] + harmony.rootSemitones + 12) / 12);
             playPreviewTone(
-              tropicalNote,
+              sparkleNote,
               halfBeatSeconds * 0.95,
               "triangle",
               isHook ? 0.016 : 0.012,
-              "kalimba",
+              "celesta",
               scheduledTime + halfBeatSeconds * 0.12
             );
-            if ([2, 10].includes(phraseStep)) {
-              playPreviewTone(
-                chordNotes[phraseStep === 2 ? 1 : 2] * 2,
-                halfBeatSeconds * 1.15,
-                "triangle",
-                0.010,
-                "steel drums",
-                scheduledTime + halfBeatSeconds * 0.22
-              );
-            }
           }
 
           if (!isIntro && !isOutro) {
-            const kickSteps = [0, 8];
+            const kickSteps = [0, 4, 8, 12];
             if (kickSteps.includes(phraseStep)) {
               playPreviewDrum(
                 58,
                 0.30,
-                isHook ? 0.032 : isBuild ? 0.028 : 0.024,
+                [4, 12].includes(phraseStep)
+                  ? isHook ? 0.022 : 0.016
+                  : isHook ? 0.032 : isBuild ? 0.028 : 0.024,
                 scheduledTime
               );
             }
