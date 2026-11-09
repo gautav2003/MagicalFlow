@@ -959,7 +959,7 @@
         if (!previewAudioContext) {
           previewAudioContext = new AudioContextConstructor();
           previewMasterGain = previewAudioContext.createGain();
-          previewMasterGain.gain.value = 0.85;
+          previewMasterGain.gain.value = 1;
           bassBusGain = previewAudioContext.createGain();
           bassBusGain.gain.value = 0.90;
           bassBusGain.connect(previewMasterGain);
