@@ -22,6 +22,14 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'magical_flow_super_secret_production_key')
 app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 DB_NAME = 'MagicalFlow.db'
+BEGINNER_TRACK_NAMES = {
+    'Late Night Lo-Fi',
+    'Morning Jazz',
+    'Dark Ambient',
+    'Heartful Magical Dream',
+    'Midnight Dholwave',
+    'Moonlit Bollywood Romance',
+}
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:5000/google/callback')
 
 # ==================== OFFICIAL GMAIL SMTP CONFIGURATION (SSL PORT 465) ====================
@@ -575,7 +583,15 @@ def beginner_mode():
             key=request.form.get('genre', ''),
             duration='',
         )
-    return render_template('Beginnermode.html')
+    embedded_player = request.args.get('embedded') == '1'
+    player_track = request.args.get('track', 'Late Night Lo-Fi')
+    if player_track not in BEGINNER_TRACK_NAMES:
+        player_track = 'Late Night Lo-Fi'
+    return render_template(
+        'Beginnermode.html',
+        embedded_player=embedded_player,
+        player_track=player_track,
+    )
 
 @app.route('/beginner-output')
 @login_required

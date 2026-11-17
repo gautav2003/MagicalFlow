@@ -371,6 +371,16 @@
       </div>
     </div>
 
+    <iframe
+      id="beginnerAudioEngine"
+      title="Beginner Mode audio engine"
+      aria-hidden="true"
+      tabindex="-1"
+      allow="autoplay"
+      src="{{ url_for('beginner_mode', embedded='1') }}"
+      class="fixed -left-2 -top-2 h-px w-px border-0 opacity-0 pointer-events-none"
+    ></iframe>
+
     <!-- Web Audio Engine & Interactive Page JS -->
     <script>
       // Playback state
@@ -383,6 +393,62 @@
       let masterGain = null;
       let currentTrack = { title: 'Late Night Lo-Fi', genre: 'Lo-Fi', bpm: 90, key: 'C Minor', style: 'lofi' };
       let playbackRequestId = 0;
+      const beginnerTrackTitles = new Set([
+        'Late Night Lo-Fi',
+        'Morning Jazz',
+        'Dark Ambient',
+        'Heartful Magical Dream',
+        'Midnight Dholwave',
+        'Moonlit Bollywood Romance'
+      ]);
+      const beginnerAudioEngine = document.getElementById('beginnerAudioEngine');
+      let beginnerAudioEngineReady = false;
+      let pendingBeginnerAudioCommand = null;
+      beginnerAudioEngine.addEventListener('load', () => {
+        if (!beginnerAudioEngine.contentDocument?.getElementById('mainPlayBtn')) {
+          document.getElementById('playerMeta').innerText =
+            'Beginner track playback could not be loaded.';
+          return;
+        }
+        beginnerAudioEngineReady = true;
+        const command = pendingBeginnerAudioCommand || { action: 'get-state' };
+        pendingBeginnerAudioCommand = null;
+        sendBeginnerAudioCommand(command);
+      });
+
+      function sendBeginnerAudioCommand(command) {
+        if (!beginnerAudioEngineReady || !beginnerAudioEngine.contentWindow) {
+          pendingBeginnerAudioCommand = command;
+          return;
+        }
+        beginnerAudioEngine.contentWindow.postMessage(
+          { type: 'beginner-playback-command', ...command },
+          window.location.origin
+        );
+      }
+
+      window.addEventListener('message', (event) => {
+        if (
+          event.source !== beginnerAudioEngine.contentWindow ||
+          event.origin !== window.location.origin ||
+          !event.data ||
+          event.data.type !== 'beginner-playback-status'
+        ) return;
+
+        const { track, isPlaying: beginnerIsPlaying, seconds, duration, bpm } = event.data;
+        currentTrack.title = track;
+        currentTrack.bpm = bpm;
+        currentSeconds = seconds;
+        totalSeconds = duration;
+        document.getElementById('playerTitle').innerText = track;
+        document.getElementById('playerMeta').innerText =
+          `${currentTrack.genre} . ${bpm} BPM . ${currentTrack.key}`;
+        document.getElementById('maxTime').innerText =
+          `${Math.floor(duration / 60)}:${String(duration % 60).padStart(2, '0')}`;
+        document.getElementById('mainPlayBtn').innerText = beginnerIsPlaying ? '⏸' : '▶';
+        updatePlayerUI();
+      });
+
       const soundfontLoadPromises = new Map();
       const soundfontPrograms = {
         piano: 'acoustic_grand_piano',
@@ -845,10 +911,19 @@
 
         currentSeconds = 0;
         updatePlayerUI();
+        if (beginnerTrackTitles.has(currentTrack.title)) {
+          sendBeginnerAudioCommand({ action: 'play', track: currentTrack.title });
+          return;
+        }
         toggleMainPlay();
       }
 
       async function toggleMainPlay() {
+        if (beginnerTrackTitles.has(currentTrack.title)) {
+          sendBeginnerAudioCommand({ action: 'toggle' });
+          return;
+        }
+
         initAudio();
         const btn = document.getElementById('mainPlayBtn');
         if (isPlaying) {
@@ -908,6 +983,9 @@
         clearInterval(beatInterval);
         document.getElementById('mainPlayBtn').innerText = '▶';
         document.getElementById('mainPlayBtn').disabled = false;
+        if (beginnerTrackTitles.has(currentTrack.title)) {
+          sendBeginnerAudioCommand({ action: 'stop' });
+        }
       }
 
       function updatePlayerUI() {
@@ -924,6 +1002,11 @@
         currentSeconds = Math.max(0, Math.min(totalSeconds, currentSeconds + secs));
         updatePlayerUI();
 
+        if (beginnerTrackTitles.has(currentTrack.title)) {
+          sendBeginnerAudioCommand({ action: 'seek', seconds: currentSeconds });
+          return;
+        }
+
         if (isPlaying) {
           clearInterval(beatInterval);
           const beatDuration = 60 / currentTrack.bpm;
@@ -939,6 +1022,9 @@
       function updateSeekPosition(val) {
         currentSeconds = Math.floor((val / 100) * totalSeconds);
         updatePlayerUI();
+        if (beginnerTrackTitles.has(currentTrack.title)) {
+          sendBeginnerAudioCommand({ action: 'seek', seconds: currentSeconds });
+        }
       }
 
       // Archive view, filters, and actions

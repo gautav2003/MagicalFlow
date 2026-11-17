@@ -160,7 +160,11 @@
     </style>
   </head>
   <!-- PAGE LAYOUT -->
-  <body class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white">
+  <body
+    data-embedded-player="{{ 'true' if embedded_player|default(false) else 'false' }}"
+    data-player-track="{{ player_track|default('Late Night Lo-Fi') }}"
+    class="min-h-screen bg-[#05010c] text-white flex flex-col justify-between selection:bg-purple-600 selection:text-white"
+  >
     <!-- Top Navigation Header -->
     <header class="w-full bg-[#05010c] border-b border-purple-950/40 px-6 py-3 flex items-center justify-between z-20">
       <!-- Brand Logo & Name -->
@@ -552,7 +556,8 @@
       let sequenceInterval = null;
       let sequenceStep = 0;
       let nextStepTime = 0;
-      let selectedTrack = "Late Night Lo-Fi";
+      const embeddedAudioPlayer = document.body.dataset.embeddedPlayer === "true";
+      let selectedTrack = document.body.dataset.playerTrack;
       let bpmWasCustomized = false;
       let durationWasCustomized = false;
       let genreWasCustomized = false;
@@ -2687,7 +2692,43 @@
         document.getElementById("playbackSeek").value = timerSeconds;
         document.getElementById("timerDisplay").innerText = `${formatTime(timerSeconds)} / ${formatTime(duration)}`;
         animateWaveform(isPlaying);
+        if (embeddedAudioPlayer && window.parent !== window) {
+          window.parent.postMessage({
+            type: "beginner-playback-status",
+            track: selectedTrack,
+            isPlaying,
+            seconds: timerSeconds,
+            duration,
+            bpm: getPreviewSettings().bpm,
+          }, window.location.origin);
+        }
       }
+
+      window.addEventListener("message", (event) => {
+        if (
+          !embeddedAudioPlayer ||
+          event.source !== window.parent ||
+          event.origin !== window.location.origin ||
+          !event.data ||
+          event.data.type !== "beginner-playback-command"
+        ) return;
+
+        const { action, track, seconds } = event.data;
+        if (action === "play" && Object.prototype.hasOwnProperty.call(tracks, track)) {
+          togglePlay(track);
+        } else if (action === "toggle") {
+          togglePlay();
+        } else if (action === "stop") {
+          stopPlayer();
+        } else if (action === "seek" && Number.isFinite(seconds)) {
+          timerSeconds = Math.max(0, Math.min(getPreviewSettings().duration, seconds));
+          syncSequenceToPosition();
+          syncPlayer();
+          if (timerSeconds >= getPreviewSettings().duration && isPlaying) stopPlayer();
+        } else if (action === "get-state") {
+          syncPlayer();
+        }
+      });
 
       function playPunjabiLayer(type, frequency, volume, scheduledTime, panPosition = 0) {
         const startTime = Math.max(scheduledTime, previewAudioContext.currentTime + 0.005);
