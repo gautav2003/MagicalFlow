@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file, session
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from functools import wraps
@@ -13,12 +13,14 @@ import urllib.parse
 import urllib.request
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from io import BytesIO
 
 # Load environment variables from the hidden .env file
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'magical_flow_super_secret_production_key')
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 DB_NAME = 'MagicalFlow.db'
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:5000/google/callback')
 
@@ -83,6 +85,18 @@ def init_db():
             username TEXT UNIQUE NOT NULL,
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS studio_recordings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL,
+            title TEXT NOT NULL,
+            bpm INTEGER NOT NULL,
+            duration INTEGER NOT NULL,
+            mime_type TEXT NOT NULL,
+            audio BLOB NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     conn.commit()
@@ -579,6 +593,25 @@ def pro_studio_mode():
 @app.route('/pro-studio-output', methods=['GET', 'POST'])
 @login_required
 def studio_output():
+    recording_id = request.form.get('recording_id') if request.method == 'POST' else request.args.get('recording_id')
+    recording = None
+    if recording_id:
+        try:
+            recording_id = int(recording_id)
+        except (TypeError, ValueError):
+            return jsonify({'error': 'Invalid recording ID.'}), 400
+        conn = sqlite3.connect(DB_NAME)
+        conn.row_factory = sqlite3.Row
+        recording = conn.execute(
+            'SELECT id, title, bpm, duration, mime_type FROM studio_recordings WHERE id = ? AND username = ?',
+            (recording_id, session['user']),
+        ).fetchone()
+        conn.close()
+        if recording is None:
+            return jsonify({'error': 'Recording not found.'}), 404
+        recording = dict(recording)
+        recording['audio_url'] = url_for('studio_recording_audio', recording_id=recording_id)
+
     if request.method == 'POST':
         return render_template(
             'Prostudiooutput.html',
@@ -586,13 +619,96 @@ def studio_output():
             bpm=request.form.get('bpm', ''),
             key=request.form.get('key_scale', ''),
             duration='',
+            recording=recording,
         )
-    return render_template('Prostudiooutput.html')
+    return render_template('Prostudiooutput.html', recording=recording)
+
+@app.route('/api/studio-recordings', methods=['POST'])
+@login_required
+def save_studio_recording():
+    recording_file = request.files.get('audio')
+    if recording_file is None:
+        return jsonify({'error': 'No audio recording was uploaded.'}), 400
+    if not recording_file.mimetype.startswith('audio/'):
+        return jsonify({'error': 'The uploaded file must be audio.'}), 400
+
+    audio = recording_file.stream.read(app.config['MAX_CONTENT_LENGTH'] + 1)
+    if not audio:
+        return jsonify({'error': 'The uploaded recording is empty.'}), 400
+    if len(audio) > app.config['MAX_CONTENT_LENGTH']:
+        return jsonify({'error': 'The recording exceeds the 32 MB upload limit.'}), 413
+
+    try:
+        bpm = int(request.form.get('bpm', '96'))
+        duration = int(request.form.get('duration', '0'))
+    except (TypeError, ValueError):
+        return jsonify({'error': 'Tempo and duration must be valid numbers.'}), 400
+    if not 40 <= bpm <= 240 or duration < 1:
+        return jsonify({'error': 'Tempo must be 40–240 BPM and duration must be positive.'}), 400
+
+    title = request.form.get('title', '').strip()[:100] or 'Pro Studio Recording'
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.execute(
+        '''INSERT INTO studio_recordings (username, title, bpm, duration, mime_type, audio)
+           VALUES (?, ?, ?, ?, ?, ?)''',
+        (session['user'], title, bpm, duration, recording_file.mimetype, sqlite3.Binary(audio)),
+    )
+    recording_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return jsonify({
+        'recording_id': recording_id,
+        'output_url': url_for('studio_output', recording_id=recording_id),
+    }), 201
+
+@app.route('/studio-recordings/<int:recording_id>/audio')
+@login_required
+def studio_recording_audio(recording_id):
+    conn = sqlite3.connect(DB_NAME)
+    recording = conn.execute(
+        'SELECT audio, mime_type FROM studio_recordings WHERE id = ? AND username = ?',
+        (recording_id, session['user']),
+    ).fetchone()
+    conn.close()
+    if recording is None:
+        return jsonify({'error': 'Recording not found.'}), 404
+    return send_file(
+        BytesIO(recording[0]),
+        mimetype=recording[1],
+        as_attachment=False,
+        conditional=True,
+        download_name='studio-recording',
+    )
 
 @app.route('/my-music')
 @login_required
 def my_music():
-    return render_template('MyMusic.html')
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    recordings = conn.execute(
+        '''SELECT id, title, bpm, duration, created_at
+           FROM studio_recordings WHERE username = ? ORDER BY id DESC''',
+        (session['user'],),
+    ).fetchall()
+    conn.close()
+    music_recordings = [
+        {
+            'title': item['title'],
+            'genre': 'Pro Studio',
+            'bpm': item['bpm'],
+            'key': 'Studio',
+            'duration': '{}:{:02d}'.format(item['duration'] // 60, item['duration'] % 60),
+            'description': 'Recorded microphone and live beat mix',
+            'type': 'Recordings',
+            'date': item['created_at'][:10],
+            'fav': False,
+            'color': 'from-orange-400 to-red-600',
+            'audio_url': url_for('studio_recording_audio', recording_id=item['id']),
+        }
+        for item in recordings
+    ]
+    return render_template('MyMusic.html', recordings=music_recordings)
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    

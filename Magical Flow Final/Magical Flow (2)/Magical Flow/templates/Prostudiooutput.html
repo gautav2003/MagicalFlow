@@ -138,10 +138,26 @@
 
           <div>
             <span class="text-xs text-zinc-400 block mb-1">Session Output</span>
-            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">{{ prompt or 'Midnight Session' }}</h1>
-            <p class="text-xs font-mono text-zinc-400 mt-1">{{ bpm or 128 }} BPM . {{ key or 'A Minor' }} . 4:14 . Pro Studio</p>
+            <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight">{{ recording.title if recording else (prompt or 'Midnight Session') }}</h1>
+            <p class="text-xs font-mono text-zinc-400 mt-1">{{ recording.bpm if recording else (bpm or 128) }} BPM . {{ key or 'A Minor' }} . Pro Studio</p>
           </div>
         </div>
+
+        {% if recording %}
+        <section class="rounded-2xl border border-orange-500/40 bg-orange-950/20 p-5 space-y-3" aria-labelledby="recordedMixHeading">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 id="recordedMixHeading" class="text-sm font-bold text-white">Recorded studio mix</h2>
+              <p class="text-[10px] text-zinc-400 mt-1">Microphone and live Pro Studio beat recorded together · {{ recording.duration // 60 }}:{{ '%02d'|format(recording.duration % 60) }}</p>
+            </div>
+            <a href="{{ recording.audio_url }}" download class="text-xs text-orange-300 underline">Download recording</a>
+          </div>
+          <audio controls preload="metadata" class="w-full" src="{{ recording.audio_url }}">
+            Your browser does not support audio playback.
+          </audio>
+          <p class="text-[10px] text-zinc-400">This recording is saved in My Music.</p>
+        </section>
+        {% endif %}
 
         <!-- Master Waveform Player Deck -->
         <div class="bg-[#190829] border border-purple-500/30 rounded-2xl p-5 space-y-4">

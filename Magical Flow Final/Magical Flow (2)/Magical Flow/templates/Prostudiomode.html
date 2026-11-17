@@ -236,12 +236,18 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <button type="button" id="micBtn" onclick="toggleMic()" class="w-8 h-8 bg-orange-950/80 border border-orange-600/40 rounded-lg flex items-center justify-center text-zinc-200 hover:text-white transition-colors" title="Arm Mic">🎙</button>
-          <a id="micDownload" class="hidden text-[10px] text-orange-300 underline" download>Download mic take</a>
+          <button type="button" id="micBtn" onclick="toggleMic()" class="inline-flex items-center gap-2 px-4 py-2 bg-red-700 border border-red-500 rounded-lg text-white text-xs font-extrabold uppercase tracking-wide hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors" title="Start recording microphone and beat together" aria-label="Start recording microphone and beat together" aria-pressed="false"><span aria-hidden="true">●</span> Record</button>
+          <span id="micRecordState" class="text-[10px] text-zinc-400" role="status" aria-live="polite">Ready to record mic + beat</span>
+          <div id="recordingNameControls" class="hidden items-center gap-2">
+            <label for="recordingTitle" class="sr-only">Name your recording</label>
+            <input id="recordingTitle" type="text" maxlength="100" placeholder="Name this recording" class="w-40 rounded-lg border border-orange-500/50 bg-[#090318] px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-400" />
+            <button type="button" id="saveRecordingBtn" onclick="saveRecordedMix()" class="rounded-lg bg-orange-700 px-3 py-2 text-xs font-bold text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300">Save recording</button>
+          </div>
           <form id="studioForm" method="POST" action="{{ url_for('studio_output') }}" class="inline-flex gap-2">
             <input type="hidden" name="bpm" value="96" />
             <input type="hidden" name="key_scale" value="D Min" />
             <input type="hidden" name="prompt" id="hiddenPrompt" value="" />
+            <input type="hidden" name="recording_id" id="recordingId" value="" />
             <button type="submit" class="px-4 py-1.5 bg-gradient-to-r from-orange-900 to-red-900 border border-orange-500/60 hover:from-orange-800 hover:to-red-800 rounded-lg text-xs font-bold text-white transition-all shadow-md shadow-orange-950">Export</button>
           </form>
           <button type="button" onclick="saveProject()" class="px-4 py-1.5 bg-purple-950 border border-purple-600/60 hover:bg-purple-900 rounded-lg text-xs font-bold text-white transition-all">Save</button>
@@ -470,7 +476,10 @@
   let micRecorder = null;
   let micStream = null;
   let micChunks = [];
-  let micRecordingUrl = null;
+  let recordingDestination = null;
+  let micRecordingStartedAt = 0;
+  let pendingRecordingBlob = null;
+  let pendingRecordingMetadata = null;
   let currentMeasure = 1;
   let secondsCount = 0;
   let playbackElapsedMs = 0;
@@ -497,6 +506,11 @@
     'Harmonium': 'reed_organ'
   };
   const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
+
+  function connectAudioOutput(node) {
+    node.connect(audioCtx.destination);
+    if (recordingDestination) node.connect(recordingDestination);
+  }
 
   function initAudio() {
     if (!audioCtx) {
@@ -568,7 +582,7 @@
     source.playbackRate.setValueAtTime(frequency / (440 * Math.pow(2, (midiNoteNumber(sampleName) - 69) / 12)), audioCtx.currentTime);
     gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
     source.connect(gain);
-    gain.connect(audioCtx.destination);
+    connectAudioOutput(gain);
     source.start();
     return true;
   }
@@ -608,7 +622,7 @@
       gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
       noise.connect(filter);
       filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      connectAudioOutput(gain);
       noise.start(now);
       noise.stop(now + duration);
     }
@@ -622,7 +636,7 @@
       gain.gain.setValueAtTime(0.9, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      connectAudioOutput(gain);
       osc.start(now);
       osc.stop(now + 0.48);
       playNoise(0.025, 'highpass', 2500, 0.12);
@@ -638,7 +652,7 @@
       bodyGain.gain.setValueAtTime(0.28, now);
       bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
       osc.connect(bodyGain);
-      bodyGain.connect(audioCtx.destination);
+      connectAudioOutput(bodyGain);
       osc.start(now);
       osc.stop(now + 0.2);
       playNoise(0.22, 'bandpass', 1900, 0.5, 0.8);
@@ -660,7 +674,7 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
         osc.start(now);
         osc.stop(now + duration);
       });
@@ -676,7 +690,7 @@
       gain.gain.setValueAtTime(0.55, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      connectAudioOutput(gain);
       osc.start(now);
       osc.stop(now + 0.42);
     }
@@ -714,9 +728,9 @@
       overtoneGain.gain.exponentialRampToValueAtTime(0.001, now + decay * 0.45);
 
       body.connect(bodyGain);
-      bodyGain.connect(audioCtx.destination);
+      connectAudioOutput(bodyGain);
       overtone.connect(overtoneGain);
-      overtoneGain.connect(audioCtx.destination);
+      connectAudioOutput(overtoneGain);
       body.start(now);
       body.stop(now + decay);
       overtone.start(now);
@@ -740,7 +754,7 @@
     noiseGain.gain.exponentialRampToValueAtTime(0.001, now + noiseDuration);
     noise.connect(filter);
     filter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
+    connectAudioOutput(noiseGain);
     noise.start(now);
     noise.stop(now + noiseDuration);
   }
@@ -794,7 +808,7 @@
         osc2.connect(dist);
         dist.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc1.start(now); osc2.start(now);
         osc1.stop(now + 1.1); osc2.stop(now + 1.1);
@@ -821,7 +835,7 @@
 
         osc1.connect(filter); osc2.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc1.start(now); osc2.start(now);
         osc1.stop(now + 1.2); osc2.stop(now + 1.2);
@@ -845,7 +859,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 0.8);
@@ -868,7 +882,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 1.0);
@@ -887,7 +901,7 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + 1.4);
 
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 1.4);
@@ -930,7 +944,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 0.7);
@@ -949,7 +963,7 @@
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
 
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          connectAudioOutput(gain);
 
           osc.start(now); osc.stop(now + 0.9);
         });
@@ -977,7 +991,7 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
 
         osc1.connect(gain); osc2.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         lfo.start(now); osc1.start(now); osc2.start(now);
         lfo.stop(now + 2.0); osc1.stop(now + 2.0); osc2.stop(now + 2.0);
@@ -1002,7 +1016,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 0.8);
@@ -1021,7 +1035,7 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + 2.5);
 
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 2.5);
@@ -1045,7 +1059,7 @@
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc.start(now);
         osc.stop(now + 0.9);
@@ -1071,7 +1085,7 @@
 
         osc1.connect(filter); osc2.connect(filter);
         filter.connect(gain);
-        gain.connect(audioCtx.destination);
+        connectAudioOutput(gain);
 
         osc1.start(now); osc2.start(now);
         osc1.stop(now + 1.2); osc2.stop(now + 1.2);
@@ -1089,7 +1103,7 @@
           gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.15);
 
           osc.connect(gain);
-          gain.connect(audioCtx.destination);
+          connectAudioOutput(gain);
 
           osc.start(now + delay);
           osc.stop(now + delay + 0.15);
@@ -1158,7 +1172,7 @@
       gain.gain.setValueAtTime(0.12, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      connectAudioOutput(gain);
       osc.start(now);
       osc.stop(now + 0.04);
     }
@@ -1306,12 +1320,53 @@
 
   async function toggleMic() {
     const micButton = document.getElementById('micBtn');
+    const recordState = document.getElementById('micRecordState');
     if (micRecorder?.state === 'recording') {
+      const duration = Math.max(1, Math.round((Date.now() - micRecordingStartedAt) / 1000));
+      const bpm = getTempo();
+      const defaultTitle = `${activeInstrument} Beat (${bpm} BPM)`;
+      stopTransport();
       micRecorder.stop();
-      micButton.title = 'Start microphone recording';
-      micButton.classList.remove('bg-red-950', 'border-red-600');
-      micButton.classList.add('bg-orange-950/80', 'border-orange-600/40');
-      document.getElementById('projectStatus').innerText = 'Finishing microphone recording…';
+      micButton.disabled = true;
+      micButton.innerText = 'Saving…';
+      micButton.setAttribute('aria-pressed', 'false');
+      micButton.title = 'Saving microphone and beat recording';
+      micButton.classList.remove('bg-red-700', 'hover:bg-red-600');
+      micButton.classList.add('bg-orange-700');
+      recordState.innerText = 'Saving mix…';
+      document.getElementById('projectStatus').innerText = 'Finishing your microphone + beat recording…';
+      micRecorder.onstop = async () => {
+        const recording = new Blob(micChunks, { type: micRecorder.mimeType || 'audio/webm' });
+        micStream?.getTracks().forEach(track => track.stop());
+        micStream = null;
+        if (recordingDestination) {
+          recordingDestination = null;
+        }
+        if (recording.size === 0) {
+          micButton.disabled = false;
+          micButton.innerText = '● Record';
+          micButton.title = 'Start recording microphone and beat together';
+          micButton.classList.remove('bg-orange-700');
+          micButton.classList.add('bg-red-700', 'hover:bg-red-600');
+          recordState.innerText = 'Recording failed';
+          document.getElementById('projectStatus').innerText = 'The recording was empty; please try recording again.';
+          return;
+        }
+
+        pendingRecordingBlob = recording;
+        pendingRecordingMetadata = { duration, bpm };
+        micButton.disabled = true;
+        micButton.innerText = '✓ Recorded';
+        micButton.title = 'Save or rename the finished recording';
+        micButton.classList.remove('bg-orange-700');
+        micButton.classList.add('bg-zinc-700');
+        document.getElementById('recordingTitle').value = defaultTitle;
+        document.getElementById('recordingNameControls').classList.remove('hidden');
+        document.getElementById('recordingNameControls').classList.add('flex');
+        recordState.innerText = 'Recording complete · Name it to save';
+        document.getElementById('projectStatus').innerText = 'Recording complete. Enter a name, then save it to Studio Output and My Music.';
+        document.getElementById('recordingTitle').focus();
+      };
       return;
     }
 
@@ -1322,12 +1377,17 @@
     }
 
     try {
+      initAudio();
+      recordingDestination = audioCtx.createMediaStreamDestination();
       micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mimeType = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus']
         .find(type => MediaRecorder.isTypeSupported(type));
+      const microphoneSource = audioCtx.createMediaStreamSource(micStream);
+      microphoneSource.connect(recordingDestination);
+      const mixedStream = recordingDestination.stream;
       micRecorder = mimeType
-        ? new MediaRecorder(micStream, { mimeType })
-        : new MediaRecorder(micStream);
+        ? new MediaRecorder(mixedStream, { mimeType })
+        : new MediaRecorder(mixedStream);
       micChunks = [];
       micRecorder.ondataavailable = event => {
         if (event.data.size > 0) micChunks.push(event.data);
@@ -1335,34 +1395,91 @@
       micRecorder.onerror = event => {
         console.error('Microphone recording failed.', event.error);
         document.getElementById('projectStatus').innerText = 'Microphone recording failed. Check browser microphone permissions.';
-      };
-      micRecorder.onstop = () => {
-        const recording = new Blob(micChunks, { type: micRecorder.mimeType || 'audio/webm' });
-        micStream?.getTracks().forEach(track => track.stop());
-        micStream = null;
-        if (recording.size === 0) {
-          document.getElementById('projectStatus').innerText = 'The microphone recording was empty.';
-          return;
-        }
-        if (micRecordingUrl) URL.revokeObjectURL(micRecordingUrl);
-        micRecordingUrl = URL.createObjectURL(recording);
-        const download = document.getElementById('micDownload');
-        download.href = micRecordingUrl;
-        download.download = `magical-flow-mic-take.${recording.type.includes('ogg') ? 'ogg' : 'webm'}`;
-        download.classList.remove('hidden');
-        document.getElementById('projectStatus').innerText = 'Microphone take ready to download.';
+        recordState.innerText = 'Recording failed';
+        micButton.innerText = '● Record';
+        micButton.setAttribute('aria-pressed', 'false');
+        micButton.title = 'Start recording microphone and beat together';
+        micButton.classList.remove('bg-red-950', 'border-red-600');
+        micButton.classList.add('bg-red-700', 'border-red-500');
       };
       micRecorder.start();
-      micButton.title = 'Stop microphone recording';
-      micButton.classList.remove('bg-orange-950/80', 'border-orange-600/40');
+      micRecordingStartedAt = Date.now();
+      micButton.innerText = '■ Stop';
+      micButton.setAttribute('aria-pressed', 'true');
+      micButton.title = 'Stop and save microphone and beat recording';
+      micButton.classList.remove('bg-red-700', 'hover:bg-red-600');
       micButton.classList.add('bg-red-950', 'border-red-600');
-      document.getElementById('projectStatus').innerText = 'Recording from your microphone…';
+      recordState.innerText = 'Recording mic + beat';
+      document.getElementById('projectStatus').innerText = 'Recording microphone and live studio beat together…';
+      if (!isPlaying) togglePlay();
     } catch (error) {
       console.error('Could not start microphone recording.', error);
       micStream?.getTracks().forEach(track => track.stop());
       micStream = null;
+      recordingDestination = null;
+      micButton.innerText = '● Record';
+      micButton.setAttribute('aria-pressed', 'false');
+      micButton.title = 'Start recording microphone and beat together';
+      micButton.classList.remove('bg-red-950', 'border-red-600');
+      micButton.classList.add('bg-red-700', 'border-red-500', 'hover:bg-red-600');
+      recordState.innerText = 'Record mic + beat';
       document.getElementById('projectStatus').innerText = 'Microphone access was denied or unavailable.';
       alert('Could not start microphone recording. Allow microphone access in your browser and try again.');
+    }
+  }
+
+  async function saveRecordedMix() {
+    if (!pendingRecordingBlob || !pendingRecordingMetadata) {
+      document.getElementById('projectStatus').innerText = 'There is no finished recording to save. Record a beat first.';
+      return;
+    }
+
+    const titleInput = document.getElementById('recordingTitle');
+    const title = titleInput.value.trim();
+    if (!title) {
+      titleInput.setCustomValidity('Enter a name for your recording.');
+      titleInput.reportValidity();
+      titleInput.addEventListener('input', () => titleInput.setCustomValidity(''), { once: true });
+      return;
+    }
+
+    const saveButton = document.getElementById('saveRecordingBtn');
+    const recordState = document.getElementById('micRecordState');
+    saveButton.disabled = true;
+    recordState.innerText = 'Saving recording…';
+    document.getElementById('projectStatus').innerText = 'Saving your named recording…';
+
+    const formData = new FormData();
+    formData.append(
+      'audio',
+      pendingRecordingBlob,
+      `magical-flow-studio-mix.${pendingRecordingBlob.type.includes('ogg') ? 'ogg' : 'webm'}`
+    );
+    formData.append('bpm', String(pendingRecordingMetadata.bpm));
+    formData.append('duration', String(pendingRecordingMetadata.duration));
+    formData.append('title', title);
+    try {
+      const response = await fetch('{{ url_for("save_studio_recording") }}', {
+        method: 'POST',
+        body: formData
+      });
+      let result;
+      try {
+        result = await response.json();
+      } catch (error) {
+        throw new Error(`The recording upload failed (${response.status}).`);
+      }
+      if (!response.ok) throw new Error(result.error || 'The recording could not be saved.');
+      document.getElementById('recordingId').value = result.recording_id;
+      document.querySelector('#studioForm input[name="bpm"]').value = pendingRecordingMetadata.bpm;
+      recordState.innerText = 'Recording saved';
+      document.getElementById('projectStatus').innerText = 'Recording saved. Opening Studio Output…';
+      document.getElementById('studioForm').requestSubmit();
+    } catch (error) {
+      console.error('Could not save the studio recording.', error);
+      saveButton.disabled = false;
+      recordState.innerText = 'Save failed · You can retry';
+      document.getElementById('projectStatus').innerText = `Recording could not be saved: ${error.message}`;
     }
   }
 

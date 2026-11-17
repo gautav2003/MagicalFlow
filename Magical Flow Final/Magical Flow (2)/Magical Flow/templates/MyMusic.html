@@ -212,14 +212,14 @@
         {'title': 'Midnight Dholwave', 'genre': 'Punjabi Folk', 'bpm': '96', 'key': 'D Minor', 'duration': '3:16', 'description': 'Dhol, dholak, algoza, tumbi, ektara, tabla and bass', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
         {'title': 'Moonlit Bollywood Romance', 'genre': 'Bollywood Romance', 'bpm': '86', 'key': 'A Minor', 'duration': '3:00', 'description': 'Flute, sitar, santoor, sarangi, harmonium, dholak and tabla', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
       ] %}
-      {% set display_tracks = tracks if tracks else default_tracks %}
+      {% set display_tracks = default_tracks + (recordings|default([])) %}
 
       <!-- TRACKS CONTAINER (LIST VIEW MODE) -->
       <div id="listViewContainer" class="space-y-3">
         {% for item in display_tracks %}
         <div class="track-row music-card rounded-xl p-3 flex items-center justify-between gap-4 cursor-pointer" 
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
-             onclick="loadAndPlay(this)">
+             {% if not item.audio_url %}onclick="loadAndPlay(this)"{% endif %}>
           
           <!-- Track Left Meta (Icon & Title) -->
           <div class="flex items-center gap-3">
@@ -233,6 +233,11 @@
               <h3 class="text-sm font-bold text-white leading-snug">{{ item.title }}</h3>
               <p class="text-[10px] text-zinc-400 font-mono">{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}</p>
               <p class="text-[9px] text-zinc-500 mt-0.5">{{ item.description }}</p>
+              {% if item.audio_url %}
+              <audio controls preload="none" class="mt-2 h-8 max-w-64" onclick="event.stopPropagation()" src="{{ item.audio_url }}">
+                Your browser does not support audio playback.
+              </audio>
+              {% endif %}
             </div>
           </div>
 
@@ -270,7 +275,7 @@
         {% for item in display_tracks %}
         <div class="track-card music-card rounded-xl p-4 flex flex-col justify-between h-44 cursor-pointer"
              data-title="{{ item.title }}" data-genre="{{ item.genre }}" data-bpm="{{ item.bpm }}" data-key="{{ item.key }}" data-duration="{{ item.duration }}" data-type="{{ item.type }}" data-fav="{{ item.fav }}"
-             onclick="loadAndPlay(this)">
+             {% if not item.audio_url %}onclick="loadAndPlay(this)"{% endif %}>
           
           <!-- Top Row: Icon & Category Badge -->
           <div class="flex items-start justify-between">
@@ -294,6 +299,11 @@
             <h3 class="text-sm font-bold text-white leading-tight truncate">{{ item.title }}</h3>
             <p class="text-[10px] text-zinc-400 font-mono mt-1">{{ item.genre }} . {{ item.bpm }} BPM</p>
             <p class="text-[9px] text-zinc-500 mt-0.5 truncate">{{ item.description }}</p>
+            {% if item.audio_url %}
+            <audio controls preload="none" class="mt-1 h-8 w-full" onclick="event.stopPropagation()" src="{{ item.audio_url }}">
+              Your browser does not support audio playback.
+            </audio>
+            {% endif %}
           </div>
 
           <!-- Bottom Actions -->
@@ -777,6 +787,14 @@
         });
       }
 
+      function updateTrackCounts() {
+        const rows = [...document.querySelectorAll('.track-row')];
+        document.getElementById('totalCount').innerText = rows.length;
+        document.getElementById('aiCount').innerText = rows.filter(row => row.dataset.type === 'AI').length;
+        document.getElementById('studioCount').innerText = rows.filter(row => row.dataset.type === 'Studio').length;
+        document.getElementById('recCount').innerText = rows.filter(row => row.dataset.type === 'Recordings').length;
+      }
+
       function toggleFavorite(btn) {
         const isFav = btn.innerText === '★' &&
           btn.children[0].classList.contains('text-pink-500');
@@ -791,6 +809,7 @@
         if (confirm("Are you sure you want to delete this track from your archive?")) {
           const row = btn.closest('.track-row, .track-card');
           row.remove();
+          updateTrackCounts();
         }
       }
 
@@ -810,6 +829,8 @@
         v.value = Number(v.value) === 0 ? 100 : 0;
         adjustVolume(v.value);
       }
+
+      updateTrackCounts();
     </script>
   </body>
 </html>
