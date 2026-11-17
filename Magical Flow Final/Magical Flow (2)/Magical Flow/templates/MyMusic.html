@@ -187,7 +187,7 @@
         <div class="flex items-center gap-8 text-xs font-mono">
           <div>
             <span class="block text-[10px] text-zinc-400">Total Tracks</span>
-            <span id="totalCount" class="font-bold text-white text-sm">6</span>
+            <span id="totalCount" class="font-bold text-white text-sm">{{ 9 + (recordings|default([])|length) }}</span>
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">AI Generated</span>
@@ -195,11 +195,11 @@
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">Studio Projects</span>
-            <span id="studioCount" class="font-bold text-white text-sm">0</span>
+            <span id="studioCount" class="font-bold text-white text-sm">2</span>
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">Recordings</span>
-            <span id="recCount" class="font-bold text-white text-sm">0</span>
+            <span id="recCount" class="font-bold text-white text-sm">{{ 1 + (recordings|default([])|length) }}</span>
           </div>
         </div>
       </div>
@@ -210,7 +210,10 @@
         {'title': 'Dark Ambient', 'genre': 'Ambient', 'bpm': '68', 'key': 'B Phrygian', 'duration': '3:00', 'description': '808 sub, pipe organ, low strings, choir, brass and synth', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
         {'title': 'Heartful Magical Dream', 'genre': 'Dance-Pop', 'bpm': '104', 'key': 'D Major', 'duration': '3:00', 'description': 'Rhodes piano, clean electric guitar, funky bass, strings and layered choir', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-pink-600'},
         {'title': 'Midnight Dholwave', 'genre': 'Punjabi Folk', 'bpm': '96', 'key': 'D Minor', 'duration': '3:16', 'description': 'Dhol, dholak, algoza, tumbi, ektara, tabla and bass', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
-        {'title': 'Moonlit Bollywood Romance', 'genre': 'Bollywood Romance', 'bpm': '86', 'key': 'A Minor', 'duration': '3:00', 'description': 'Flute, sitar, santoor, sarangi, harmonium, dholak and tabla', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
+        {'title': 'Moonlit Bollywood Romance', 'genre': 'Bollywood Romance', 'bpm': '86', 'key': 'A Minor', 'duration': '3:00', 'description': 'Flute, sitar, santoor, sarangi, harmonium, dholak and tabla', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Basement Funk', 'genre': 'Funk', 'bpm': '112', 'key': 'G Major', 'duration': '5:08', 'description': 'Saved studio groove with a lively funk feel', 'type': 'Studio', 'date': 'Saved', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Strings in the Rain', 'genre': 'Classical', 'bpm': '88', 'key': 'G Minor', 'duration': '7:22', 'description': 'Saved orchestral strings project', 'type': 'Studio', 'date': 'Saved', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Vocal Harmony Take', 'genre': 'R&B', 'bpm': '92', 'key': 'D Major', 'duration': '2:10', 'description': 'Saved vocal harmony recording', 'type': 'Recordings', 'date': 'Saved', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
       ] %}
       {% set display_tracks = default_tracks + (recordings|default([])) %}
 
