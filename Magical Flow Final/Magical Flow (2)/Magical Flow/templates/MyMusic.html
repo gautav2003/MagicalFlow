@@ -381,15 +381,50 @@
       let totalSeconds = 204; // 3:24 default
       let audioCtx = null;
       let masterGain = null;
-      let currentTrack = { genre: 'Lo-Fi', bpm: 90, key: 'C Minor' };
+      let currentTrack = { title: 'Late Night Lo-Fi', genre: 'Lo-Fi', bpm: 90, key: 'C Minor', style: 'lofi' };
       let playbackRequestId = 0;
-      let soundfontLoadPromise = null;
+      const soundfontLoadPromises = new Map();
+      const soundfontPrograms = {
+        piano: 'acoustic_grand_piano',
+        'electric piano': 'electric_piano_1',
+        guitar: 'acoustic_guitar_steel',
+        'electric guitar': 'electric_guitar_clean',
+        bass: 'electric_bass_pick',
+        strings: 'string_ensemble_1',
+        violin: 'violin',
+        flute: 'flute',
+        sitar: 'sitar',
+        santoor: 'vibraphone',
+        sarangi: 'violin',
+        algoza: 'pan_flute',
+        tumbi: 'dulcimer',
+        ektara: 'dulcimer',
+        harmonium: 'reed_organ',
+        organ: 'church_organ',
+        brass: 'brass_section',
+        pad: 'pad_2_warm',
+        vocals: 'choir_aahs',
+        celesta: 'celesta',
+        synth: 'lead_2_sawtooth'
+      };
+      const trackSoundProfiles = {
+        'Late Night Lo-Fi': { style: 'lofi', instruments: ['piano', 'bass'] },
+        'Morning Jazz': { style: 'jazz', instruments: ['piano', 'bass', 'strings'] },
+        'Dark Ambient': { style: 'ambient', instruments: ['pad', 'organ', 'strings', 'brass', 'vocals'] },
+        'Heartful Magical Dream': { style: 'dream', instruments: ['electric piano', 'electric guitar', 'bass', 'strings', 'vocals', 'celesta', 'synth'] },
+        'Midnight Dholwave': { style: 'punjabi', instruments: ['sitar', 'flute', 'algoza', 'tumbi', 'ektara', 'bass', 'harmonium', 'strings'] },
+        'Moonlit Bollywood Romance': { style: 'bollywood', instruments: ['flute', 'sitar', 'santoor', 'sarangi', 'bass', 'harmonium', 'strings', 'vocals'] },
+        'Basement Funk': { style: 'funk', instruments: ['electric piano', 'electric guitar', 'bass', 'brass'] },
+        'Strings in the Rain': { style: 'classical', instruments: ['piano', 'strings', 'violin', 'pad'] },
+        'Vocal Harmony Take': { style: 'rnb', instruments: ['electric piano', 'guitar', 'bass', 'vocals'] }
+      };
 
-      // Audio sample configuration
       const sampleBufferCache = new Map();
-      const soundfontProgram = 'acoustic_grand_piano';
       const soundfontBaseUrl = 'https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/';
       const noteSemitones = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+      const dholakSampleUrl = "{{ url_for('static', filename='audio/dholak_treble_skin.mp3') }}";
+      let dholakSamplePromise = null;
+      let dholakSampleBuffer = null;
 
       // Audio setup and sample loading
       function initAudio() {
@@ -403,30 +438,27 @@
         masterGain.gain.setTargetAtTime(volume, audioCtx.currentTime, 0.02);
       }
 
-      function loadPianoSoundfont() {
-        if (window.MIDI?.Soundfont?.[soundfontProgram]) {
-          return Promise.resolve(window.MIDI.Soundfont[soundfontProgram]);
-        }
-        if (soundfontLoadPromise) return soundfontLoadPromise;
+      function loadSoundfont(instrument) {
+        const program = soundfontPrograms[instrument];
+        if (!program) return Promise.reject(new Error(`Unknown instrument: ${instrument}`));
+        if (window.MIDI?.Soundfont?.[program]) return Promise.resolve(window.MIDI.Soundfont[program]);
+        if (soundfontLoadPromises.has(program)) return soundfontLoadPromises.get(program);
 
-        soundfontLoadPromise = new Promise((resolve, reject) => {
+        const loadPromise = new Promise((resolve, reject) => {
           const script = document.createElement('script');
-          script.src = `${soundfontBaseUrl}${soundfontProgram}-mp3.js`;
+          script.src = `${soundfontBaseUrl}${program}-mp3.js`;
           script.async = true;
           script.onload = () => {
-            const soundfont = window.MIDI?.Soundfont?.[soundfontProgram];
+            const soundfont = window.MIDI?.Soundfont?.[program];
             if (soundfont) resolve(soundfont);
-            else reject(new Error('The piano sample bank loaded without its instrument data.'));
+            else reject(new Error(`The ${instrument} sample bank loaded without its instrument data.`));
           };
-          script.onerror = () => {
-            reject(new Error('Could not download the piano sample bank.'));
-          };
+          script.onerror = () => reject(new Error(`Could not download the ${instrument} sample bank.`));
           document.head.appendChild(script);
-        }).catch(error => {
-          soundfontLoadPromise = null;
-          throw error;
         });
-        return soundfontLoadPromise;
+        soundfontLoadPromises.set(program, loadPromise);
+        loadPromise.catch(() => soundfontLoadPromises.delete(program));
+        return loadPromise;
       }
 
       function noteNumberFromSampleName(name) {
@@ -441,7 +473,7 @@
         return 440 * Math.pow(2, (noteNumber - 69) / 12);
       }
 
-      async function loadPianoSample(noteNumber, soundfont) {
+      async function loadInstrumentSample(instrument, noteNumber, soundfont) {
         const sampleName = Object.keys(soundfont)
           .filter(name => noteNumberFromSampleName(name) !== null)
           .sort((a, b) => {
@@ -451,22 +483,24 @@
           })[0];
 
         if (!sampleName) {
-          throw new Error('No playable piano samples were found.');
+          throw new Error(`No playable ${instrument} samples were found.`);
         }
 
-        let bufferPromise = sampleBufferCache.get(sampleName);
+        const program = soundfontPrograms[instrument];
+        const cacheKey = `${program}:${sampleName}`;
+        let bufferPromise = sampleBufferCache.get(cacheKey);
         if (!bufferPromise) {
           bufferPromise = fetch(soundfont[sampleName])
             .then(response => {
               if (!response.ok) {
-                throw new Error(`Could not download the piano sample (${response.status}).`);
+                throw new Error(`Could not download the ${instrument} sample (${response.status}).`);
               }
               return response.arrayBuffer();
             })
             .then(data => audioCtx.decodeAudioData(data));
 
-          sampleBufferCache.set(sampleName, bufferPromise);
-          bufferPromise.catch(() => sampleBufferCache.delete(sampleName));
+          sampleBufferCache.set(cacheKey, bufferPromise);
+          bufferPromise.catch(() => sampleBufferCache.delete(cacheKey));
         }
 
         return {
@@ -475,7 +509,27 @@
         };
       }
 
-      // Track arrangement
+      function loadDholakSample() {
+        if (dholakSampleBuffer) return Promise.resolve(dholakSampleBuffer);
+        if (!dholakSamplePromise) {
+          dholakSamplePromise = fetch(dholakSampleUrl)
+            .then(response => {
+              if (!response.ok) throw new Error(`Could not download the dholak sample (${response.status}).`);
+              return response.arrayBuffer();
+            })
+            .then(data => audioCtx.decodeAudioData(data))
+            .then(buffer => {
+              dholakSampleBuffer = buffer;
+              return buffer;
+            })
+            .catch(error => {
+              dholakSamplePromise = null;
+              throw error;
+            });
+        }
+        return dholakSamplePromise;
+      }
+
       function keyScale() {
         const keyPattern = /^([A-G])([#b]?)(?:\s+(Major|Minor))?$/i;
         const match = keyPattern.exec(currentTrack.key.trim());
@@ -485,33 +539,47 @@
         const root = match
           ? 48 + noteSemitones[match[1].toUpperCase()] + accidental
           : 48;
-        const minor = match ? match[3]?.toLowerCase() === 'minor' : true;
+        const phrygian = currentTrack.key.toLowerCase().includes('phrygian');
+        const minor = match ? match[3]?.toLowerCase() === 'minor' || phrygian : true;
         return {
           root,
-          intervals: minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]
+          intervals: phrygian
+            ? [0, 1, 3, 5, 7, 8, 10]
+            : minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]
         };
       }
 
       function getTrackArrangement() {
         const { root, intervals } = keyScale();
-        const progression = [0, 3, 4, 0];
+        const progression = currentTrack.style === 'jazz' || currentTrack.style === 'funk'
+          ? [0, 5, 1, 4]
+          : currentTrack.style === 'ambient'
+            ? [0, 0, 5, 4]
+            : [0, 5, 3, 4];
         return Array.from({ length: 16 }, (_, beat) => {
           const bar = Math.floor(beat / 4);
           const chordRoot = root + intervals[progression[bar]];
           const chord = [chordRoot, chordRoot + intervals[2], chordRoot + intervals[4]];
+          if (currentTrack.style === 'jazz' || currentTrack.style === 'funk' || currentTrack.style === 'dream') {
+            chord.push(chordRoot + intervals[6]);
+          }
           const melody = chordRoot + intervals[[0, 2, 4, 2][beat % 4]] + 12;
 
           return {
             bass: chordRoot - 12,
-            chord: beat % 2 === 0 ? chord : [],
+            root: chordRoot,
+            chord,
             melody: beat % 2 === 1 ? melody : null,
-            beat: beat % 4
+            beat: beat % 4,
+            index: beat
           };
         });
       }
 
-      function playDrum(beat, time) {
-        if (beat === 0 || (currentTrack.genre.toLowerCase().includes('hip') && beat === 2)) {
+      function playDrum(beat, time, stepIndex) {
+        const style = currentTrack.style;
+        const kickPattern = style === 'ambient' ? [0] : [0, 2];
+        if (kickPattern.includes(beat) && (style !== 'ambient' || stepIndex % 4 === 0)) {
           const kick = audioCtx.createOscillator();
           const kickGain = audioCtx.createGain();
           kick.type = 'sine';
@@ -528,8 +596,10 @@
           kick.stop(time + 0.2);
         }
 
-        if (beat === 1 || beat === 3) {
-          const length = audioCtx.sampleRate * 0.12;
+        const snarePattern = style === 'ambient' || style === 'classical' ? [] : [1, 3];
+        if (snarePattern.includes(beat)) {
+          const duration = style === 'jazz' ? 0.2 : 0.12;
+          const length = audioCtx.sampleRate * duration;
           const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
           const data = buffer.getChannelData(0);
           for (let i = 0; i < length; i++) {
@@ -541,73 +611,210 @@
           const gain = audioCtx.createGain();
           noise.buffer = buffer;
           filter.type = 'highpass';
-          filter.frequency.setValueAtTime(1800, time);
-          gain.gain.setValueAtTime(0.08, time);
-          gain.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+          filter.frequency.setValueAtTime(style === 'jazz' ? 1200 : 1800, time);
+          gain.gain.setValueAtTime(style === 'jazz' ? 0.035 : 0.08, time);
+          gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
           noise.connect(filter);
           filter.connect(gain);
           gain.connect(masterGain);
           noise.start(time);
-          noise.stop(time + 0.12);
+          noise.stop(time + duration);
         }
+        if (['dream', 'funk', 'punjabi', 'bollywood'].includes(style) && stepIndex % 2 === 1) {
+          playHiHat(time, style === 'punjabi' || style === 'bollywood' ? 0.028 : 0.018);
+        } else if (style === 'lofi' && stepIndex % 2 === 1) {
+          playHiHat(time, 0.008);
+        } else if (style === 'jazz') {
+          playHiHat(time, 0.009);
+        }
+      }
+
+      function playDholakBeat(time, volume, playbackRate) {
+        if (!dholakSampleBuffer) return;
+        const source = audioCtx.createBufferSource();
+        const gain = audioCtx.createGain();
+        source.buffer = dholakSampleBuffer;
+        source.playbackRate.setValueAtTime(playbackRate, time);
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + Math.min(0.5, dholakSampleBuffer.duration / playbackRate));
+        source.connect(gain);
+        gain.connect(masterGain);
+        source.start(time);
+        source.stop(time + Math.min(0.5, dholakSampleBuffer.duration / playbackRate));
+      }
+
+      function playTablaBeat(time, pitch, volume) {
+        const tone = audioCtx.createOscillator();
+        const overtone = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const overtoneGain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        tone.type = 'sine';
+        overtone.type = 'triangle';
+        tone.frequency.setValueAtTime(pitch, time);
+        tone.frequency.exponentialRampToValueAtTime(pitch * 0.72, time + 0.11);
+        overtone.frequency.setValueAtTime(pitch * 2.4, time);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2400, time);
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.14);
+        overtoneGain.gain.setValueAtTime(volume * 0.22, time);
+        overtoneGain.gain.exponentialRampToValueAtTime(0.001, time + 0.08);
+        tone.connect(filter);
+        filter.connect(gain);
+        overtone.connect(overtoneGain);
+        gain.connect(masterGain);
+        overtoneGain.connect(masterGain);
+        tone.start(time);
+        tone.stop(time + 0.15);
+        overtone.start(time);
+        overtone.stop(time + 0.09);
       }
 
       function playArrangementBeat(beatIndex, arrangement, beatDuration) {
         const step = arrangement[beatIndex % arrangement.length];
-        const time = audioCtx.currentTime + 0.02;
+        const time = audioCtx.currentTime + 0.035;
         const noteDuration = beatDuration * 0.82;
+        const style = currentTrack.style;
+        const play = (instrument, note, velocity, duration = noteDuration, offset = 0) => {
+          playInstrumentNote(instrument, note, velocity, duration, time + offset, playbackRequestId);
+        };
+        const chord = step.chord.length ? step.chord : [step.root, step.root + 3, step.root + 7];
 
-        playPianoNote(step.bass, 0.28, noteDuration);
-        step.chord.forEach(note => playPianoNote(note, 0.13, noteDuration));
-        if (step.melody !== null) {
-          playPianoNote(step.melody, 0.2, noteDuration * 0.7);
+        if (style === 'lofi') {
+          if (step.index % 2 === 0) chord.slice(0, 3).forEach(note => play('piano', note + 12, 0.12, beatDuration * 1.7));
+          if (step.melody !== null) play('piano', step.melody + 12, 0.16, beatDuration * 0.68);
+          if (step.index % 2 === 0) play('bass', step.bass, 0.29);
+        } else if (style === 'jazz') {
+          if ([0, 2].includes(step.beat)) chord.forEach(note => play('piano', note + 12, 0.11, beatDuration * 0.72));
+          play('bass', step.beat % 2 ? step.bass + 7 : step.bass, 0.28, beatDuration * 0.9);
+          if ([1, 3].includes(step.beat)) play('piano', step.melody || step.root + 19, 0.12, beatDuration * 0.55);
+          if (step.index % 4 === 2) play('strings', step.root + 12, 0.045, beatDuration * 1.8);
+        } else if (style === 'ambient') {
+          if (step.index % 4 === 0) {
+            chord.forEach(note => play('pad', note, 0.12, beatDuration * 3.8));
+            play('strings', step.root + 12, 0.08, beatDuration * 3.5, 0.04);
+            play('organ', step.root - 12, 0.12, beatDuration * 3.2);
+            play('synth', step.root + 7, 0.045, beatDuration * 3.4, 0.08);
+          }
+          if (step.index % 4 === 2) play('brass', step.root + 7, 0.07, beatDuration * 1.8);
+          if ([1, 3].includes(step.beat)) play('vocals', step.root + 19, 0.045, beatDuration * 1.7);
+        } else if (style === 'dream') {
+          if ([0, 2].includes(step.beat)) chord.forEach(note => play('electric piano', note + 12, 0.11, beatDuration * 0.9));
+          play('bass', step.beat % 2 ? step.bass + 7 : step.bass, 0.27, beatDuration * 0.8);
+          if ([1, 3].includes(step.beat)) play('electric guitar', chord[(step.index + 1) % chord.length] + 12, 0.16, beatDuration * 0.48);
+          if (step.melody !== null && [1, 3].includes(step.beat)) play('synth', step.melody + 12, 0.08, beatDuration * 0.72);
+          if (step.index % 4 === 0) play('strings', step.root + 12, 0.06, beatDuration * 1.8);
+          if (step.index % 8 === 4) play('vocals', step.root + 19, 0.045, beatDuration * 1.4);
+          if (step.index % 4 === 2) play('celesta', step.root + 24, 0.055, beatDuration * 0.6);
+        } else if (style === 'punjabi') {
+          if ([0, 2].includes(step.beat)) chord.forEach(note => play('harmonium', note + 12, 0.10, beatDuration * 0.9));
+          play('bass', step.beat % 2 ? step.bass + 7 : step.bass, 0.26, beatDuration * 0.8);
+          if ([1, 3].includes(step.beat)) play('sitar', (step.melody || step.root + 12) + 12, 0.15, beatDuration * 0.55);
+          if (step.index % 4 === 3) play('flute', step.root + 24, 0.10, beatDuration * 0.9);
+          if ([0, 2].includes(step.beat)) play('algoza', step.root + 19, 0.075, beatDuration * 0.6);
+          if ([1, 3].includes(step.beat)) play('tumbi', step.root + 24, 0.12, beatDuration * 0.38);
+          if (step.index % 4 === 3) play('ektara', step.root + 12, 0.06, beatDuration * 0.4);
+          if (step.index % 4 === 2) play('santoor', step.root + 24, 0.09, beatDuration * 0.5);
+          if ([0, 2].includes(step.beat)) playDholakBeat(time, 0.48, step.beat === 0 ? 0.82 : 1.08);
+          if ([1, 3].includes(step.beat)) playTablaBeat(time, step.beat === 1 ? 155 : 205, 0.035);
+        } else if (style === 'bollywood') {
+          if ([0, 2].includes(step.beat)) {
+            chord.forEach(note => play('strings', note + 12, 0.09, beatDuration * 1.7));
+            play('harmonium', step.root, 0.11, beatDuration * 1.2);
+          }
+          play('bass', step.beat % 2 ? step.bass + 7 : step.bass, 0.24, beatDuration * 0.8);
+          if (step.melody !== null) play('flute', step.melody + 12, 0.13, beatDuration * 0.78);
+          if ([1, 3].includes(step.beat)) play('sitar', step.root + 19, 0.09, beatDuration * 0.48);
+          if (step.index % 4 === 3) play('santoor', step.root + 24, 0.085, beatDuration * 0.5);
+          if (step.index % 4 === 2) play('sarangi', step.root + 19, 0.075, beatDuration * 0.8);
+          if (step.index % 4 === 0) play('vocals', step.root + 19, 0.035, beatDuration * 1.6);
+          if ([0, 2].includes(step.beat)) playDholakBeat(time, 0.34, step.beat === 0 ? 0.82 : 1.08);
+          if ([1, 3].includes(step.beat)) playTablaBeat(time, step.beat === 1 ? 145 : 195, 0.03);
+        } else if (style === 'funk') {
+          if ([0, 2].includes(step.beat)) chord.forEach(note => play('electric piano', note + 12, 0.13, beatDuration * 0.5));
+          play('bass', step.beat % 2 ? step.bass + 7 : step.bass, 0.30, beatDuration * 0.65);
+          if ([1, 3].includes(step.beat)) play('electric guitar', step.root + 19, 0.13, beatDuration * 0.34);
+          if (step.index % 4 === 0) play('brass', step.root + 12, 0.075, beatDuration * 0.55);
+        } else if (style === 'classical') {
+          if (step.index % 2 === 0) chord.forEach(note => play('strings', note + 12, 0.13, beatDuration * 1.8));
+          if (step.melody !== null) play('piano', step.melody + 12, 0.13, beatDuration * 0.95);
+          if (step.index % 4 === 0) play('violin', step.root + 19, 0.08, beatDuration * 2.2);
+          if (step.index % 4 === 0) play('pad', step.root, 0.045, beatDuration * 3.5);
+        } else {
+          if ([0, 2].includes(step.beat)) chord.forEach(note => play('electric piano', note + 12, 0.11, beatDuration * 0.9));
+          play('bass', step.bass, 0.25, beatDuration * 0.9);
+          if (step.melody !== null) play('guitar', step.melody + 12, 0.10, beatDuration * 0.7);
+          if (step.index % 4 === 0) play('vocals', step.root + 19, 0.055, beatDuration * 1.8);
         }
-        playDrum(step.beat, time);
+        playDrum(step.beat, time, step.index);
       }
 
       async function prepareArrangement(arrangement) {
-        const soundfont = await loadPianoSoundfont();
-        const notes = new Set(
-          arrangement.flatMap(step => [
-            step.bass,
-            ...step.chord,
-            ...(step.melody === null ? [] : [step.melody])
-          ])
-        );
-
-        await Promise.all([...notes].map(note => loadPianoSample(note, soundfont)));
+        const instruments = trackSoundProfiles[currentTrack.title]?.instruments || ['piano', 'bass'];
+        const notes = new Set(arrangement.flatMap(step => [
+          step.bass - 7, step.bass, step.bass + 7,
+          step.root, step.root + 7, step.root + 12, step.root + 19, step.root + 24,
+          ...step.chord, ...(step.melody === null ? [] : [step.melody + 12])
+        ]));
+        const sampleLoads = instruments.map(async instrument => {
+          const soundfont = await loadSoundfont(instrument);
+          await Promise.all([...notes].map(note => loadInstrumentSample(instrument, note, soundfont)));
+        });
+        if (['punjabi', 'bollywood'].includes(currentTrack.style)) sampleLoads.push(loadDholakSample());
+        await Promise.all(sampleLoads);
       }
 
       // Playback controls
-      function playPianoNote(noteNumber, velocity, duration) {
-        const requestId = playbackRequestId;
-        const soundfont = window.MIDI.Soundfont[soundfontProgram];
+      function playInstrumentNote(instrument, noteNumber, velocity, duration, scheduledTime, requestId) {
+        const soundfont = window.MIDI?.Soundfont?.[soundfontPrograms[instrument]];
+        if (!soundfont) {
+          showPlaybackError(new Error(`The ${instrument} sample bank is not ready.`));
+          return;
+        }
 
-        loadPianoSample(noteNumber, soundfont)
+        loadInstrumentSample(instrument, noteNumber, soundfont)
           .then(({ buffer, sampleNote }) => {
             if (!isPlaying || requestId !== playbackRequestId) return;
-
             const source = audioCtx.createBufferSource();
             const gain = audioCtx.createGain();
+            const panner = audioCtx.createStereoPanner();
             const playbackRate = noteFrequency(noteNumber) / noteFrequency(sampleNote);
-
+            const startTime = Math.max(scheduledTime, audioCtx.currentTime + 0.005);
             source.buffer = buffer;
-            source.playbackRate.setValueAtTime(playbackRate, audioCtx.currentTime);
-            gain.gain.setValueAtTime(velocity, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(
-              0.001,
-              audioCtx.currentTime + duration
-            );
+            source.playbackRate.setValueAtTime(playbackRate, startTime);
+            gain.gain.setValueAtTime(velocity, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + Math.max(0.05, duration));
+            panner.pan.setValueAtTime(instrument === 'strings' || instrument === 'violin' ? -0.15 : instrument === 'guitar' || instrument === 'flute' ? 0.15 : 0, startTime);
             source.connect(gain);
-            gain.connect(masterGain);
-            source.start();
-            source.stop(audioCtx.currentTime + duration);
+            gain.connect(panner);
+            panner.connect(masterGain);
+            source.start(startTime);
+            source.stop(startTime + Math.max(0.05, duration));
           })
           .catch(error => {
-            if (isPlaying && requestId === playbackRequestId) {
-              showPlaybackError(error);
-            }
+            if (isPlaying && requestId === playbackRequestId) showPlaybackError(error);
           });
+      }
+
+      function playHiHat(time, volume) {
+        const length = Math.floor(audioCtx.sampleRate * 0.045);
+        const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let index = 0; index < length; index += 1) data[index] = Math.random() * 2 - 1;
+        const source = audioCtx.createBufferSource();
+        const filter = audioCtx.createBiquadFilter();
+        const gain = audioCtx.createGain();
+        source.buffer = buffer;
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(6500, time);
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.045);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        source.start(time);
+        source.stop(time + 0.045);
       }
 
       function showPlaybackError(error) {
@@ -618,9 +825,11 @@
       function loadAndPlay(card) {
         stopMainPlay();
         currentTrack = {
+          title: card.dataset.title,
           genre: card.dataset.genre,
           bpm: Math.max(40, Math.min(240, Number(card.dataset.bpm) || 90)),
-          key: card.dataset.key || 'C Minor'
+          key: card.dataset.key || 'C Minor',
+          style: trackSoundProfiles[card.dataset.title]?.style || 'rnb'
         };
         document.getElementById('playerTitle').innerText = card.dataset.title;
         document.getElementById('playerMeta').innerText =
@@ -654,7 +863,7 @@
 
         const requestId = ++playbackRequestId;
         btn.disabled = true;
-        document.getElementById('playerMeta').innerText = 'Loading sampled piano instruments...';
+        document.getElementById('playerMeta').innerText = 'Loading sampled track instruments...';
 
         try {
           if (audioCtx.state === 'suspended') await audioCtx.resume();
