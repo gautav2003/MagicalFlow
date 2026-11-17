@@ -7,6 +7,10 @@ import sqlite3
 import random
 import smtplib
 import ssl
+import json
+import urllib.error
+import urllib.parse
+import urllib.request
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -95,6 +99,10 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.context_processor
+def inject_ai_configuration():
+    return {'gemini_configured': bool(os.getenv('GEMINI_API_KEY'))}
+
 # ==================== ROOT & HOME ROUTES (STRICTLY LOCKED) ====================
 @app.route('/')
 def index():
@@ -108,7 +116,7 @@ def home():
         return redirect(url_for('signin'))
     return render_template('Home.html')
 
-# ==================== REGISTRATION ROUTE WITH WELCOME EMAIL ====================
+# ==================== REGISTRATION & REAL EMAIL VERIFICATION ====================
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     error = None
@@ -121,6 +129,57 @@ def register():
         if password != confirm_password:
             error = "Passwords do not match."
         else:
+            conn = sqlite3.connect(DB_NAME)
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE username = ? OR email = ?", (username, email))
+            existing_user = cursor.fetchone()
+            conn.close()
+            
+            if existing_user:
+                error = "Username or Email already exists."
+            else:
+                # Store pending registration details in session securely
+                session['reg_username'] = username
+                session['reg_email'] = email
+                session['reg_password'] = password
+                
+                # Generate real 6-digit email verification code
+                code = str(random.randint(100000, 999999))
+                session['reg_auth_code'] = code
+                
+                verify_html = f"""
+                <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="background: linear-gradient(135deg, #ffffff, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">Magical Flow</h2>
+                        <p style="color: #c084fc; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;">Your Music . Your Way .</p>
+                    </div>
+                    <h3 style="color: #ffffff;">Welcome to the flow, {username}!</h3>
+                    <p style="color: #a1a1aa; font-size: 13px; line-height: 1.6;">
+                        Please use the secure real verification code below to activate your studio account:
+                    </p>
+                    <div style="background: #120822; padding: 15px; text-align: center; border-radius: 8px; border: 1px solid rgba(147, 51, 234, 0.3); margin: 20px 0;">
+                        <h1 style="color: #38bdf8; letter-spacing: 8px; margin: 0;">{code}</h1>
+                    </div>
+                </div>
+                """
+                send_official_email(email, "Magical Flow - Account Email Verification Code", verify_html)
+                
+                return redirect(url_for('verify_register'))
+                
+    return render_template('Register.html', error=error)
+
+@app.route('/verify-register', methods=['GET', 'POST'])
+def verify_register():
+    error = None
+    email = session.get('reg_email', 'your email')
+    
+    if request.method == 'POST':
+        user_code = request.form.get('code')
+        if user_code == session.get('reg_auth_code'):
+            username = session.get('reg_username')
+            email = session.get('reg_email')
+            password = session.get('reg_password')
+            
             try:
                 conn = sqlite3.connect(DB_NAME)
                 cursor = conn.cursor()
@@ -128,6 +187,7 @@ def register():
                 conn.commit()
                 conn.close()
                 
+                # Send official welcome email after successful verification
                 welcome_html = f"""
                 <div style="background-color: #070311; color: #ffffff; padding: 30px; font-family: 'Inter', Arial, sans-serif; border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.4);">
                     <div style="text-align: center; margin-bottom: 20px;">
@@ -142,11 +202,20 @@ def register():
                 """
                 send_official_email(email, "Welcome to Magical Flow - Your Studio Access is Ready", welcome_html)
                 
+                # Clear temporary session storage
+                session.pop('reg_username', None)
+                session.pop('reg_email', None)
+                session.pop('reg_password', None)
+                session.pop('reg_auth_code', None)
+                
                 session['new_user_name'] = username
                 return redirect(url_for('account_created'))
-            except sqlite3.IntegrityError:
-                error = "Username or Email already exists."
-    return render_template('Register.html', error=error)
+            except Exception as e:
+                error = f"Database Error: {e}"
+        else:
+            error = "Invalid verification code. Please check your inbox."
+            
+    return render_template('VerifyRegister.html', email=email, prototype_code=session.get('reg_auth_code', '------'), error=error)
 
 @app.route('/account-created')
 def account_created():
@@ -199,7 +268,7 @@ def identity_check():
         else:
             error = "Invalid verification code."
             
-    return render_template('IdentityCheck.html', email=email, prototype_code="[Check your Gmail Inbox or Terminal]", error=error)
+    return render_template('IdentityCheck.html', email=email, prototype_code=session.get('auth_code', '------'), error=error)
 
 # ==================== FORGOT & RESET PASSWORD WORKFLOW ====================
 @app.route('/forgot-password', methods=['GET', 'POST'])
@@ -320,39 +389,149 @@ def google_callback():
 def artist_support():
     return render_template('ArtistSupport.html')
 
+def local_artist_support_reply(query):
+    query_lower = query.lower()
+
+    if any(word in query_lower for word in ('generate music', 'make music', 'create a song', 'compose', 'instrumental')):
+        return (
+            "Use Beginner mode to create a playable instrumental arrangement: describe the sound, then choose a "
+            "genre, mood, tempo, and instruments. The browser-based generator is included and needs no API key; "
+            "it arranges instruments rather than generating a finished audio recording with a cloud AI model. "
+            "For external AI-produced audio, a separate provider and its terms/pricing apply."
+        )
+    if any(word in query_lower for word in ('lyric', 'write a song', 'songwriting', 'chorus', 'verse')):
+        return (
+            "For a strong song draft, tell Maya the theme, point of view, genre, mood, and structure "
+            "(for example: verse, chorus, verse, chorus, bridge, final chorus). In Beginner mode, use a "
+            "specific prompt describing tempo, instruments, energy changes, and whether you want vocals or "
+            "an instrumental. Add your own details and revise the result to make it yours."
+        )
+    if any(word in query_lower for word in ('mix', 'master', 'eq', 'frequency', 'volume', 'compression', 'balance')):
+        return (
+            "Start with a clean balance: lower track levels to leave headroom, high-pass only parts that do not "
+            "need deep bass, and make small EQ moves while listening in context. Use gentle compression to "
+            "control peaks, check the kick and bass together, and compare the master at a quieter volume. "
+            "Avoid clipping and export a WAV for a lossless master."
+        )
+    if any(word in query_lower for word in ('export', 'download', 'wav', 'save', 'my music')):
+        return (
+            "In Pro Studio, use Save to keep the current project in this browser, or Export Project to download "
+            "the project data. The Beginner and Pro Studio output screens provide their own playback and export "
+            "controls. Browser-saved projects stay on this device unless you export them."
+        )
+    if any(word in query_lower for word in ('account', '2fa', 'verification', 'email', 'login', 'sign in', 'password', 'reset')):
+        return (
+            "For sign-in trouble, check that you are using the registered email or username. Use Forgot Password "
+            "on the sign-in page to start a password reset. Never share your password, verification code, or API key in chat."
+        )
+    return (
+        "I can help with songwriting, Beginner mode prompts, arranging, mixing, mastering, exports, and account "
+        "navigation. Add a Gemini API key to the local .env file to enable Maya's AI chat; the built-in music "
+        "arrangement tools continue to work without an external key."
+    )
+
+def generate_gemini_reply(query, history):
+    api_key = os.getenv('GEMINI_API_KEY')
+    model = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash')
+    if not api_key:
+        raise RuntimeError('GEMINI_API_KEY is not configured.')
+
+    contents = []
+    for item in history:
+        role = 'model' if item['role'] == 'assistant' else 'user'
+        contents.append({'role': role, 'parts': [{'text': item['content']}]})
+    contents.append({'role': 'user', 'parts': [{'text': query}]})
+
+    payload = {
+        'systemInstruction': {
+            'parts': [{
+                'text': (
+                    "You are Maya, the practical artist-support assistant inside Magical Flow, a browser-based "
+                    "music studio. Help beginners and experienced artists with songwriting, original music "
+                    "prompts, arrangement, mixing, mastering, studio navigation, and exports. Give clear "
+                    "step-by-step answers, ask a focused follow-up when useful, and distinguish the app's "
+                    "browser-based instrumental arranger from external AI audio-generation services. Never "
+                    "claim to have generated or saved audio. Do not request or reveal passwords, verification "
+                    "codes, or API keys. Keep answers concise and do not provide legal, medical, or financial advice."
+                )
+            }]
+        },
+        'contents': contents,
+        'generationConfig': {'temperature': 0.7, 'maxOutputTokens': 700},
+    }
+    url = 'https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent'.format(
+        urllib.parse.quote(model, safe='-._')
+    )
+    request_data = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode('utf-8'),
+        headers={'Content-Type': 'application/json', 'x-goog-api-key': api_key},
+        method='POST',
+    )
+
+    try:
+        with urllib.request.urlopen(request_data, timeout=30) as response:
+            result = json.loads(response.read().decode('utf-8'))
+    except urllib.error.HTTPError as error:
+        try:
+            provider_error = json.loads(error.read().decode('utf-8')).get('error', {}).get('message')
+        except (ValueError, AttributeError):
+            provider_error = None
+        raise RuntimeError(provider_error or 'Gemini returned HTTP {}.'.format(error.code)) from error
+    except urllib.error.URLError as error:
+        raise RuntimeError('Could not connect to Gemini: {}'.format(error.reason)) from error
+    except (TimeoutError, json.JSONDecodeError) as error:
+        raise RuntimeError('Gemini did not return a valid response.') from error
+
+    try:
+        parts = result['candidates'][0]['content']['parts']
+        reply = '\n'.join(
+            part['text'] for part in parts
+            if isinstance(part, dict) and isinstance(part.get('text'), str)
+        ).strip()
+    except (KeyError, IndexError, TypeError) as error:
+        raise RuntimeError('Gemini returned an empty or unsupported response.') from error
+    if not reply:
+        raise RuntimeError('Gemini returned an empty response.')
+    return reply
+
 @app.route('/api/support-chat', methods=['POST'])
 def support_chat():
-    data = request.get_json() or {}
-    query = data.get('query', '').strip()
-    query_lower = query.lower()
-    if any(k in query_lower for k in ['generate', 'write a song', 'lyrics', 'compose', 'create a song', 'vocals', 'singer']):
-        reply = "Music generation features are currently unavailable."
-    elif any(k in query_lower for k in ['mix', 'master', 'eq', 'frequencies', 'volume', 'compression', 'balance']):
-        reply = (
-            "🎛️ **Maya's Pro Mixing & Mastering Guide** 🎛️<br><br>"
-            "Follow these 4 professional steps to make your tracks sound radio-ready:<br><br>"
-            "1. **Gain Staging:** Ensure individual track faders sit around -12dB to -18dB for headroom.<br><br>"
-            "2. **EQ & Filtering:** High-pass filter vocals/synths (80Hz–100Hz) to keep kick/bass clean.<br><br>"
-            "3. **Compression:** Apply gentle compression on vocals and drums to glue dynamics.<br><br>"
-            "4. **The Master Limiter:** Engage our **'Dragon Fire' master limiter** on output for maximum loudness without clipping!"
-        )
-    elif any(k in query_lower for k in ['account', '2fa', 'code', 'verification', 'email', 'login', 'signin', 'password', 'reset', 'forgot']):
-        reply = (
-            "🔒 **Security & Account Support** 🔒<br><br>"
-            "• **Sign In & 2FA:** A 6-digit verification code is sent to your Gmail inbox (or displayed in your VS Code terminal as a backup).<br><br>"
-            "• **Password Recovery:** Click 'Forgot Password' on the Sign In page to receive a recovery code."
-        )
-    elif any(k in query_lower for k in ['hello', 'hi', 'hey', 'maya', 'help']):
-        reply = (
-            "👋 Hello! I'm **Maya**, your personal AI studio assistant in Magical Flow.<br><br>"
-            "I can help with account security and general mixing questions. Music generation features are currently unavailable."
-        )
-    else:
-        reply = (
-            "I can help with account security and general mixing questions. Music generation features are currently unavailable."
-        )
+    if 'user' not in session:
+        return jsonify({'error': 'Please sign in to use Maya.'}), 401
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({'error': 'Send a JSON object with a query.'}), 400
+    query = data.get('query')
+    if not isinstance(query, str) or not query.strip():
+        return jsonify({'error': 'Enter a question for Maya.'}), 400
+    query = query.strip()
+    if len(query) > 2000:
+        return jsonify({'error': 'Please keep each message under 2,000 characters.'}), 400
 
-    return jsonify({'reply': reply})
+    history = data.get('history', [])
+    if not isinstance(history, list):
+        return jsonify({'error': 'Chat history must be a list.'}), 400
+    clean_history = []
+    for item in history[-8:]:
+        if (
+            isinstance(item, dict)
+            and item.get('role') in ('user', 'assistant')
+            and isinstance(item.get('content'), str)
+        ):
+            content = item['content'].strip()
+            if content:
+                clean_history.append({'role': item['role'], 'content': content[:2000]})
+
+    if not os.getenv('GEMINI_API_KEY'):
+        return jsonify({'reply': local_artist_support_reply(query), 'mode': 'local'})
+
+    try:
+        reply = generate_gemini_reply(query, clean_history)
+    except RuntimeError as error:
+        app.logger.warning('Maya AI request failed: %s', error)
+        return jsonify({'error': 'Maya could not reach Gemini. {}'.format(error)}), 502
+    return jsonify({'reply': reply, 'mode': 'gemini'})
 
 # ==================== NAVIGATION ====================
 @app.route('/logout')

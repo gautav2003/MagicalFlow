@@ -73,8 +73,8 @@
                             <span>Maya • Artist Support</span>
                         </div>
                         <div class="text-[9px] text-emerald-400 flex items-center space-x-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>AI guide online</span>
+                            <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-400 animate-pulse' if gemini_configured else 'bg-amber-300' }}"></span>
+                            <span>{{ 'Gemini AI connected' if gemini_configured else 'Local support • AI key not set' }}</span>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
             <!-- Chat Body -->
             <div id="mayaMessages" class="p-4 space-y-3 max-h-72 overflow-y-auto text-xs text-zinc-300 bg-[#090314]/80">
                 <div class="bg-[#180a31] border border-purple-500/30 rounded-xl p-3 space-y-1 shadow-inner">
-                    <p class="leading-relaxed">Hi, I'm Maya, your AI artist guide. I can help with songwriting, production, exports, and your Magical Flow account.</p>
+                    <p class="leading-relaxed">Hi, I'm Maya, your artist guide. I can help with songwriting, production, exports, and your Magical Flow account. {% if not gemini_configured %}Local help is available; add a Gemini API key to enable AI chat.{% endif %}</p>
                 </div>
             </div>
 
@@ -146,6 +146,7 @@
         if (!query) return;
 
         const messagesBox = document.getElementById('mayaMessages');
+        const history = window.mayaHistory || (window.mayaHistory = []);
         
         messagesBox.innerHTML += `
             <div class="flex justify-end">
@@ -156,14 +157,17 @@
         `;
         input.value = '';
         messagesBox.scrollTop = messagesBox.scrollHeight;
+        history.push({ role: 'user', content: query });
 
         try {
             const response = await fetch('/api/support-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query })
+                body: JSON.stringify({ query: query, history: history.slice(-8, -1) })
             });
             const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Maya could not respond. Please try again.');
+            history.push({ role: 'assistant', content: data.reply });
             
             messagesBox.innerHTML += `
                 <div class="flex justify-start">
@@ -174,12 +178,17 @@
             `;
             messagesBox.scrollTop = messagesBox.scrollHeight;
         } catch (err) {
-            console.error(err);
+            messagesBox.innerHTML += `
+                <div class="flex justify-start">
+                    <div class="bg-red-950/60 border border-red-500/40 text-red-200 rounded-xl p-3 max-w-[85%] text-xs">${escapeHtml(err.message || 'Maya could not respond. Please try again.')}</div>
+                </div>
+            `;
+            messagesBox.scrollTop = messagesBox.scrollHeight;
         }
     }
 
     function escapeHtml(text) {
-        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
     </script>
 

@@ -11,7 +11,7 @@
         </div>
         <h1 class="text-4xl font-extrabold text-white tracking-tight">AI Assistant & Studio Support</h1>
         <p class="text-xs text-zinc-400 max-w-lg mx-auto leading-relaxed">
-            Get help with audio mixing and 2FA account security.
+            Get practical help with songwriting, production, studio workflows, and account navigation.
         </p>
     </div>
 
@@ -24,9 +24,9 @@
             </div>
             <div>
                 <h3 class="font-bold text-white text-sm">Maya • AI Studio Guide</h3>
-                <p class="text-[10px] text-emerald-400 flex items-center space-x-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Online & Ready to Assist</span>
+                <p class="text-[10px] {{ 'text-emerald-400' if gemini_configured else 'text-amber-300' }} flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-400 animate-pulse' if gemini_configured else 'bg-amber-300' }}"></span>
+                    <span>{{ 'Gemini AI connected' if gemini_configured else 'Local support • AI key not set' }}</span>
                 </p>
             </div>
         </div>
@@ -34,7 +34,7 @@
         <!-- Chat Output Box -->
         <div id="supportMessages" class="p-4 space-y-3 max-h-80 overflow-y-auto text-xs text-zinc-300 bg-[#090314]/90 rounded-xl border border-purple-900/50">
             <div class="bg-[#180a31] border border-purple-500/30 rounded-xl p-3.5 space-y-1 shadow-inner">
-                <p class="leading-relaxed">Hello! I'm Maya, your assistant for mixing guidance and account security. Music generation features are currently unavailable.</p>
+                <p class="leading-relaxed">Hello! I'm Maya, your artist-support guide for songwriting, arranging, mixing, studio workflows, and account navigation. {% if not gemini_configured %}Local help is active. Add a Gemini API key to enable AI chat.{% endif %}</p>
             </div>
         </div>
 
@@ -57,9 +57,18 @@
 
     </div>
 
+    {% if not gemini_configured %}
+    <p class="text-center text-[11px] text-zinc-400">
+        To enable AI chat, add <code class="text-purple-300">GEMINI_API_KEY</code> to your local <code class="text-purple-300">.env</code> file and restart Magical Flow.
+        Beginner and Pro Studio music tools work without an AI key.
+    </p>
+    {% endif %}
+
 </div>
 
 <script>
+const supportHistory = [];
+
 function handleSupportKey(e) {
     if (e.key === 'Enter') sendSupportMessage();
 }
@@ -86,14 +95,17 @@ async function sendSupportMessage() {
     `;
     input.value = '';
     messagesBox.scrollTop = messagesBox.scrollHeight;
+    supportHistory.push({ role: 'user', content: query });
 
     try {
         const response = await fetch('/api/support-chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: query })
+            body: JSON.stringify({ query: query, history: supportHistory.slice(-8, -1) })
         });
         const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Maya could not respond. Please try again.');
+        supportHistory.push({ role: 'assistant', content: data.reply });
         
         // Maya response bubble
         messagesBox.innerHTML += `
@@ -104,13 +116,18 @@ async function sendSupportMessage() {
             </div>
         `;
         messagesBox.scrollTop = messagesBox.scrollHeight;
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        messagesBox.innerHTML += `
+            <div class="flex justify-start">
+                <div class="bg-red-950/60 border border-red-500/40 text-red-200 rounded-xl p-3 max-w-[85%] text-xs">${escapeHtml(error.message || 'Maya could not respond. Please try again.')}</div>
+            </div>
+        `;
+        messagesBox.scrollTop = messagesBox.scrollHeight;
     }
 }
 
 function escapeHtml(text) {
-    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 </script>
 {% endblock %}

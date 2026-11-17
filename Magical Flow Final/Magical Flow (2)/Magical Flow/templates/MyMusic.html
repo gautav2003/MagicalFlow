@@ -187,32 +187,30 @@
         <div class="flex items-center gap-8 text-xs font-mono">
           <div>
             <span class="block text-[10px] text-zinc-400">Total Tracks</span>
-            <span id="totalCount" class="font-bold text-white text-sm">8</span>
+            <span id="totalCount" class="font-bold text-white text-sm">6</span>
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">AI Generated</span>
-            <span id="aiCount" class="font-bold text-white text-sm">3</span>
+            <span id="aiCount" class="font-bold text-white text-sm">6</span>
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">Studio Projects</span>
-            <span id="studioCount" class="font-bold text-white text-sm">3</span>
+            <span id="studioCount" class="font-bold text-white text-sm">0</span>
           </div>
           <div>
             <span class="block text-[10px] text-zinc-400">Recordings</span>
-            <span id="recCount" class="font-bold text-white text-sm">2</span>
+            <span id="recCount" class="font-bold text-white text-sm">0</span>
           </div>
         </div>
       </div>
 
       {% set default_tracks = [
-        {'title': 'Late Night Lo-Fi', 'genre': 'Lo-Fi', 'bpm': '90', 'key': 'C Minor', 'duration': '3:24', 'type': 'AI', 'date': 'Aug 28', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
-        {'title': 'Midnight Session', 'genre': 'Electronic', 'bpm': '128', 'key': 'A Minor', 'duration': '4:12', 'type': 'Studio', 'date': 'Aug 28', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-        {'title': 'Jazzy Morning Vibe', 'genre': 'JAZZ', 'bpm': '110', 'key': 'F Major', 'duration': '2:58', 'type': 'AI', 'date': 'Aug 26', 'fav': true, 'color': 'from-purple-500 to-pink-600'},
-        {'title': 'Basement Funk', 'genre': 'Funk', 'bpm': '112', 'key': 'G Major', 'duration': '5:08', 'type': 'Studio', 'date': 'Aug 8', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
-        {'title': 'Guitar Study No. 4', 'genre': 'Classical', 'bpm': '80', 'key': 'D Minor', 'duration': '5:08', 'type': 'Recordings', 'date': 'Aug 22', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-        {'title': 'Hip-Hop Cypher Beat', 'genre': 'JAZZ', 'bpm': '110', 'key': 'Bb Major', 'duration': '4:44', 'type': 'AI', 'date': 'Aug 16', 'fav': true, 'color': 'from-purple-500 to-indigo-600'},
-        {'title': 'Strings in the Rain', 'genre': 'Classical', 'bpm': '88', 'key': 'G Minor', 'duration': '7:22', 'type': 'Studio', 'date': 'Aug 14', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
-        {'title': 'Vocal Harmony Take', 'genre': 'R&B', 'bpm': '92', 'key': 'D Major', 'duration': '2:10', 'type': 'Recordings', 'date': 'Aug 12', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
+        {'title': 'Late Night Lo-Fi', 'genre': 'Lo-Fi', 'bpm': '90', 'key': 'C Minor', 'duration': '3:24', 'description': 'Dusty piano, warm bass, relaxed drums and vinyl texture', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
+        {'title': 'Morning Jazz', 'genre': 'Jazz', 'bpm': '110', 'key': 'F Major', 'duration': '2:58', 'description': 'Easygoing piano, warm bass and brushed jazz rhythm', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-pink-600'},
+        {'title': 'Dark Ambient', 'genre': 'Ambient', 'bpm': '68', 'key': 'B Phrygian', 'duration': '3:00', 'description': '808 sub, pipe organ, low strings, choir, brass and synth', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'},
+        {'title': 'Heartful Magical Dream', 'genre': 'Dance-Pop', 'bpm': '104', 'key': 'D Major', 'duration': '3:00', 'description': 'Rhodes piano, clean electric guitar, funky bass, strings and layered choir', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-pink-600'},
+        {'title': 'Midnight Dholwave', 'genre': 'Punjabi Folk', 'bpm': '96', 'key': 'D Minor', 'duration': '3:16', 'description': 'Dhol, dholak, algoza, tumbi, ektara, tabla and bass', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-amber-400 to-yellow-600'},
+        {'title': 'Moonlit Bollywood Romance', 'genre': 'Bollywood Romance', 'bpm': '86', 'key': 'A Minor', 'duration': '3:00', 'description': 'Flute, sitar, santoor, sarangi, harmonium, dholak and tabla', 'type': 'AI', 'date': 'Recent', 'fav': false, 'color': 'from-purple-500 to-indigo-600'}
       ] %}
       {% set display_tracks = tracks if tracks else default_tracks %}
 
@@ -234,6 +232,7 @@
             <div>
               <h3 class="text-sm font-bold text-white leading-snug">{{ item.title }}</h3>
               <p class="text-[10px] text-zinc-400 font-mono">{{ item.genre }} . {{ item.bpm }} BPM . {{ item.key }}</p>
+              <p class="text-[9px] text-zinc-500 mt-0.5">{{ item.description }}</p>
             </div>
           </div>
 
@@ -294,6 +293,7 @@
           <div>
             <h3 class="text-sm font-bold text-white leading-tight truncate">{{ item.title }}</h3>
             <p class="text-[10px] text-zinc-400 font-mono mt-1">{{ item.genre }} . {{ item.bpm }} BPM</p>
+            <p class="text-[9px] text-zinc-500 mt-0.5 truncate">{{ item.description }}</p>
           </div>
 
           <!-- Bottom Actions -->
