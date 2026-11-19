@@ -145,6 +145,9 @@
               {{ bpm if bpm else "90" }} BPM . {{ key if key else "Lo-Fi" }} .
               <span id="trackDurationLabel">{{ duration if duration else "3:24" }}</span>
             </p>
+            <p class="text-[10px] text-zinc-500 mt-1">
+              {{ mood|default('Happy') }} mood · {{ (instruments|default(['Piano', 'Bass', 'Drums']))|join(', ') }}
+            </p>
           </div>
         </div>
 
@@ -193,46 +196,12 @@
           </p>
         </div>
 
-        <!-- Layer Breakdown Section (Multi-Color Progress Meters) -->
-        <div class="space-y-4">
-          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Layer Breakdown</span>
-
-          <div class="space-y-4 text-xs font-semibold">
-            <!-- Melody - Lo-Fi Piano (Sky Blue) -->
-            <div class="flex items-center justify-between gap-6">
-              <span class="w-36 text-zinc-200">Melody - Lo-Fi Piano</span>
-              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-blue-900/30">
-                <div class="h-full bg-sky-400 rounded-l-full w-[68%]"></div>
-                <div class="h-full bg-slate-200/20 rounded-r-full w-[32%]"></div>
-              </div>
-            </div>
-
-            <!-- Bass - Warm Sub (Neon Magenta/Pink) -->
-            <div class="flex items-center justify-between gap-6">
-              <span class="w-36 text-zinc-200">Bass - Warm Sub</span>
-              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-pink-900/30">
-                <div class="h-full bg-fuchsia-500 rounded-l-full w-[56%]"></div>
-                <div class="h-full bg-slate-200/20 rounded-r-full w-[44%]"></div>
-              </div>
-            </div>
-
-            <!-- Drums - Vinyl Kit (Emerald Green) -->
-            <div class="flex items-center justify-between gap-6">
-              <span class="w-36 text-zinc-200">Drums - Vinyl Kit</span>
-              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-emerald-900/30">
-                <div class="h-full bg-emerald-400 rounded-l-full w-[78%]"></div>
-                <div class="h-full bg-slate-200/20 rounded-r-full w-[22%]"></div>
-              </div>
-            </div>
-
-            <!-- Atmosphere - Pad (Warm Yellow) -->
-            <div class="flex items-center justify-between gap-6">
-              <span class="w-36 text-zinc-200">Atmosphere - Pad</span>
-              <div class="flex-grow h-3 bg-[#0d1627] rounded-full overflow-hidden flex border border-yellow-900/30">
-                <div class="h-full bg-yellow-300 rounded-l-full w-[82%]"></div>
-                <div class="h-full bg-slate-200/20 rounded-r-full w-[18%]"></div>
-              </div>
-            </div>
+        <div class="space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-400 block">Selected Layers</span>
+          <div class="flex flex-wrap gap-2">
+            {% for instrument in instruments|default(['Piano', 'Bass', 'Drums']) %}
+            <span class="rounded-full border border-purple-500/30 bg-purple-950/50 px-3 py-1 text-[10px] text-purple-200">{{ instrument }}</span>
+            {% endfor %}
           </div>
         </div>
 
@@ -290,6 +259,8 @@
       data-bpm="{{ bpm or 90 }}"
       data-genre="{{ key or 'Lo-Fi' }}"
       data-duration="{{ duration or '3:24' }}"
+      data-mood="{{ mood|default('Happy') }}"
+      data-instruments='{{ (instruments|default(["Piano", "Bass", "Drums"]))|tojson }}'
     ></div>
 
     <!-- Web Audio & Player Logic -->
@@ -298,6 +269,8 @@
       const settings = document.getElementById('beginnerTrackSettings').dataset;
       const trackBpm = Math.max(40, Math.min(240, Number(settings.bpm) || 90));
       const trackGenre = settings.genre || 'Lo-Fi';
+      const trackMood = settings.mood || 'Happy';
+      const selectedInstruments = JSON.parse(settings.instruments || '["Piano","Bass","Drums"]');
       const durationSeconds = parseDuration(settings.duration);
       let audioCtx = null;
       let masterGain = null;
@@ -315,22 +288,35 @@
         piano: 'acoustic_grand_piano',
         guitar: 'acoustic_guitar_steel',
         bass: 'electric_bass_pick',
+        drums: 'synth_drum',
+        dholak: 'taiko_drum',
+        tabla: 'melodic_tom',
+        chimta: 'tambourine',
         strings: 'string_ensemble_1',
         synth: 'lead_2_sawtooth',
-        harmonium: 'reed_organ'
+        brass: 'brass_section',
+        pad: 'pad_2_warm',
+        arp: 'vibraphone',
+        vocals: 'choir_aahs',
+        tumbi: 'dulcimer',
+        algoza: 'pan_flute',
+        harmonium: 'reed_organ',
+        sarangi: 'violin'
       };
+      const chordInstruments = new Set(['Piano', 'Guitar', 'Strings', 'Brass', 'Pad', 'Harmonium']);
+      const melodyInstruments = new Set(['Synth', 'Arp', 'Vocals', 'Tumbi', 'Algoza', 'Sarangi']);
       const genreProfiles = {
-        'Lo-Fi': { root: 0, minor: true, lead: 'piano', kick: [0, 2], snare: [1, 3], hats: true },
-        'Hip-Hop': { root: 2, minor: true, lead: 'synth', kick: [0, 2], snare: [1, 3], hats: true },
-        Jazz: { root: 5, minor: false, lead: 'piano', kick: [0], snare: [1, 3], hats: true },
-        Electronic: { root: 9, minor: true, lead: 'synth', kick: [0, 2], snare: [1, 3], hats: true },
-        'Western Pop': { root: 7, minor: false, lead: 'guitar', kick: [0, 2], snare: [1, 3], hats: true },
-        Folk: { root: 2, minor: false, lead: 'guitar', kick: [0], snare: [2], hats: false },
-        'R&B': { root: 9, minor: true, lead: 'piano', kick: [0, 2], snare: [1, 3], hats: true },
-        Classical: { root: 4, minor: false, lead: 'strings', kick: [], snare: [], hats: false },
-        'Punjabi Pop': { root: 0, minor: false, lead: 'harmonium', kick: [0, 2], snare: [1, 3], hats: true },
-        Bhangra: { root: 7, minor: false, lead: 'harmonium', kick: [0, 2], snare: [1, 3], hats: true },
-        'Bollywood Romance': { root: 5, minor: true, lead: 'strings', kick: [0, 2], snare: [1, 3], hats: true }
+        'Lo-Fi': { root: 0, kick: [0, 2], snare: [1, 3] },
+        'Hip-Hop': { root: 2, kick: [0, 2], snare: [1, 3] },
+        Jazz: { root: 5, kick: [0], snare: [1, 3] },
+        Electronic: { root: 9, kick: [0, 2], snare: [1, 3] },
+        'Western Pop': { root: 7, kick: [0, 2], snare: [1, 3] },
+        Folk: { root: 2, kick: [0], snare: [2] },
+        'R&B': { root: 9, kick: [0, 2], snare: [1, 3] },
+        Classical: { root: 4, kick: [], snare: [] },
+        'Punjabi Pop': { root: 0, kick: [0, 2], snare: [1, 3] },
+        Bhangra: { root: 7, kick: [0, 2], snare: [1, 3] },
+        'Bollywood Romance': { root: 5, kick: [0, 2], snare: [1, 3] }
       };
       const soundfontPromises = new Map();
       const sampleBufferCache = new Map();
@@ -452,16 +438,28 @@
 
       function getArrangement() {
         const profile = getGenreProfile();
-        const scale = profile.minor
-          ? [0, 2, 3, 5, 7, 8, 10]
-          : [0, 2, 4, 5, 7, 9, 11];
+        const minorMood = ['Chill', 'Dark', 'Sad', 'Romantic', 'Focused'].includes(trackMood);
+        const minor = minorMood || ['Punjabi Pop', 'Bollywood Romance'].includes(trackGenre);
+        const scale = trackMood === 'Dark'
+          ? [0, 1, 3, 5, 7, 8, 10]
+          : trackGenre === 'Jazz'
+            ? [0, 3, 5, 6, 7, 10, 12]
+            : minor
+              ? [0, 2, 3, 5, 7, 8, 10]
+              : [0, 2, 4, 5, 7, 9, 11];
         const root = 48 + profile.root;
-        const progression = [0, 5, 3, 4];
+        const progression = minor ? [0, 5, 3, 6] : [0, 4, 5, 3];
+        const melodyRate = trackMood === 'Energetic'
+          ? 1
+          : ['Chill', 'Focused'].includes(trackMood)
+            ? 4
+            : 2;
 
         return Array.from({ length: 16 }, (_, beat) => {
           const bar = Math.floor(beat / 4);
           const chordDegree = progression[bar];
-          const chord = [0, 2, 4].map(offset => {
+          const chordOffsets = trackMood === 'Romantic' ? [0, 2, 4, 6] : [0, 2, 4];
+          const chord = chordOffsets.map(offset => {
             const degree = chordDegree + offset;
             return root + scale[degree % scale.length] + 12 * Math.floor(degree / scale.length);
           });
@@ -470,33 +468,43 @@
           return {
             bass: chord[0] - 12,
             chord: beat % 4 === 0 ? chord : [],
-            melody: beat % 2 === 1
+            melody: beat % melodyRate === (melodyRate === 4 ? 2 : melodyRate === 2 ? 1 : 0)
               ? root + scale[(chordDegree + melodyDegree) % scale.length] + 12
               : null,
-            kick: profile.kick.includes(beat % 4),
-            snare: profile.snare.includes(beat % 4),
-            hiHat: profile.hats && beat % 2 === 0
+            kick: trackMood === 'Energetic'
+              ? beat % 2 === 0
+              : trackMood === 'Dark'
+                ? beat % 4 === 0
+                : profile.kick.length
+                  ? profile.kick.includes(beat % 4)
+                  : beat % 4 === 0,
+            snare: profile.snare.length
+              ? profile.snare.includes(beat % 4)
+              : beat % 4 === 2,
+            hiHat: beat % 2 === 0
           };
         });
       }
 
       async function prepareArrangement(arrangement) {
-        const profile = getGenreProfile();
-        const notes = {
-          bass: new Set(),
-          piano: new Set(),
-          guitar: new Set(),
-          strings: new Set(),
-          synth: new Set(),
-          harmonium: new Set()
-        };
+        const notes = Object.fromEntries(
+          selectedInstruments.map(instrument => [instrument.toLowerCase(), new Set()])
+        );
 
         arrangement.forEach(step => {
-          notes.bass.add(step.bass);
-          step.chord.forEach(note => notes.piano.add(note));
+          if (notes.bass) notes.bass.add(step.bass);
           if (step.melody !== null) {
-            notes[profile.lead].add(step.melody);
+            selectedInstruments
+              .filter(instrument => melodyInstruments.has(instrument))
+              .forEach(instrument => notes[instrument.toLowerCase()].add(step.melody));
           }
+          selectedInstruments
+            .filter(instrument => chordInstruments.has(instrument))
+            .forEach(instrument => step.chord.forEach(note => notes[instrument.toLowerCase()].add(note)));
+          if (notes.drums) [36, 38, 42].forEach(note => notes.drums.add(note));
+          if (notes.dholak) [48, 55].forEach(note => notes.dholak.add(note));
+          if (notes.tabla) [48, 55].forEach(note => notes.tabla.add(note));
+          if (notes.chimta) notes.chimta.add(84);
         });
 
         await Promise.all(
@@ -546,67 +554,37 @@
           });
       }
 
-      function playKick(time) {
-        const oscillator = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(130, time);
-        oscillator.frequency.exponentialRampToValueAtTime(42, time + 0.15);
-        gain.gain.setValueAtTime(0.3, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.2);
-        oscillator.connect(gain);
-        gain.connect(masterGain);
-        registerSource(oscillator);
-        oscillator.start(time);
-        oscillator.stop(time + 0.2);
-      }
-
-      function playNoiseDrum(time, duration, filterType, frequency, volume) {
-        const length = Math.floor(audioCtx.sampleRate * duration);
-        const buffer = audioCtx.createBuffer(1, length, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let index = 0; index < length; index++) {
-          data[index] = Math.random() * 2 - 1;
-        }
-
-        const source = audioCtx.createBufferSource();
-        const filter = audioCtx.createBiquadFilter();
-        const gain = audioCtx.createGain();
-        source.buffer = buffer;
-        filter.type = filterType;
-        filter.frequency.setValueAtTime(frequency, time);
-        gain.gain.setValueAtTime(volume, time);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
-        source.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
-        registerSource(source);
-        source.start(time);
-        source.stop(time + duration);
-      }
-
       function playArrangementBeat(beatIndex) {
         const step = currentArrangement[beatIndex % currentArrangement.length];
-        const time = audioCtx.currentTime + 0.015;
         const requestId = playbackRequestId;
         const beatDuration = 60 / trackBpm;
-        const profile = getGenreProfile();
 
-        playSampledNote('bass', step.bass, 0.34, beatDuration * 0.85, requestId);
-        step.chord.forEach(note => {
-          playSampledNote('piano', note, 0.16, beatDuration * 1.8, requestId);
+        if (selectedInstruments.includes('Bass')) {
+          playSampledNote('bass', step.bass, 0.34, beatDuration * 0.85, requestId);
+        }
+        selectedInstruments.filter(instrument => chordInstruments.has(instrument)).forEach(instrument => {
+          step.chord.forEach(note => {
+            playSampledNote(instrument.toLowerCase(), note, 0.16, beatDuration * 1.8, requestId);
+          });
         });
         if (step.melody !== null) {
-          playSampledNote(profile.lead, step.melody, 0.2, beatDuration * 0.8, requestId);
+          selectedInstruments.filter(instrument => melodyInstruments.has(instrument)).forEach(instrument => {
+            playSampledNote(instrument.toLowerCase(), step.melody, 0.2, beatDuration * 0.8, requestId);
+          });
         }
-        if (step.kick) {
-          playKick(time);
+        if (selectedInstruments.includes('Drums')) {
+          if (step.kick) playSampledNote('drums', 36, 0.22, beatDuration * 0.28, requestId);
+          if (step.snare) playSampledNote('drums', 38, 0.14, beatDuration * 0.22, requestId);
+          if (step.hiHat) playSampledNote('drums', 42, 0.07, beatDuration * 0.12, requestId);
         }
-        if (step.snare) {
-          playNoiseDrum(time, 0.14, 'bandpass', 2200, 0.12);
+        if (selectedInstruments.includes('Dholak') && step.kick) {
+          playSampledNote('dholak', step.snare ? 55 : 48, 0.2, beatDuration * 0.38, requestId);
         }
-        if (step.hiHat) {
-          playNoiseDrum(time, 0.04, 'highpass', 7000, 0.04);
+        if (selectedInstruments.includes('Tabla') && step.snare) {
+          playSampledNote('tabla', step.kick ? 48 : 55, 0.16, beatDuration * 0.32, requestId);
+        }
+        if (selectedInstruments.includes('Chimta') && step.hiHat) {
+          playSampledNote('chimta', 84, 0.10, beatDuration * 0.18, requestId);
         }
 
         animateWaveform();
@@ -674,7 +652,7 @@
         const status = document.getElementById('playbackStatus');
         isLoading = true;
         button.disabled = true;
-        status.innerText = 'Loading sampled instruments...';
+        status.innerText = 'Loading your selected instrument layers...';
 
         try {
           initAudio();
@@ -692,7 +670,7 @@
           isPlaying = true;
           button.disabled = false;
           updatePlayButton(true);
-          status.innerText = `${trackGenre} instrumental preview.`;
+          status.innerText = `${trackGenre} · ${trackMood} instrumental preview. Vocals add a choir texture; lyrics are not generated.`;
           startBeatTimer();
           startPlaybackTimer();
         } catch (error) {

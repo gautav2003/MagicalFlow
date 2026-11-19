@@ -261,7 +261,7 @@
         <!-- Instruments Selection -->
         <div>
           <label class="block text-xs font-semibold text-zinc-300 mb-2">Instruments</label>
-          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Select Vocals for newly generated sung lyrics. Punjabi selections can include Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
+          <p class="mb-2 text-[10px] leading-4 text-zinc-400">Vocals adds a sampled choir texture, not sung lyrics. Punjabi arrangements can include Dholak, Tumbi, Algoza, Harmonium, Sarangi, Tabla and Chimta. Demo tracks use their own curated arrangements.</p>
           <div class="grid grid-cols-3 gap-2 text-center text-xs font-medium">
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Piano" checked class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Piano</span></label>
             <label class="cursor-pointer"><input type="checkbox" name="instruments" value="Guitar" class="hidden peer" /><span class="block py-1.5 px-2 rounded-full pill-inactive peer-checked:pill-active-purple transition-all">Guitar</span></label>
@@ -304,13 +304,13 @@
         </div>
 
         <!-- Submit Generation Button -->
-        <p class="text-[10px] leading-4 text-zinc-400">Your prompt is sent to Google for music generation. Usage may incur charges if free credits or quotas are unavailable or exhausted; avoid entering private information.</p>
+        <p class="text-[10px] leading-4 text-zinc-400">This creates a browser-rendered instrumental arrangement from your selections. Samples load online; it does not generate cloud audio or sung lyrics.</p>
         <button
           id="generateTrackButton"
           type="submit"
           class="w-full py-3.5 bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-950 hover:from-purple-900 hover:to-indigo-900 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl border border-purple-500/30 shadow-lg shadow-purple-950/60 transition-all mt-2 cursor-pointer"
         >
-          Generate Full Song
+          Create Track Preview
         </button>
       </form>
 

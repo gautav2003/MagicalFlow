@@ -30,6 +30,16 @@ BEGINNER_TRACK_NAMES = {
     'Midnight Dholwave',
     'Moonlit Bollywood Romance',
 }
+BEGINNER_GENRES = {
+    'Lo-Fi', 'Hip-Hop', 'Jazz', 'Electronic', 'Western Pop', 'Folk', 'R&B',
+    'Classical', 'Punjabi Pop', 'Bhangra', 'Bollywood Romance',
+}
+BEGINNER_MOODS = {'Chill', 'Energetic', 'Dark', 'Happy', 'Sad', 'Romantic', 'Focused'}
+BEGINNER_INSTRUMENTS = {
+    'Piano', 'Guitar', 'Bass', 'Drums', 'Dholak', 'Synth', 'Strings', 'Brass',
+    'Pad', 'Arp', 'Vocals', 'Tumbi', 'Algoza', 'Harmonium', 'Sarangi', 'Tabla',
+    'Chimta',
+}
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:5000/google/callback')
 
 # ==================== OFFICIAL GMAIL SMTP CONFIGURATION (SSL PORT 465) ====================
@@ -576,12 +586,32 @@ def select_mode():
 @login_required
 def beginner_mode():
     if request.method == 'POST':
+        genre = request.form.get('genre', '')
+        mood = request.form.get('mood', '')
+        try:
+            bpm = max(60, min(180, int(request.form.get('bpm', '90'))))
+            duration_minutes = max(1, min(3, int(request.form.get('duration', '2'))))
+        except (TypeError, ValueError):
+            bpm = 90
+            duration_minutes = 2
+        if genre not in BEGINNER_GENRES:
+            genre = 'Lo-Fi'
+        if mood not in BEGINNER_MOODS:
+            mood = 'Happy'
+        instruments = [
+            instrument for instrument in request.form.getlist('instruments')
+            if instrument in BEGINNER_INSTRUMENTS
+        ]
+        if not instruments:
+            instruments = ['Piano']
         return render_template(
             'Beginneroutput.html',
             prompt=request.form.get('prompt', '').strip(),
-            bpm=request.form.get('bpm', ''),
-            key=request.form.get('genre', ''),
-            duration='',
+            bpm=bpm,
+            key=genre,
+            mood=mood,
+            instruments=instruments,
+            duration=f'{duration_minutes}:00',
         )
     embedded_player = request.args.get('embedded') == '1'
     player_track = request.args.get('track', 'Late Night Lo-Fi')
@@ -599,6 +629,11 @@ def beginner_output():
     return render_template(
         'Beginneroutput.html',
         prompt=request.args.get('prompt', '').strip(),
+        bpm=90,
+        key='Lo-Fi',
+        mood='Happy',
+        instruments=['Piano', 'Bass', 'Drums'],
+        duration='3:24',
     )
 
 @app.route('/pro-studio-mode')
